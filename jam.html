@@ -123,14 +123,28 @@ html,body{background:#07090f;color:var(--text);font-family:var(--sans);min-heigh
 .prog-lbl{font-size:9px;color:#6a9ac8;letter-spacing:1.2px;text-transform:uppercase;}
 .prog-pct{font-size:12px;font-weight:600;font-family:var(--mono);transition:color .4s;}
 .prog-outer{position:relative;height:18px;border-radius:9px;overflow:hidden;border:0.5px solid #1a2a40;}
-/* dim full gradient = "future zones" always visible */
-.prog-track{position:absolute;inset:0;background:linear-gradient(90deg,#5c1515 0%,#c2410c 10%,#fb923c 20%,#a16207 30%,#fde047 40%,#15803d 55%,#4ade80 80%,#0369a1 90%,#7dd3fc 100%);opacity:0.25;}
-/* opaque fill that grows */
-.prog-fill{position:absolute;inset:0;right:auto;width:0%;background:linear-gradient(90deg,#5c1515 0%,#c2410c 10%,#fb923c 20%,#a16207 30%,#fde047 40%,#15803d 55%,#4ade80 80%,#0369a1 90%,#7dd3fc 100%);opacity:1;transition:width .6s ease;border-radius:9px 0 0 9px;}
-/* glowing head line */
-.prog-head{position:absolute;top:0;bottom:0;width:2.5px;background:#fff;opacity:.75;transition:left .6s ease;box-shadow:0 0 8px 2px var(--accent2);}
+/* FULL gradient always fixed — never moves */
+.prog-track{
+  position:absolute;inset:0;
+  background:linear-gradient(90deg,
+    #5c1515 0%,#c2410c 10%,#fb923c 20%,
+    #a16207 30%,#fde047 40%,
+    #15803d 55%,#4ade80 80%,
+    #0369a1 90%,#7dd3fc 100%);
+  opacity:1;
+}
+/* Dark overlay mask that covers the RIGHT side — shrinks to reveal gradient */
+.prog-mask{
+  position:absolute;top:0;bottom:0;right:0;
+  width:100%; /* starts covering everything */
+  background:#060f1a;
+  transition:width .6s ease;
+  border-radius:0 9px 9px 0;
+}
+/* glowing head line sits at boundary of revealed/hidden */
+.prog-head{position:absolute;top:0;bottom:0;width:2.5px;background:#fff;opacity:.8;transition:left .6s ease;box-shadow:0 0 8px 2px var(--accent2);}
 /* zone tick lines */
-.prog-tick{position:absolute;top:0;bottom:0;width:1px;opacity:.35;}
+.prog-tick{position:absolute;top:0;bottom:0;width:1px;opacity:.5;background:#000;}
 /* zone labels strip */
 .zone-strip{display:flex;gap:2px;margin-top:5px;}
 .zs{border-radius:2px;height:4px;}
@@ -338,12 +352,12 @@ html,body{background:#07090f;color:var(--text);font-family:var(--sans);min-heigh
       </div>
       <div class="prog-outer">
         <div class="prog-track"></div>
-        <div class="prog-fill" id="progFill"></div>
+        <div class="prog-mask" id="progMask"></div>
         <div class="prog-head" id="progHead" style="left:0;"></div>
-        <div class="prog-tick" style="left:10%;background:#f87171;"></div>
-        <div class="prog-tick" style="left:20%;background:#fb923c;"></div>
-        <div class="prog-tick" style="left:40%;background:#fde047;"></div>
-        <div class="prog-tick" style="left:80%;background:#4ade80;"></div>
+        <div class="prog-tick" style="left:10%;"></div>
+        <div class="prog-tick" style="left:20%;"></div>
+        <div class="prog-tick" style="left:40%;"></div>
+        <div class="prog-tick" style="left:80%;"></div>
       </div>
       <div class="zone-strip">
         <div class="zs zs1"></div><div class="zs zs2"></div>
@@ -564,7 +578,8 @@ function getHeadColor(p){
 
 function setProgBar(pct){
   pct=Math.min(100,Math.max(0,pct));
-  document.getElementById('progFill').style.width=pct+'%';
+  // mask covers right side — shrinks to reveal fixed gradient from left
+  document.getElementById('progMask').style.width=(100-pct)+'%';
   document.getElementById('progHead').style.left='calc('+pct+'% - 1.5px)';
   const col=getHeadColor(pct);
   document.getElementById('progHead').style.background=col;
