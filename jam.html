@@ -6,137 +6,47 @@
 <title>EV Charge Calculator</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Sora:wght@300;400;500;600&display=swap');
-
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-
 :root{
-  --bg:#0a0d14;
-  --surface:#111520;
-  --surface2:#161c2a;
-  --border:#1e2640;
-  --border2:#2a3456;
-  --accent:#4a9eff;
-  --accent2:#7dd3fc;
-  --accent-dim:#1a3a5c;
-  --green:#4ade80;
-  --green-dim:#1a3a20;
-  --red:#f87171;
-  --red-dim:#3a1a1a;
-  --text:#e8f0ff;
-  --text2:#6a7fa8;
-  --text3:#3a4a68;
-  --mono:'JetBrains Mono',monospace;
-  --sans:'Sora',sans-serif;
+  --bg:#0a0d14;--surface:#111520;--surface2:#161c2a;
+  --border:#1e2640;--border2:#2a3456;
+  --accent:#4a9eff;--accent2:#7dd3fc;--accent-dim:#1a3a5c;
+  --green:#4ade80;--green-dim:#1a3a20;
+  --red:#f87171;--red-dim:#3a1a1a;
+  --amber:#fde047;--amber-dim:#251e00;
+  --orange:#fb923c;--orange-dim:#2a1400;
+  --blue:#7dd3fc;--blue-dim:#0a1422;
+  --text:#e8f0ff;--text2:#8a9fc8;--text3:#6a80a8;
+  --mono:'JetBrains Mono',monospace;--sans:'Sora',sans-serif;
 }
-
-html,body{
-  background:#07090f;
-  color:var(--text);
-  font-family:var(--sans);
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:flex-start;
-}
-
-/* PHONE SHELL */
-.phone{
-  width:100%;
-  max-width:390px;
-  min-height:100vh;
-  background:var(--bg);
-  display:flex;
-  flex-direction:column;
-  position:relative;
-  overflow:hidden;
-}
-
-/* subtle grid texture */
-.phone::before{
-  content:'';
-  position:fixed;
-  top:0;left:0;right:0;bottom:0;
-  max-width:390px;
-  margin:0 auto;
-  background-image:
-    linear-gradient(var(--border) 1px,transparent 1px),
-    linear-gradient(90deg,var(--border) 1px,transparent 1px);
-  background-size:40px 40px;
-  opacity:0.18;
-  pointer-events:none;
-  z-index:0;
-}
-
-.screen{
-  position:relative;
-  z-index:1;
-  padding-bottom:32px;
-}
+html,body{background:#07090f;color:var(--text);font-family:var(--sans);min-height:100vh;display:flex;justify-content:center;align-items:flex-start;}
+.phone{width:100%;max-width:390px;min-height:100vh;background:var(--bg);display:flex;flex-direction:column;position:relative;overflow:hidden;}
+.phone::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;max-width:390px;margin:0 auto;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:40px 40px;opacity:0.15;pointer-events:none;z-index:0;}
+.screen{position:relative;z-index:1;padding-bottom:36px;}
 
 /* STATUS BAR */
-.statusbar{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:12px 20px 6px;
-  font-size:11px;color:var(--text3);
-  font-family:var(--mono);
-}
+.statusbar{display:flex;justify-content:space-between;align-items:center;padding:12px 20px 6px;font-size:11px;color:var(--text3);font-family:var(--mono);}
 .statusbar .brand{color:var(--accent2);font-weight:600;font-size:12px;letter-spacing:1px;}
 
 /* HEADER */
-.hdr{
-  padding:8px 18px 14px;
-  border-bottom:0.5px solid var(--border);
-  display:flex;align-items:center;gap:12px;
-}
-.hdr-icon{
-  width:40px;height:40px;border-radius:12px;
-  background:var(--accent-dim);border:0.5px solid var(--border2);
-  display:flex;align-items:center;justify-content:center;
-  font-size:20px;flex-shrink:0;
-}
-.hdr-text{}
+.hdr{padding:8px 18px 14px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;gap:12px;}
+.hdr-icon{width:40px;height:40px;border-radius:12px;background:var(--accent-dim);border:0.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
 .hdr-title{font-size:15px;font-weight:600;color:var(--accent2);letter-spacing:.5px;}
-.hdr-sub{font-size:10px;color:var(--text3);margin-top:1px;font-weight:300;}
+.hdr-sub{font-size:10px;color:#5a7090;margin-top:1px;font-weight:300;}
 
-/* SECTION CARD */
-.card{
-  margin:10px 14px 0;
-  background:var(--surface);
-  border-radius:16px;
-  border:0.5px solid var(--border);
-  padding:13px 14px;
-}
-.card-lbl{
-  font-size:10px;color:var(--text3);
-  letter-spacing:1.4px;text-transform:uppercase;font-weight:500;
-  margin-bottom:10px;
-}
+/* CARD */
+.card{margin:10px 14px 0;background:var(--surface);border-radius:16px;border:0.5px solid var(--border);padding:13px 14px;}
+.card-lbl{font-size:10px;color:var(--text3);letter-spacing:1.4px;text-transform:uppercase;font-weight:500;margin-bottom:10px;}
 
-/* BATTERY */
+/* BATTERY INPUT */
 .batt-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
 .batt-hdr .card-lbl{margin-bottom:0;}
-.info-btn{
-  width:26px;height:26px;border-radius:50%;
-  background:var(--surface2);border:1px solid var(--border2);
-  color:var(--accent2);font-size:12px;font-weight:700;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;transition:all .2s;font-family:var(--mono);
-  flex-shrink:0;user-select:none;
-}
+.info-btn{width:26px;height:26px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);color:var(--accent2);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;font-family:var(--mono);flex-shrink:0;user-select:none;}
 .info-btn:active{background:var(--accent-dim);}
 .info-btn.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent);}
-
 .batt-row{display:flex;align-items:center;gap:12px;}
 .batt-num-wrap{position:relative;flex-shrink:0;}
-.batt-num{
-  background:var(--bg);border:0.5px solid var(--border2);
-  border-radius:12px;color:var(--accent2);
-  font-size:30px;font-weight:600;text-align:center;
-  padding:10px 0;width:78px;
-  font-family:var(--mono);outline:none;
-  transition:border-color .2s;
-  -moz-appearance:textfield;
-}
+.batt-num{background:var(--bg);border:0.5px solid var(--border2);border-radius:12px;color:var(--accent2);font-size:30px;font-weight:600;text-align:center;padding:10px 0;width:78px;font-family:var(--mono);outline:none;transition:border-color .2s;-moz-appearance:textfield;}
 .batt-num::-webkit-inner-spin-button,.batt-num::-webkit-outer-spin-button{-webkit-appearance:none;}
 .batt-num:focus{border-color:var(--accent);}
 .batt-pct{position:absolute;right:9px;bottom:8px;font-size:11px;color:var(--text3);pointer-events:none;}
@@ -147,51 +57,42 @@ html,body{
 .bar-hints{display:flex;justify-content:space-between;font-size:9px;color:var(--text3);}
 
 /* INFO PANEL */
-.info-panel{
-  overflow:hidden;
-  max-height:0;opacity:0;
-  transition:max-height .35s ease,opacity .3s,margin .3s;
-  margin:0 14px;
-}
-.info-panel.open{max-height:320px;opacity:1;margin:8px 14px 0;}
-.info-inner{
-  background:#09141e;border-radius:14px;
-  border:1px solid var(--accent-dim);padding:13px 14px;
-  display:flex;flex-direction:column;gap:9px;
-}
+.info-panel{overflow:hidden;max-height:0;opacity:0;transition:max-height .35s ease,opacity .3s,margin .3s;margin:0 14px;}
+.info-panel.open{max-height:380px;opacity:1;margin:8px 14px 0;}
+.info-inner{background:#09141e;border-radius:14px;border:1px solid var(--accent-dim);padding:13px 14px;display:flex;flex-direction:column;gap:9px;}
 .info-title{font-size:12px;color:var(--accent2);font-weight:600;display:flex;align-items:center;gap:6px;}
-.zone-bar{height:7px;background:var(--surface2);border-radius:4px;position:relative;margin:2px 0 3px;}
-.zone-safe{position:absolute;left:20%;width:60%;height:100%;background:linear-gradient(90deg,#16532d,#22c55e,#16532d);border-radius:2px;}
-.zone-mark{position:absolute;top:-2px;height:11px;width:1.5px;}
-.zone-labels{display:flex;justify-content:space-between;font-size:9px;color:var(--text3);}
-.zone-labels .safe{color:var(--green);}
+
+/* 5-level zone bar inside info */
+.info-zone-bar{height:8px;border-radius:4px;overflow:hidden;display:flex;margin:2px 0 1px;}
+.izb1{flex:10;background:#7c1f1f;}
+.izb2{flex:10;background:#7c4a00;}
+.izb3{flex:20;background:#6b5a00;}
+.izb4{flex:40;background:#15803d;}
+.izb5{flex:20;background:#0369a1;}
+.info-zone-labels{display:flex;font-size:8px;}
+.izl{text-align:center;color:var(--text3);}
+.izl1{flex:10;color:#f87171;}
+.izl2{flex:10;color:#fb923c;}
+.izl3{flex:20;color:var(--amber);}
+.izl4{flex:40;color:var(--green);}
+.izl5{flex:20;color:var(--accent2);}
+
 .tip-row{display:flex;align-items:flex-start;gap:8px;}
 .tip-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:4px;}
-.tip-text{font-size:11px;color:#5a8fba;line-height:1.55;}
+.tip-text{font-size:11px;color:#7a9fc0;line-height:1.55;}
 .tip-text b{font-weight:600;}
 
-/* WARN */
-.warn-box{
-  margin:8px 14px 0;
-  background:var(--red-dim);border:0.5px solid #5c2a2a;
-  border-radius:12px;padding:10px 13px;
-  font-size:11px;color:var(--red);
-  display:none;align-items:center;gap:8px;line-height:1.5;
-}
+/* WARN BOX — 5 levels */
+.warn-box{margin:8px 14px 0;border-radius:12px;padding:10px 13px;font-size:11px;display:none;align-items:center;gap:8px;line-height:1.5;border:0.5px solid;}
 .warn-box.show{display:flex;}
+.warn-lv1{background:#2a0808;border-color:#7c1f1f;color:var(--red);}
+.warn-lv2{background:#1e1000;border-color:#7c4a00;color:var(--orange);}
+.warn-lv3{background:var(--amber-dim);border-color:#6b5a00;color:var(--amber);}
 
 /* TIME INPUTS */
 .time-row{display:flex;gap:8px;align-items:flex-start;}
 .tbox-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
-.tbox{
-  background:var(--bg);border:0.5px solid var(--border2);
-  border-radius:12px;color:var(--accent2);
-  font-size:26px;font-weight:600;text-align:center;
-  padding:10px 0;width:100%;
-  font-family:var(--mono);outline:none;
-  transition:border-color .2s;
-  -moz-appearance:textfield;
-}
+.tbox{background:var(--bg);border:0.5px solid var(--border2);border-radius:12px;color:var(--accent2);font-size:26px;font-weight:600;text-align:center;padding:10px 0;width:100%;font-family:var(--mono);outline:none;transition:border-color .2s;-moz-appearance:textfield;}
 .tbox::-webkit-inner-spin-button,.tbox::-webkit-outer-spin-button{-webkit-appearance:none;}
 .tbox:focus{border-color:var(--accent);}
 .tbox-lbl{font-size:10px;color:var(--text3);}
@@ -201,96 +102,69 @@ html,body{
 .divider{height:0.5px;background:linear-gradient(90deg,transparent,var(--border2),transparent);margin:12px 14px 0;}
 
 /* RESULT */
-.res{
-  margin:10px 14px 0;
-  background:#09121e;
-  border-radius:16px;border:0.5px solid var(--accent-dim);padding:14px 14px;
-}
+.res{margin:10px 14px 0;background:#09121e;border-radius:16px;border:0.5px solid var(--accent-dim);padding:14px 14px;}
 .res-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;}
-.res-tag{font-size:10px;color:#4a7fb5;letter-spacing:1.4px;text-transform:uppercase;font-weight:500;}
-.res-from{font-size:11px;color:var(--text3);margin-top:2px;}
+.res-tag{font-size:10px;color:#7aaad8;letter-spacing:1.4px;text-transform:uppercase;font-weight:500;}
+.res-from{font-size:11px;color:#7a90b8;margin-top:2px;}
 .dd-wrap{display:flex;align-items:center;gap:5px;}
-.dd-lbl{font-size:11px;color:#4a7fb5;}
-.dd{
-  background:var(--accent-dim);border:0.5px solid var(--border2);
-  border-radius:8px;color:var(--accent2);
-  font-size:13px;font-weight:600;padding:6px 10px;
-  outline:none;cursor:pointer;font-family:var(--sans);
-}
+.dd-lbl{font-size:11px;color:#7aaad8;}
+.dd{background:var(--accent-dim);border:0.5px solid var(--border2);border-radius:8px;color:var(--accent2);font-size:13px;font-weight:600;padding:6px 10px;outline:none;cursor:pointer;font-family:var(--sans);}
 .res-nums{display:flex;gap:8px;align-items:stretch;}
-.res-box{
-  flex:1;background:#060f1a;border:0.5px solid var(--accent-dim);
-  border-radius:12px;padding:11px 10px;text-align:center;
-}
-.res-box-lbl{font-size:9px;color:#3a6a9a;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;}
+.res-box{flex:1;background:#060f1a;border:0.5px solid var(--accent-dim);border-radius:12px;padding:11px 10px;text-align:center;}
+.res-box-lbl{font-size:9px;color:#6a9ac8;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;}
 .res-box-val{font-size:26px;font-weight:600;color:var(--accent2);line-height:1;font-family:var(--mono);}
-.res-box-val .unit{font-size:13px;color:#4a7fb5;font-family:var(--sans);}
-.res-box-sub{font-size:9px;color:#2a5a8a;margin-top:4px;}
+.res-box-val .unit{font-size:13px;color:#7aaad8;font-family:var(--sans);}
+.res-box-sub{font-size:9px;color:#5a80a8;margin-top:4px;}
 .res-sep{width:0.5px;background:var(--accent-dim);align-self:stretch;flex-shrink:0;}
-.prog-row{display:flex;justify-content:space-between;font-size:10px;color:#3a6a9a;margin:12px 0 4px;}
-.prog-track{height:6px;background:#060f1a;border:0.5px solid var(--accent-dim);border-radius:3px;overflow:hidden;}
-.prog-fill{height:100%;background:linear-gradient(90deg,var(--accent-dim),var(--accent2));border-radius:3px;transition:width .5s ease;}
-.prog-hints{display:flex;justify-content:space-between;font-size:9px;color:var(--text3);margin-top:3px;}
+
+/* ── SINGLE GRADIENT PROGRESS BAR ── */
+.prog-wrap{margin-top:14px;}
+.prog-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.prog-lbl{font-size:9px;color:#6a9ac8;letter-spacing:1.2px;text-transform:uppercase;}
+.prog-pct{font-size:12px;font-weight:600;font-family:var(--mono);transition:color .4s;}
+.prog-outer{position:relative;height:18px;border-radius:9px;overflow:hidden;border:0.5px solid #1a2a40;}
+/* dim full gradient = "future zones" always visible */
+.prog-track{position:absolute;inset:0;background:linear-gradient(90deg,#5c1515 0%,#c2410c 10%,#fb923c 20%,#a16207 30%,#fde047 40%,#15803d 55%,#4ade80 80%,#0369a1 90%,#7dd3fc 100%);opacity:0.25;}
+/* opaque fill that grows */
+.prog-fill{position:absolute;inset:0;right:auto;width:0%;background:linear-gradient(90deg,#5c1515 0%,#c2410c 10%,#fb923c 20%,#a16207 30%,#fde047 40%,#15803d 55%,#4ade80 80%,#0369a1 90%,#7dd3fc 100%);opacity:1;transition:width .6s ease;border-radius:9px 0 0 9px;}
+/* glowing head line */
+.prog-head{position:absolute;top:0;bottom:0;width:2.5px;background:#fff;opacity:.75;transition:left .6s ease;box-shadow:0 0 8px 2px var(--accent2);}
+/* zone tick lines */
+.prog-tick{position:absolute;top:0;bottom:0;width:1px;opacity:.35;}
+/* zone labels strip */
+.zone-strip{display:flex;gap:2px;margin-top:5px;}
+.zs{border-radius:2px;height:4px;}
+.zs1{flex:10;background:#7c1f1f;}
+.zs2{flex:10;background:#7c4a00;}
+.zs3{flex:20;background:#6b5a00;}
+.zs4{flex:40;background:#15803d;}
+.zs5{flex:20;background:#0369a1;}
+.zone-names{display:flex;gap:2px;margin-top:3px;}
+.zn{font-size:7px;color:#5a7098;text-align:center;}
+.zn1{flex:10;}.zn2{flex:10;}.zn3{flex:20;}.zn4{flex:40;}.zn5{flex:20;}
 
 /* TABS */
-.tabs{
-  display:flex;margin:12px 14px 0;
-  background:var(--surface);border-radius:13px;
-  border:0.5px solid var(--border);padding:4px;gap:4px;
-}
-.tab{
-  flex:1;text-align:center;padding:9px 4px;border-radius:10px;
-  font-size:12px;color:var(--text3);cursor:pointer;
-  transition:all .2s;font-weight:400;user-select:none;
-}
+.tabs{display:flex;margin:12px 14px 0;background:var(--surface);border-radius:13px;border:0.5px solid var(--border);padding:4px;gap:4px;}
+.tab{flex:1;text-align:center;padding:9px 4px;border-radius:10px;font-size:12px;color:var(--text3);cursor:pointer;transition:all .2s;font-weight:400;user-select:none;}
 .tab.on{background:var(--accent-dim);color:var(--accent2);font-weight:500;}
 
 /* TIMER */
-.timer-sec{
-  margin:10px 14px 0;background:var(--surface);
-  border-radius:16px;border:0.5px solid var(--border);
-  padding:16px 14px;display:none;
-}
+.timer-sec{margin:10px 14px 0;background:var(--surface);border-radius:16px;border:0.5px solid var(--border);padding:16px 14px;display:none;}
 .timer-sec.show{display:block;}
-.timer-disp{
-  font-size:48px;font-weight:600;color:var(--text);
-  text-align:center;letter-spacing:6px;line-height:1;
-  font-family:var(--mono);cursor:pointer;
-  transition:color .2s;margin-bottom:4px;
-}
+.timer-disp{font-size:48px;font-weight:600;color:var(--text);text-align:center;letter-spacing:6px;line-height:1;font-family:var(--mono);cursor:pointer;transition:color .2s;margin-bottom:4px;}
 .timer-disp:active{color:var(--accent2);}
 .timer-col{color:var(--text3);}
 .timer-hint{text-align:center;font-size:10px;color:var(--text3);margin-bottom:14px;}
-
 .timer-edit{display:none;justify-content:center;gap:6px;align-items:flex-end;margin-bottom:14px;}
 .timer-edit.show{display:flex;}
 .te-wrap{display:flex;flex-direction:column;align-items:center;gap:3px;}
-.te-input{
-  background:var(--bg);border:1px solid var(--accent);
-  border-radius:10px;color:var(--accent2);
-  font-size:28px;font-weight:600;text-align:center;
-  width:72px;padding:8px 0;outline:none;
-  font-family:var(--mono);
-  -moz-appearance:textfield;
-}
+.te-input{background:var(--bg);border:1px solid var(--accent);border-radius:10px;color:var(--accent2);font-size:28px;font-weight:600;text-align:center;width:72px;padding:8px 0;outline:none;font-family:var(--mono);-moz-appearance:textfield;}
 .te-input::-webkit-inner-spin-button,.te-input::-webkit-outer-spin-button{-webkit-appearance:none;}
 .te-lbl{font-size:10px;color:var(--text3);}
 .te-sep{font-size:28px;color:var(--text3);font-family:var(--mono);padding-bottom:8px;}
-.te-done{
-  width:100%;text-align:center;
-  background:var(--accent-dim);border:0.5px solid var(--border2);
-  border-radius:10px;color:var(--accent2);padding:9px;
-  font-size:13px;font-weight:500;cursor:pointer;
-  margin-bottom:14px;display:none;font-family:var(--sans);
-}
-
+.te-done{width:100%;text-align:center;background:var(--accent-dim);border:0.5px solid var(--border2);border-radius:10px;color:var(--accent2);padding:9px;font-size:13px;font-weight:500;cursor:pointer;margin-bottom:14px;display:none;font-family:var(--sans);}
 .btn-row{display:flex;gap:8px;}
-.btn{
-  flex:1;text-align:center;padding:12px 4px;
-  border-radius:12px;font-size:13px;font-weight:500;
-  cursor:pointer;transition:all .15s;border:none;
-  font-family:var(--sans);
-}
+.btn{flex:1;text-align:center;padding:12px 4px;border-radius:12px;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;border:none;font-family:var(--sans);}
 .btn:active{transform:scale(0.96);}
 .btn-start{background:var(--accent-dim);color:var(--accent2);border:0.5px solid var(--border2);}
 .btn-stop{background:var(--red-dim);color:var(--red);border:0.5px solid #5c2a2a;}
@@ -298,83 +172,42 @@ html,body{
 .timer-note{margin-top:8px;font-size:10px;color:var(--text3);text-align:center;}
 
 /* ALARM */
-.alarm-sec{
-  margin:10px 14px 0;background:var(--surface);
-  border-radius:16px;border:0.5px solid var(--border);
-  padding:16px 14px;display:none;
-}
+.alarm-sec{margin:10px 14px 0;background:var(--surface);border-radius:16px;border:0.5px solid var(--border);padding:16px 14px;display:none;}
 .alarm-sec.show{display:block;}
 .alarm-lbl{font-size:11px;color:var(--text2);margin-bottom:8px;}
-.alarm-time-input{
-  width:100%;background:var(--bg);border:0.5px solid var(--border2);
-  border-radius:12px;color:var(--accent2);font-size:34px;
-  font-weight:600;text-align:center;padding:12px;outline:none;
-  font-family:var(--mono);cursor:pointer;transition:border-color .2s;
-  color-scheme:dark;
-}
+.alarm-time-input{width:100%;background:var(--bg);border:0.5px solid var(--border2);border-radius:12px;color:var(--accent2);font-size:34px;font-weight:600;text-align:center;padding:12px;outline:none;font-family:var(--mono);cursor:pointer;transition:border-color .2s;color-scheme:dark;}
 .alarm-time-input:focus{border-color:var(--accent);}
-.alarm-status{
-  margin-top:10px;padding:10px 12px;border-radius:10px;
-  font-size:12px;text-align:center;display:none;line-height:1.5;
-}
+.alarm-status{margin-top:10px;padding:10px 12px;border-radius:10px;font-size:12px;text-align:center;display:none;line-height:1.5;}
 .alarm-status.show{display:block;}
 .alarm-status.active{background:var(--green-dim);color:var(--green);border:0.5px solid #2a5a2a;}
 .alarm-status.off{background:var(--surface2);color:var(--text3);border:0.5px solid var(--border);}
 .alarm-btn-row{display:flex;gap:8px;margin-top:10px;}
 .alarm-note{margin-top:8px;font-size:10px;color:var(--text3);text-align:center;}
+/* alarm mode — no bar notice */
+.alarm-no-bar{margin-top:10px;background:#090f1a;border:0.5px solid var(--accent-dim);border-radius:10px;padding:9px 12px;font-size:11px;color:#6a9ac8;text-align:center;line-height:1.6;}
+.alarm-no-bar b{color:#7aaad8;}
 
 /* SOUND */
 .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px;}
-.chip{
-  padding:7px 13px;border-radius:20px;font-size:12px;
-  border:0.5px solid var(--border);color:var(--text3);
-  background:var(--bg);cursor:pointer;transition:all .2s;
-  user-select:none;
-}
+.chip{padding:7px 13px;border-radius:20px;font-size:12px;border:0.5px solid var(--border);color:var(--text3);background:var(--bg);cursor:pointer;transition:all .2s;user-select:none;}
 .chip:active{transform:scale(0.96);}
 .chip.on{background:var(--green-dim);border-color:#2a5a2a;color:var(--green);}
 
+/* FOOTER */
 .footer{margin:20px 14px 0;text-align:center;font-size:10px;color:var(--text3);line-height:1.7;}
 
-@keyframes ring-pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
-.ringing{animation:ring-pulse .6s infinite;}
-
 /* ALARM RINGING OVERLAY */
-.alarm-overlay{
-  display:none;
-  position:fixed;top:0;left:0;right:0;bottom:0;
-  z-index:999;
-  background:rgba(8,10,18,0.97);
-  flex-direction:column;align-items:center;justify-content:center;
-  gap:20px;text-align:center;padding:32px;
-}
+.alarm-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:999;background:rgba(8,10,18,0.97);flex-direction:column;align-items:center;justify-content:center;gap:20px;text-align:center;padding:32px;max-width:390px;margin:0 auto;}
 .alarm-overlay.show{display:flex;}
-@keyframes pulse-ring{
-  0%{transform:scale(1);opacity:1;}
-  60%{transform:scale(1.18);opacity:.5;}
-  100%{transform:scale(1);opacity:1;}
-}
-@keyframes spin-slow{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}};
-.alarm-icon-wrap{
-  width:110px;height:110px;border-radius:50%;
-  background:var(--red-dim);border:2px solid var(--red);
-  display:flex;align-items:center;justify-content:center;
-  font-size:50px;
-  animation:pulse-ring 1s ease-in-out infinite;
-}
+@keyframes pulse-ring{0%{transform:scale(1);opacity:1;}60%{transform:scale(1.18);opacity:.5;}100%{transform:scale(1);opacity:1;}}
+@keyframes ring-pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
+.alarm-icon-wrap{width:110px;height:110px;border-radius:50%;background:var(--red-dim);border:2px solid var(--red);display:flex;align-items:center;justify-content:center;font-size:50px;animation:pulse-ring 1s ease-in-out infinite;}
 .alarm-title{font-size:22px;font-weight:600;color:var(--text);}
 .alarm-fired-time{font-size:48px;font-weight:600;color:var(--accent2);font-family:var(--mono);letter-spacing:4px;}
 .alarm-fired-sub{font-size:13px;color:var(--text3);}
-.alarm-stop-btn{
-  margin-top:10px;
-  width:100%;max-width:260px;
-  padding:16px;border-radius:16px;border:none;
-  background:var(--red);color:#fff;
-  font-size:16px;font-weight:600;
-  cursor:pointer;font-family:var(--sans);
-  transition:all .15s;
-}
+.alarm-stop-btn{margin-top:10px;width:100%;max-width:260px;padding:16px;border-radius:16px;border:none;background:var(--red);color:#fff;font-size:16px;font-weight:600;cursor:pointer;font-family:var(--sans);transition:all .15s;}
 .alarm-stop-btn:active{transform:scale(0.96);background:#dc2626;}
+.ringing{animation:ring-pulse .6s infinite;}
 </style>
 </head>
 <body>
@@ -391,7 +224,7 @@ html,body{
   <!-- HEADER -->
   <div class="hdr">
     <div class="hdr-icon">⚡</div>
-    <div class="hdr-text">
+    <div>
       <div class="hdr-title">EV Charge Calculator</div>
       <div class="hdr-sub">Estimasi pengisian baterai kendaraan listrik</div>
     </div>
@@ -409,9 +242,9 @@ html,body{
         <span class="batt-pct">%</span>
       </div>
       <div class="batt-right">
-        <div class="batt-status-text" id="battStatus">30% — Segera charge!</div>
-        <div class="bar-track"><div class="bar-fill" id="battBar" style="width:30%"></div></div>
-        <div class="bar-hints"><span>0%</span><span id="battHint">rendah</span><span>100%</span></div>
+        <div class="batt-status-text" id="battStatus">30%</div>
+        <div class="bar-track"><div class="bar-fill" id="battBar"></div></div>
+        <div class="bar-hints"><span>0%</span><span id="battHint"></span><span>100%</span></div>
       </div>
     </div>
   </div>
@@ -420,15 +253,16 @@ html,body{
   <div class="info-panel" id="infoPanel">
     <div class="info-inner">
       <div class="info-title">⚡ Tips Kesehatan Baterai EV</div>
-      <div>
-        <div class="zone-bar">
-          <div class="zone-safe"></div>
-          <div class="zone-mark" style="left:20%;background:var(--red);"></div>
-          <div class="zone-mark" style="left:80%;background:var(--green);"></div>
-        </div>
-        <div class="zone-labels">
-          <span>0%</span><span class="safe">Zona Aman 20–80%</span><span>100%</span>
-        </div>
+      <div class="info-zone-bar">
+        <div class="izb1"></div><div class="izb2"></div>
+        <div class="izb3"></div><div class="izb4"></div><div class="izb5"></div>
+      </div>
+      <div class="info-zone-labels">
+        <div class="izl izl1">Kritis<br>0–10%</div>
+        <div class="izl izl2">Rendah<br>11–20%</div>
+        <div class="izl izl3">Siaga<br>21–40%</div>
+        <div class="izl izl4">Zona Aman<br>41–80%</div>
+        <div class="izl izl5">Full<br>81–100%</div>
       </div>
       <div class="tip-row">
         <div class="tip-dot" style="background:var(--red);"></div>
@@ -440,15 +274,15 @@ html,body{
       </div>
       <div class="tip-row">
         <div class="tip-dot" style="background:var(--accent2);"></div>
-        <div class="tip-text">Rentang ideal harian: <b style="color:var(--accent2);">20% – 80%</b> untuk memperpanjang masa pakai baterai.</div>
+        <div class="tip-text">Rentang ideal harian: <b style="color:var(--accent2);">41% – 80%</b> untuk memperpanjang masa pakai baterai.</div>
       </div>
     </div>
   </div>
 
-  <!-- WARNING -->
+  <!-- WARN BOX -->
   <div class="warn-box" id="warnBox">
-    <span style="font-size:18px;flex-shrink:0;">⚠️</span>
-    <span id="warnText">Baterai sangat rendah! Segera hubungkan ke charger.</span>
+    <span style="font-size:18px;flex-shrink:0;" id="warnIcon">⚠️</span>
+    <span id="warnText"></span>
   </div>
 
   <!-- ESTIMASI FULL -->
@@ -474,13 +308,14 @@ html,body{
     <div class="res-top">
       <div>
         <div class="res-tag">Estimasi Pengisian</div>
-        <div class="res-from" id="resFrom">dari 30% menuju 80%</div>
+        <div class="res-from" id="resFrom">dari — menuju —</div>
       </div>
       <div class="dd-wrap">
         <div class="dd-lbl">Target</div>
         <select class="dd" id="targetPct" onchange="calculate()"></select>
       </div>
     </div>
+
     <div class="res-nums">
       <div class="res-box">
         <div class="res-box-lbl">Durasi</div>
@@ -494,14 +329,31 @@ html,body{
         <div class="res-box-sub" id="resNow">sekarang --:--</div>
       </div>
     </div>
-    <div class="prog-row">
-      <span id="progStart">30%</span>
-      <span style="color:var(--accent2);" id="progTarget">▸ 80%</span>
-      <span style="color:var(--text3);">100%</span>
-    </div>
-    <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
-    <div class="prog-hints">
-      <span>mulai</span><span id="progPoints">—</span><span>full</span>
+
+    <!-- SINGLE GRADIENT BAR -->
+    <div class="prog-wrap">
+      <div class="prog-header">
+        <div class="prog-lbl">Progres Pengisian</div>
+        <div class="prog-pct" id="progPct">—</div>
+      </div>
+      <div class="prog-outer">
+        <div class="prog-track"></div>
+        <div class="prog-fill" id="progFill"></div>
+        <div class="prog-head" id="progHead" style="left:0;"></div>
+        <div class="prog-tick" style="left:10%;background:#f87171;"></div>
+        <div class="prog-tick" style="left:20%;background:#fb923c;"></div>
+        <div class="prog-tick" style="left:40%;background:#fde047;"></div>
+        <div class="prog-tick" style="left:80%;background:#4ade80;"></div>
+      </div>
+      <div class="zone-strip">
+        <div class="zs zs1"></div><div class="zs zs2"></div>
+        <div class="zs zs3"></div><div class="zs zs4"></div><div class="zs zs5"></div>
+      </div>
+      <div class="zone-names">
+        <div class="zn zn1">Kritis</div><div class="zn zn2">Rendah</div>
+        <div class="zn zn3">Siaga</div><div class="zn zn4">Zona Aman</div>
+        <div class="zn zn5">Full Charged</div>
+      </div>
     </div>
   </div>
 
@@ -514,7 +366,7 @@ html,body{
   <!-- TIMER -->
   <div class="timer-sec show" id="timerSec">
     <div class="timer-disp" id="timerDisp" onclick="showTimerEdit()">
-      <span id="tH">01</span><span class="timer-col">:</span><span id="tM">25</span><span class="timer-col">:</span><span id="tS">00</span>
+      <span id="tH">00</span><span class="timer-col">:</span><span id="tM">00</span><span class="timer-col">:</span><span id="tS">00</span>
     </div>
     <div class="timer-hint" id="timerHint">tap angka untuk edit manual</div>
     <div class="timer-edit" id="timerEdit">
@@ -552,6 +404,7 @@ html,body{
       <button class="btn btn-reset" onclick="cancelAlarm()">✕ Batalkan</button>
     </div>
     <div class="alarm-note" id="alarmNote"></div>
+    <div class="alarm-no-bar">Bar progres <b>tidak bergerak</b> pada mode alarm.<br>Aktifkan Timer untuk memantau progres pengisian.</div>
   </div>
 
   <!-- SOUND -->
@@ -565,7 +418,7 @@ html,body{
     </div>
   </div>
 
-  <div class="footer">⚡ EV Charge Calculator · jam.html<br>Zona aman baterai 20% – 80%</div>
+  <div class="footer">⚡ EV Charge Calculator · jam.html<br>Zona aman baterai 41% – 80%</div>
 
 </div><!-- screen -->
 
@@ -577,29 +430,52 @@ html,body{
   <div class="alarm-fired-sub" id="overlaySub">Target pengisian tercapai</div>
   <button class="alarm-stop-btn" onclick="stopAlarmRinging()">■ Hentikan Alarm</button>
 </div>
+
 </div><!-- phone -->
 
 <script>
-let timerInterval=null,timerSecs=0,timerRunning=false;
-let alarmTimeout=null,selectedSound='beep',audioCtx=null,infoOpen=false;
-let alarmRingingInterval=null; // continuous alarm loop
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+let timerInterval=null, timerSecs=0, timerRunning=false;
+let timerTotalSecs=0;   // total seconds at start (for progress calc)
+let timerStartBatt=0;   // battery % when timer started
+let timerTargetBatt=0;  // target battery % when timer started
+let alarmTimeout=null, selectedSound='beep', audioCtx=null, infoOpen=false;
+let alarmRingingInterval=null;
+let currentMode='timer'; // 'timer' | 'alarm'
 
-// clock
+// ═══════════════════════════════════════
+// CLOCK
+// ═══════════════════════════════════════
 function updateClock(){
   const n=new Date();
   document.getElementById('clockNow').textContent=
-    String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
+    pad(n.getHours())+':'+pad(n.getMinutes());
 }
 setInterval(updateClock,1000);
 updateClock();
 
-// init dropdown
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
 window.onload=function(){
   rebuildTargetDropdown();
   calculate();
 };
 
-// rebuild target dropdown based on current battery %
+// ═══════════════════════════════════════
+// INFO TOGGLE
+// ═══════════════════════════════════════
+function toggleInfo(){
+  infoOpen=!infoOpen;
+  document.getElementById('infoPanel').classList.toggle('open',infoOpen);
+  document.getElementById('infoBtn').classList.toggle('active',infoOpen);
+}
+
+// ═══════════════════════════════════════
+// TARGET DROPDOWN — only show > current batt
+// ═══════════════════════════════════════
 function rebuildTargetDropdown(){
   const batt=Math.min(99,Math.max(0,parseInt(document.getElementById('battPct').value)||0));
   const sel=document.getElementById('targetPct');
@@ -607,60 +483,63 @@ function rebuildTargetDropdown(){
   sel.innerHTML='';
   for(let i=batt+1;i<=100;i++){
     const o=document.createElement('option');
-    o.value=i;o.textContent=i+'%';
-    // keep previous selection if still valid, else default to 80 or next available
-    if(i===prev||(prev<=batt&&i===Math.min(80,100))||(prev<=batt&&i===batt+1&&80<=batt))
-      o.selected=true;
+    o.value=i; o.textContent=i+'%';
     sel.appendChild(o);
   }
-  // ensure 80% selected by default if available and no valid prev
-  if(prev<=batt){
-    const target80=sel.querySelector('option[value="80"]');
-    if(target80) target80.selected=true;
-    else sel.options[sel.options.length-1].selected=true;
-  }
+  // restore previous or default to 80
+  const want=prev>batt?prev:80;
+  const opt=sel.querySelector('option[value="'+want+'"]');
+  if(opt) opt.selected=true;
+  else sel.options[Math.max(0,sel.options.length-1)].selected=true;
 }
 
-// info toggle
-function toggleInfo(){
-  infoOpen=!infoOpen;
-  document.getElementById('infoPanel').classList.toggle('open',infoOpen);
-  document.getElementById('infoBtn').classList.toggle('active',infoOpen);
-}
-
-// calculate
+// ═══════════════════════════════════════
+// CALCULATE
+// ═══════════════════════════════════════
 function calculate(){
   const batt=Math.min(99,Math.max(0,parseInt(document.getElementById('battPct').value)||0));
   const target=parseInt(document.getElementById('targetPct').value)||80;
   const fh=parseInt(document.getElementById('fullHour').value)||0;
   const fm=parseInt(document.getElementById('fullMin').value)||0;
   const totalMins=fh*60+fm;
+
   updateBatteryUI(batt);
-  if(batt>=target){setResErr('Baterai sudah ≥ target!');return;}
-  if(totalMins<=0){setResEmpty();return;}
-  const rangeFull=100-batt,rangeTarget=target-batt;
+
+  if(batt>=target){ setResErr('Baterai sudah ≥ target!'); resetProgBar(batt); return; }
+  if(totalMins<=0){ setResEmpty(); resetProgBar(batt); return; }
+
+  const rangeFull=100-batt, rangeTarget=target-batt;
   const mins=Math.round((rangeTarget/rangeFull)*totalMins);
-  const rh=Math.floor(mins/60),rm=mins%60;
+  const rh=Math.floor(mins/60), rm=mins%60;
+
   let durHTML='';
-  if(rh>0)durHTML+=rh+'<span class="unit">j</span> ';
+  if(rh>0) durHTML+=rh+'<span class="unit">j</span> ';
   durHTML+=rm+'<span class="unit">m</span>';
   document.getElementById('resDur').innerHTML=durHTML;
   document.getElementById('resMins').textContent='≈ '+mins+' menit total';
-  const now=new Date(),fin=new Date(now.getTime()+mins*60000);
-  const fhh=String(fin.getHours()).padStart(2,'0'),fmm=String(fin.getMinutes()).padStart(2,'0');
+
+  const now=new Date(), fin=new Date(now.getTime()+mins*60000);
+  const fhh=pad(fin.getHours()), fmm=pad(fin.getMinutes());
   document.getElementById('resFinish').textContent=fhh+':'+fmm;
-  const nh=String(now.getHours()).padStart(2,'0'),nm=String(now.getMinutes()).padStart(2,'0');
-  document.getElementById('resNow').textContent='sekarang '+nh+':'+nm;
-  const prog=Math.round((rangeTarget/rangeFull)*100);
-  document.getElementById('progFill').style.width=prog+'%';
-  document.getElementById('progStart').textContent=batt+'%';
-  document.getElementById('progTarget').textContent='▸ '+target+'%';
-  document.getElementById('progPoints').textContent=rangeTarget+' poin tersisa';
+  document.getElementById('resNow').textContent='sekarang '+pad(now.getHours())+':'+pad(now.getMinutes());
   document.getElementById('resFrom').textContent='dari '+batt+'% menuju '+target+'%';
-  if(!timerRunning){timerSecs=mins*60;updateTimerDisplay();}
+
+  // set progress bar to starting batt (static when not running)
+  if(!timerRunning) setProgBar(batt);
+
+  // set timer
+  if(!timerRunning){
+    timerSecs=mins*60;
+    timerTotalSecs=mins*60;
+    timerStartBatt=batt;
+    timerTargetBatt=target;
+    updateTimerDisplay();
+  }
+
   document.getElementById('alarmNote').textContent='Estimasi selesai pukul '+fhh+':'+fmm;
   document.getElementById('alarmTime').value=fhh+':'+fmm;
 }
+
 function setResErr(m){
   document.getElementById('resDur').innerHTML='—';
   document.getElementById('resMins').textContent=m;
@@ -672,85 +551,168 @@ function setResEmpty(){
   document.getElementById('resFinish').textContent='--:--';
 }
 
-// battery ui
+// ═══════════════════════════════════════
+// PROGRESS BAR
+// ═══════════════════════════════════════
+function getHeadColor(p){
+  if(p<=10) return '#f87171';
+  if(p<=20) return '#fb923c';
+  if(p<=40) return '#fde047';
+  if(p<=80) return '#4ade80';
+  return '#7dd3fc';
+}
+
+function setProgBar(pct){
+  pct=Math.min(100,Math.max(0,pct));
+  document.getElementById('progFill').style.width=pct+'%';
+  document.getElementById('progHead').style.left='calc('+pct+'% - 1.5px)';
+  const col=getHeadColor(pct);
+  document.getElementById('progHead').style.background=col;
+  document.getElementById('progHead').style.boxShadow='0 0 8px 3px '+col+'99';
+  document.getElementById('progPct').textContent=Math.round(pct)+'%';
+  document.getElementById('progPct').style.color=col;
+}
+
+function resetProgBar(batt){
+  setProgBar(batt||parseInt(document.getElementById('battPct').value)||0);
+}
+
+// ═══════════════════════════════════════
+// BATTERY UI — 5 LEVELS
+// ═══════════════════════════════════════
 function updateBatteryUI(b){
-  const bar=document.getElementById('battBar'),hint=document.getElementById('battHint');
-  const st=document.getElementById('battStatus'),warn=document.getElementById('warnBox');
+  const bar=document.getElementById('battBar');
+  const hint=document.getElementById('battHint');
+  const st=document.getElementById('battStatus');
+  const warn=document.getElementById('warnBox');
+  const warnText=document.getElementById('warnText');
+  const warnIcon=document.getElementById('warnIcon');
+
   bar.style.width=b+'%';
+
   if(b<=10){
-    bar.style.background='linear-gradient(90deg,#b91c1c,#f87171)';
-    hint.style.color='var(--red)';hint.textContent='kritis!';
-    st.style.color='var(--red)';st.textContent=b+'% — Kritis! Segera charge!';
-    warn.classList.add('show');
-    document.getElementById('warnText').textContent='Baterai kritis ('+b+'%)! Segera hubungkan ke charger sekarang.';
-  }else if(b<20){
-    bar.style.background='linear-gradient(90deg,#c2410c,#fb923c)';
-    hint.style.color='#fb923c';hint.textContent='rendah';
-    st.style.color='#fb923c';st.textContent=b+'% — Segera charge!';
-    warn.classList.add('show');
-    document.getElementById('warnText').textContent='Baterai di bawah 20% ('+b+'%). Disarankan mulai charge sekarang.';
-  }else if(b<=80){
+    // KRITIS
+    bar.style.background='linear-gradient(90deg,#7c1f1f,#f87171)';
+    hint.style.color='#f87171'; hint.textContent='kritis!';
+    st.style.color='#f87171'; st.textContent=b+'% — Kritis! Segera charge!';
+    warn.className='warn-box warn-lv1 show';
+    warnIcon.textContent='🚨';
+    warnText.textContent='Baterai kritis ('+b+'%)! Segera hubungkan ke charger sekarang!';
+  } else if(b<=20){
+    // RENDAH
+    bar.style.background='linear-gradient(90deg,#7c4a00,#fb923c)';
+    hint.style.color='#fb923c'; hint.textContent='rendah';
+    st.style.color='#fb923c'; st.textContent=b+'% — Rendah! Segera charge!';
+    warn.className='warn-box warn-lv2 show';
+    warnIcon.textContent='⚠️';
+    warnText.textContent='Baterai di bawah 20% ('+b+'%). Segera rencanakan pengisian.';
+  } else if(b<=40){
+    // SIAGA
+    bar.style.background='linear-gradient(90deg,#6b5a00,#fde047)';
+    hint.style.color='#fde047'; hint.textContent='siaga';
+    st.style.color='#fde047'; st.textContent=b+'% — Siaga';
+    warn.className='warn-box warn-lv3 show';
+    warnIcon.textContent='💛';
+    warnText.textContent='Baterai '+b+'% — pertimbangkan charge jika berencana perjalanan jauh.';
+  } else if(b<=80){
+    // ZONA AMAN
     bar.style.background='linear-gradient(90deg,#15803d,#4ade80)';
-    hint.style.color='var(--green)';hint.textContent='zona aman';
-    st.style.color='var(--green)';st.textContent=b+'% — Zona aman ✓';
-    warn.classList.remove('show');
-  }else{
+    hint.style.color='#4ade80'; hint.textContent='zona aman';
+    st.style.color='#4ade80'; st.textContent=b+'% — Zona Aman ✓';
+    warn.className='warn-box';
+  } else {
+    // FULL CHARGED
     bar.style.background='linear-gradient(90deg,#0369a1,#7dd3fc)';
-    hint.style.color='var(--accent2)';hint.textContent='tinggi';
-    st.style.color='var(--accent2)';st.textContent=b+'% — Tidak perlu charge';
-    warn.classList.remove('show');
+    hint.style.color='#7dd3fc'; hint.textContent='full charged';
+    st.style.color='#7dd3fc'; st.textContent=b+'% — Full Charged';
+    warn.className='warn-box';
   }
 }
 
-// mode
+// ═══════════════════════════════════════
+// MODE SWITCH
+// ═══════════════════════════════════════
 function switchMode(m){
+  currentMode=m;
   document.getElementById('tabTimer').classList.toggle('on',m==='timer');
   document.getElementById('tabAlarm').classList.toggle('on',m==='alarm');
   document.getElementById('timerSec').classList.toggle('show',m==='timer');
   document.getElementById('alarmSec').classList.toggle('show',m==='alarm');
+  // if switching to alarm while timer stopped, reset bar to start batt
+  if(m==='alarm' && !timerRunning){
+    resetProgBar();
+  }
 }
 
-// timer
+// ═══════════════════════════════════════
+// TIMER
+// ═══════════════════════════════════════
 function pad(n){return String(n).padStart(2,'0');}
+
 function updateTimerDisplay(){
-  const h=Math.floor(timerSecs/3600),m=Math.floor((timerSecs%3600)/60),s=timerSecs%60;
+  const h=Math.floor(timerSecs/3600);
+  const m=Math.floor((timerSecs%3600)/60);
+  const s=timerSecs%60;
   document.getElementById('tH').textContent=pad(h);
   document.getElementById('tM').textContent=pad(m);
   document.getElementById('tS').textContent=pad(s);
 }
+
 function startTimer(){
-  if(timerRunning)return;
-  if(timerSecs<=0){alert('Set durasi timer terlebih dahulu.');return;}
+  if(timerRunning) return;
+  if(timerSecs<=0){ alert('Set durasi timer terlebih dahulu.'); return; }
+  // snapshot state for progress calculation
+  timerTotalSecs=timerSecs;
+  timerStartBatt=Math.min(99,Math.max(0,parseInt(document.getElementById('battPct').value)||0));
+  timerTargetBatt=parseInt(document.getElementById('targetPct').value)||80;
   timerRunning=true;
+
   timerInterval=setInterval(()=>{
     if(timerSecs<=0){
-      clearInterval(timerInterval);timerRunning=false;
+      clearInterval(timerInterval); timerRunning=false;
+      setProgBar(timerTargetBatt); // snap to target
       playAlarm();
       document.getElementById('timerDisp').classList.add('ringing');
-    }else{timerSecs--;updateTimerDisplay();}
+    } else {
+      timerSecs--;
+      updateTimerDisplay();
+      // update progress bar: interpolate from startBatt to targetBatt
+      const elapsed=timerTotalSecs-timerSecs;
+      const ratio=timerTotalSecs>0?elapsed/timerTotalSecs:0;
+      const currentBatt=timerStartBatt+(timerTargetBatt-timerStartBatt)*ratio;
+      setProgBar(currentBatt);
+    }
   },1000);
 }
+
 function stopTimer(){
-  if(!timerRunning)return;
-  clearInterval(timerInterval);timerRunning=false;
+  if(!timerRunning) return;
+  clearInterval(timerInterval);
+  timerRunning=false;
 }
-function resetTimer(){stopTimer();calculate();}
+
+function resetTimer(){
+  stopTimer();
+  calculate(); // recalculate resets timerSecs & bar
+}
+
 function showTimerEdit(){
-  if(timerRunning)return;
-  const h=Math.floor(timerSecs/3600),m=Math.floor((timerSecs%3600)/60),s=timerSecs%60;
-  document.getElementById('teH').value=pad(h);
-  document.getElementById('teM').value=pad(m);
-  document.getElementById('teS').value=pad(s);
+  if(timerRunning) return;
+  document.getElementById('teH').value=pad(Math.floor(timerSecs/3600));
+  document.getElementById('teM').value=pad(Math.floor((timerSecs%3600)/60));
+  document.getElementById('teS').value=pad(timerSecs%60);
   document.getElementById('timerEdit').classList.add('show');
   document.getElementById('teDone').style.display='block';
   document.getElementById('timerDisp').style.display='none';
   document.getElementById('timerHint').style.display='none';
 }
+
 function applyTimerEdit(){
   const h=parseInt(document.getElementById('teH').value)||0;
   const m=parseInt(document.getElementById('teM').value)||0;
   const s=parseInt(document.getElementById('teS').value)||0;
   timerSecs=h*3600+m*60+s;
+  timerTotalSecs=timerSecs;
   updateTimerDisplay();
   document.getElementById('timerEdit').classList.remove('show');
   document.getElementById('teDone').style.display='none';
@@ -758,97 +720,107 @@ function applyTimerEdit(){
   document.getElementById('timerHint').style.display='';
 }
 
-// alarm
+// ═══════════════════════════════════════
+// ALARM JAM
+// ═══════════════════════════════════════
 function setAlarm(){
   cancelAlarm();
   const val=document.getElementById('alarmTime').value;
-  if(!val){alert('Pilih waktu alarm terlebih dahulu.');return;}
+  if(!val){ alert('Pilih waktu alarm terlebih dahulu.'); return; }
   const [ah,am]=val.split(':').map(Number);
-  const now=new Date(),t=new Date();
+  const now=new Date(), t=new Date();
   t.setHours(ah,am,0,0);
-  if(t<=now)t.setDate(t.getDate()+1);
-  const diff=t-now,mins=Math.round(diff/60000);
-  const hrs=Math.floor(mins/60),rem=mins%60;
-  let ds=hrs>0?hrs+' jam ':'';ds+=rem+' menit lagi';
-  alarmTimeout=setTimeout(()=>{playAlarm('Alarm pukul '+val+' berbunyi!');showAlarmFired(val);},diff);
+  if(t<=now) t.setDate(t.getDate()+1);
+  const diff=t-now;
+  const mins=Math.round(diff/60000);
+  const hrs=Math.floor(mins/60), rem=mins%60;
+  let ds=(hrs>0?hrs+' jam ':'')+rem+' menit lagi';
+  alarmTimeout=setTimeout(()=>{ playAlarm('Alarm pukul '+val+' berbunyi!'); showAlarmFired(val); },diff);
   const s=document.getElementById('alarmStatus');
   s.className='alarm-status show active';
   s.textContent='🔔 Alarm aktif pukul '+val+' · '+ds;
 }
+
 function cancelAlarm(){
-  if(alarmTimeout){clearTimeout(alarmTimeout);alarmTimeout=null;}
+  if(alarmTimeout){ clearTimeout(alarmTimeout); alarmTimeout=null; }
   const s=document.getElementById('alarmStatus');
   s.className='alarm-status show off';
   s.textContent='Tidak ada alarm aktif';
 }
+
 function showAlarmFired(t){
   const s=document.getElementById('alarmStatus');
   s.className='alarm-status show active';
   s.innerHTML='🔔 <b>ALARM!</b> Pukul '+t+' — Charging selesai!';
 }
 
-// sound
+// ═══════════════════════════════════════
+// ALARM SOUND & OVERLAY
+// ═══════════════════════════════════════
+function playAlarm(label){
+  if(selectedSound==='silent'){ showAlarmOverlay(label); return; }
+  playSound(selectedSound,1);
+  alarmRingingInterval=setInterval(()=>{ playSound(selectedSound,1); },2000);
+  showAlarmOverlay(label);
+}
+
+function stopAlarmRinging(){
+  if(alarmRingingInterval){ clearInterval(alarmRingingInterval); alarmRingingInterval=null; }
+  document.getElementById('alarmOverlay').classList.remove('show');
+  document.getElementById('timerDisp').classList.remove('ringing');
+}
+
+function showAlarmOverlay(label){
+  const now=new Date();
+  document.getElementById('overlayTime').textContent=pad(now.getHours())+':'+pad(now.getMinutes());
+  document.getElementById('overlaySub').textContent=label||'Target pengisian tercapai';
+  document.getElementById('alarmOverlay').classList.add('show');
+}
+
 function selectSound(el,sound){
   document.querySelectorAll('.chip').forEach(c=>{
     c.classList.remove('on');
-    const labels={beep:'Beep Klasik',notif:'Notif Halus',horn:'Klakson',silent:'Tanpa Suara'};
-    c.textContent=labels[c.getAttribute('data-s')];
+    const map={beep:'Beep Klasik',notif:'Notif Halus',horn:'Klakson',silent:'Tanpa Suara'};
+    c.textContent=map[c.getAttribute('data-s')];
   });
   el.classList.add('on');
   el.textContent='✓ '+el.textContent;
   selectedSound=sound;
   playSound(sound,0.3);
 }
-function getCtx(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
+
+function getCtx(){ if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)(); return audioCtx; }
 function tone(ctx,freq,delay,dur,vol,type){
-  const o=ctx.createOscillator(),g=ctx.createGain();
-  o.connect(g);g.connect(ctx.destination);
-  o.type=type||'sine';o.frequency.value=freq;
+  const o=ctx.createOscillator(), g=ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  o.type=type||'sine'; o.frequency.value=freq;
   g.gain.setValueAtTime(0,ctx.currentTime+delay);
   g.gain.linearRampToValueAtTime(vol,ctx.currentTime+delay+0.02);
   g.gain.linearRampToValueAtTime(0,ctx.currentTime+delay+dur);
-  o.start(ctx.currentTime+delay);o.stop(ctx.currentTime+delay+dur+0.05);
+  o.start(ctx.currentTime+delay); o.stop(ctx.currentTime+delay+dur+0.05);
 }
 function playSound(type,vol){
-  if(type==='silent')return;
+  if(type==='silent') return;
   try{
-    const c=getCtx(),v=vol||1;
-    if(type==='beep'){tone(c,880,0,.15,v);tone(c,880,.2,.15,v);tone(c,1100,.4,.25,v);}
-    else if(type==='notif'){tone(c,523,0,.1,v);tone(c,659,.12,.1,v);tone(c,784,.24,.2,v);}
-    else if(type==='horn'){tone(c,220,0,.3,v,'sawtooth');tone(c,277,0,.3,v,'sawtooth');tone(c,330,.35,.4,v,'sawtooth');}
-  }catch(e){}
-}
-function playAlarm(label){
-  if(selectedSound==='silent'){showAlarmOverlay(label);return;}
-  // play immediately then loop every 2s until stopped
-  playSound(selectedSound,1);
-  alarmRingingInterval=setInterval(()=>{playSound(selectedSound,1);},2000);
-  showAlarmOverlay(label);
-}
-function stopAlarmRinging(){
-  if(alarmRingingInterval){clearInterval(alarmRingingInterval);alarmRingingInterval=null;}
-  document.getElementById('alarmOverlay').classList.remove('show');
-  // also remove timer ringing animation
-  document.getElementById('timerDisp').classList.remove('ringing');
-}
-function showAlarmOverlay(label){
-  const now=new Date();
-  const h=String(now.getHours()).padStart(2,'0'),m=String(now.getMinutes()).padStart(2,'0');
-  document.getElementById('overlayTime').textContent=h+':'+m;
-  document.getElementById('overlaySub').textContent=label||'Target pengisian tercapai';
-  document.getElementById('alarmOverlay').classList.add('show');
+    const c=getCtx(), v=vol||1;
+    if(type==='beep'){ tone(c,880,0,.15,v); tone(c,880,.2,.15,v); tone(c,1100,.4,.25,v); }
+    else if(type==='notif'){ tone(c,523,0,.1,v); tone(c,659,.12,.1,v); tone(c,784,.24,.2,v); }
+    else if(type==='horn'){ tone(c,220,0,.3,v,'sawtooth'); tone(c,277,0,.3,v,'sawtooth'); tone(c,330,.35,.4,v,'sawtooth'); }
+  } catch(e){}
 }
 
-// input clamp
+// ═══════════════════════════════════════
+// INPUT CLAMP
+// ═══════════════════════════════════════
 ['battPct','fullHour','fullMin'].forEach(id=>{
   document.getElementById(id).addEventListener('change',function(){
     let v=parseInt(this.value);
-    if(isNaN(v))v=0;
-    if(id==='battPct'){if(v<0)v=0;if(v>99)v=99;}
-    if(id==='fullMin'){if(v<0)v=0;if(v>59)v=59;}
-    if(id==='fullHour'&&v<0)v=0;
+    if(isNaN(v)) v=0;
+    if(id==='battPct'){ if(v<0)v=0; if(v>99)v=99; }
+    if(id==='fullMin'){ if(v<0)v=0; if(v>59)v=59; }
+    if(id==='fullHour' && v<0) v=0;
     this.value=v;
-    if(id==='battPct')rebuildTargetDropdown();
+    if(id==='battPct') rebuildTargetDropdown();
     calculate();
   });
 });
