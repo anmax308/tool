@@ -19,15 +19,18 @@
   --mono:'JetBrains Mono',monospace;--sans:'Sora',sans-serif;
 }
 html,body{background:#07090f;color:var(--text);font-family:var(--sans);min-height:100vh;display:flex;justify-content:center;align-items:flex-start;}
-.phone{width:100%;max-width:390px;min-height:100vh;background:var(--bg);display:flex;flex-direction:column;position:relative;overflow:hidden;}
+.phone{width:100%;max-width:390px;min-height:100vh;background:var(--bg);position:relative;overflow:hidden;}
 .phone::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;max-width:390px;margin:0 auto;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:40px 40px;opacity:0.15;pointer-events:none;z-index:0;}
-.screen{position:relative;z-index:1;padding-bottom:36px;}
+.screen{position:relative;z-index:1;padding-bottom:40px;}
 
 /* HEADER */
 .hdr{padding:16px 18px 14px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;gap:12px;}
 .hdr-icon{width:40px;height:40px;border-radius:12px;background:var(--accent-dim);border:0.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.hdr-text{flex:1;}
 .hdr-title{font-size:15px;font-weight:600;color:var(--accent2);letter-spacing:.5px;}
 .hdr-sub{font-size:10px;color:#5a7090;margin-top:1px;font-weight:300;}
+.hdr-reset-btn{width:34px;height:34px;border-radius:10px;background:var(--surface2);border:0.5px solid var(--border2);color:var(--text3);font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;flex-shrink:0;user-select:none;}
+.hdr-reset-btn:active{background:var(--red-dim);color:var(--red);border-color:#5c2a2a;}
 
 /* CARD */
 .card{margin:10px 14px 0;background:var(--surface);border-radius:16px;border:0.5px solid var(--border);padding:13px 14px;}
@@ -36,9 +39,9 @@ html,body{background:#07090f;color:var(--text);font-family:var(--sans);min-heigh
 /* BATTERY */
 .batt-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
 .batt-hdr .card-lbl{margin-bottom:0;}
-.info-btn{width:26px;height:26px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);color:var(--accent2);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;font-family:var(--mono);flex-shrink:0;user-select:none;}
-.info-btn:active{background:var(--accent-dim);}
-.info-btn.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent);}
+.icon-btn{width:26px;height:26px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);color:var(--accent2);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;font-family:var(--mono);flex-shrink:0;user-select:none;}
+.icon-btn:active{background:var(--accent-dim);}
+.icon-btn.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent);}
 .batt-row{display:flex;align-items:center;gap:12px;}
 .batt-num-wrap{position:relative;flex-shrink:0;}
 .batt-num{background:var(--bg);border:0.5px solid var(--border2);border-radius:12px;color:var(--accent2);font-size:30px;font-weight:600;text-align:center;padding:10px 0;width:78px;font-family:var(--mono);outline:none;transition:border-color .2s;-moz-appearance:textfield;}
@@ -57,11 +60,9 @@ html,body{background:#07090f;color:var(--text);font-family:var(--sans);min-heigh
 .info-inner{background:#09141e;border-radius:14px;border:1px solid var(--accent-dim);padding:13px 14px;display:flex;flex-direction:column;gap:9px;}
 .info-title{font-size:12px;color:var(--accent2);font-weight:600;display:flex;align-items:center;gap:6px;}
 .info-zone-bar{height:8px;border-radius:4px;overflow:hidden;display:flex;margin:2px 0 1px;}
-.izb1{flex:10;background:#7c1f1f;}.izb2{flex:10;background:#7c4a00;}
-.izb3{flex:20;background:#6b5a00;}.izb4{flex:40;background:#15803d;}.izb5{flex:20;background:#0369a1;}
+.izb1{flex:10;background:#7c1f1f;}.izb2{flex:10;background:#7c4a00;}.izb3{flex:20;background:#6b5a00;}.izb4{flex:40;background:#15803d;}.izb5{flex:20;background:#0369a1;}
 .info-zone-labels{display:flex;font-size:8px;}
-.izl{text-align:center;}.izl1{flex:10;color:#f87171;}.izl2{flex:10;color:#fb923c;}
-.izl3{flex:20;color:var(--amber);}.izl4{flex:40;color:var(--green);}.izl5{flex:20;color:var(--accent2);}
+.izl{text-align:center;}.izl1{flex:10;color:#f87171;}.izl2{flex:10;color:#fb923c;}.izl3{flex:20;color:var(--amber);}.izl4{flex:40;color:var(--green);}.izl5{flex:20;color:var(--accent2);}
 .tip-row{display:flex;align-items:flex-start;gap:8px;}
 .tip-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:4px;}
 .tip-text{font-size:11px;color:#7a9fc0;line-height:1.55;}
@@ -74,21 +75,23 @@ html,body{background:#07090f;color:var(--text);font-family:var(--sans);min-heigh
 .warn-lv2{background:#1e1000;border-color:#7c4a00;color:var(--orange);}
 .warn-lv3{background:var(--amber-dim);border-color:#6b5a00;color:var(--amber);}
 
-/* ESTIMASI CARD — adaptive */
+/* ESTIMASI CARD */
 .est-card{margin:10px 14px 0;background:var(--surface);border-radius:16px;border:0.5px solid var(--border);padding:13px 14px;transition:border-color .3s;}
 .est-card.state-ai{border-color:var(--accent-dim);}
 .est-card.state-manual{border-color:#3a3a1a;}
 .est-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
 .est-lbl{font-size:10px;color:var(--text3);letter-spacing:1.4px;text-transform:uppercase;font-weight:500;}
-.est-badge{padding:3px 9px;border-radius:10px;font-size:10px;font-weight:500;transition:all .3s;}
+.est-badge{padding:3px 9px;border-radius:10px;font-size:10px;font-weight:500;}
 .est-badge.ai{background:#0c1929;color:var(--accent2);border:0.5px solid var(--accent-dim);}
 .est-badge.manual{background:#1a1a09;color:var(--amber);border:0.5px solid #3a3a00;}
+.est-badge.custom{background:#1a0f1a;color:#c084fc;border:0.5px solid #5a2a7a;}
 .time-row{display:flex;gap:8px;align-items:flex-start;}
 .tbox-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
 .tbox{background:var(--bg);border:0.5px solid var(--border2);border-radius:12px;font-size:26px;font-weight:600;text-align:center;padding:10px 0;width:100%;font-family:var(--mono);outline:none;transition:border-color .3s,color .3s;-moz-appearance:textfield;}
 .tbox::-webkit-inner-spin-button,.tbox::-webkit-outer-spin-button{-webkit-appearance:none;}
 .tbox.ai{color:var(--accent2);border-color:var(--accent-dim);}
 .tbox.manual{color:var(--amber);border-color:#3a3a1a;}
+.tbox.custom{color:#c084fc;border-color:#5a2a7a;}
 .tbox.empty{color:var(--text3);}
 .tbox:focus{border-color:var(--accent);}
 .tbox-lbl{font-size:10px;color:var(--text3);}
@@ -102,7 +105,7 @@ html,body{background:#07090f;color:var(--text);font-family:var(--sans);min-heigh
 .divider{height:0.5px;background:linear-gradient(90deg,transparent,var(--border2),transparent);margin:12px 14px 0;}
 
 /* RESULT */
-.res{margin:10px 14px 0;background:#09121e;border-radius:16px;border:0.5px solid var(--accent-dim);padding:14px 14px;}
+.res{margin:10px 14px 0;background:#09121e;border-radius:16px;border:0.5px solid var(--accent-dim);padding:14px;}
 .res-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;}
 .res-tag{font-size:10px;color:#7aaad8;letter-spacing:1.4px;text-transform:uppercase;font-weight:500;}
 .res-from{font-size:11px;color:#7a90b8;margin-top:2px;}
@@ -112,9 +115,13 @@ html,body{background:#07090f;color:var(--text);font-family:var(--sans);min-heigh
 .res-nums{display:flex;gap:8px;align-items:stretch;}
 .res-box{flex:1;background:#060f1a;border:0.5px solid var(--accent-dim);border-radius:12px;padding:11px 10px;text-align:center;}
 .res-box-lbl{font-size:9px;color:#6a9ac8;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;}
-.res-box-val{font-size:26px;font-weight:600;color:var(--accent2);line-height:1;font-family:var(--mono);}
+.res-box-val{font-size:24px;font-weight:600;color:var(--accent2);line-height:1;font-family:var(--mono);}
 .res-box-sub{font-size:9px;color:#5a80a8;margin-top:4px;}
 .res-sep{width:0.5px;background:var(--accent-dim);align-self:stretch;flex-shrink:0;}
+
+/* CEK BATERAI INFO */
+.cek-info{margin-top:10px;background:#0c1a0c;border:0.5px solid #2a5a2a;border-radius:10px;padding:9px 12px;font-size:11px;color:var(--green);display:none;align-items:center;gap:8px;line-height:1.5;}
+.cek-info.show{display:flex;}
 
 /* PROGRESS BAR */
 .prog-wrap{margin-top:14px;}
@@ -122,7 +129,7 @@ html,body{background:#07090f;color:var(--text);font-family:var(--sans);min-heigh
 .prog-lbl{font-size:9px;color:#6a9ac8;letter-spacing:1.2px;text-transform:uppercase;}
 .prog-pct{font-size:12px;font-weight:600;font-family:var(--mono);transition:color .4s;}
 .prog-outer{position:relative;height:18px;border-radius:9px;overflow:hidden;border:0.5px solid #1a2a40;}
-.prog-track{position:absolute;inset:0;background:linear-gradient(90deg,#5c1515 0%,#c2410c 10%,#fb923c 20%,#a16207 30%,#fde047 40%,#15803d 55%,#4ade80 80%,#0369a1 90%,#7dd3fc 100%);opacity:1;}
+.prog-track{position:absolute;inset:0;background:linear-gradient(90deg,#5c1515 0%,#c2410c 10%,#fb923c 20%,#a16207 30%,#fde047 40%,#15803d 55%,#4ade80 80%,#0369a1 90%,#7dd3fc 100%);}
 .prog-mask{position:absolute;top:0;bottom:0;right:0;width:100%;background:#060f1a;transition:width .6s ease;border-radius:0 9px 9px 0;}
 .prog-head{position:absolute;top:0;bottom:0;width:2.5px;background:#fff;opacity:.8;transition:left .6s ease;box-shadow:0 0 8px 2px var(--accent2);}
 .prog-tick{position:absolute;top:0;bottom:0;width:1px;opacity:.5;background:#000;}
@@ -141,10 +148,16 @@ html,body{background:#07090f;color:var(--text);font-family:var(--sans);min-heigh
 /* TIMER */
 .timer-sec{margin:10px 14px 0;background:var(--surface);border-radius:16px;border:0.5px solid var(--border);padding:16px 14px;display:none;}
 .timer-sec.show{display:block;}
+.timer-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.timer-badge{padding:2px 8px;border-radius:8px;font-size:10px;display:none;}
+.timer-badge.custom{background:#1a0f1a;color:#c084fc;border:0.5px solid #5a2a7a;display:inline-block;}
+.timer-badge.auto{background:var(--accent-dim);color:var(--accent2);border:0.5px solid var(--border2);display:inline-block;}
 .timer-disp{font-size:48px;font-weight:600;color:var(--text);text-align:center;letter-spacing:6px;line-height:1;font-family:var(--mono);cursor:pointer;transition:color .2s;margin-bottom:4px;}
 .timer-disp:active{color:var(--accent2);}
 .timer-col{color:var(--text3);}
-.timer-hint{text-align:center;font-size:10px;color:var(--text3);margin-bottom:14px;}
+.timer-hint{text-align:center;font-size:10px;color:var(--text3);margin-bottom:10px;}
+.timer-update-note{text-align:center;font-size:10px;color:var(--green);margin-bottom:8px;display:none;}
+.timer-update-note.show{display:block;}
 .timer-edit{display:none;justify-content:center;gap:6px;align-items:flex-end;margin-bottom:14px;}
 .timer-edit.show{display:flex;}
 .te-wrap{display:flex;flex-direction:column;align-items:center;gap:3px;}
@@ -152,13 +165,16 @@ html,body{background:#07090f;color:var(--text);font-family:var(--sans);min-heigh
 .te-input::-webkit-inner-spin-button,.te-input::-webkit-outer-spin-button{-webkit-appearance:none;}
 .te-lbl{font-size:10px;color:var(--text3);}
 .te-sep{font-size:28px;color:var(--text3);font-family:var(--mono);padding-bottom:8px;}
-.te-done{width:100%;text-align:center;background:var(--accent-dim);border:0.5px solid var(--border2);border-radius:10px;color:var(--accent2);padding:9px;font-size:13px;font-weight:500;cursor:pointer;margin-bottom:14px;display:none;font-family:var(--sans);}
+.te-done{width:100%;text-align:center;background:var(--accent-dim);border:0.5px solid var(--border2);border-radius:10px;color:var(--accent2);padding:9px;font-size:13px;font-weight:500;cursor:pointer;margin-bottom:10px;display:none;font-family:var(--sans);}
 .btn-row{display:flex;gap:8px;}
 .btn{flex:1;text-align:center;padding:12px 4px;border-radius:12px;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;border:none;font-family:var(--sans);}
 .btn:active{transform:scale(0.96);}
 .btn-start{background:var(--accent-dim);color:var(--accent2);border:0.5px solid var(--border2);}
 .btn-stop{background:var(--red-dim);color:var(--red);border:0.5px solid #5c2a2a;}
 .btn-reset{background:var(--surface2);color:var(--text3);border:0.5px solid var(--border);}
+.btn-cek{width:100%;margin-top:8px;padding:10px;border-radius:12px;font-size:12px;font-weight:500;cursor:pointer;border:0.5px solid #2a5a2a;background:var(--green-dim);color:var(--green);font-family:var(--sans);transition:all .15s;display:none;}
+.btn-cek.show{display:block;}
+.btn-cek:active{transform:scale(0.97);}
 .timer-note{margin-top:8px;font-size:10px;color:var(--text3);text-align:center;}
 
 /* ALARM */
@@ -189,13 +205,11 @@ html,body{background:#07090f;color:var(--text);font-family:var(--sans);min-heigh
 .riw-left{display:flex;align-items:center;gap:8px;}
 .riw-stats{font-size:11px;color:var(--text3);}
 .riw-stats b{color:var(--accent2);font-weight:600;}
-.riw-toggle-btn{font-size:11px;color:var(--text3);padding:3px 9px;background:var(--bg);border-radius:8px;border:0.5px solid var(--border);transition:all .2s;}
-.riw-body{border-top:0.5px solid var(--border);padding:12px 14px;display:flex;flex-direction:column;gap:10px;display:none;}
+.riw-toggle-btn{font-size:11px;color:var(--text3);padding:3px 9px;background:var(--bg);border-radius:8px;border:0.5px solid var(--border);}
+.riw-body{border-top:0.5px solid var(--border);padding:12px 14px;flex-direction:column;gap:10px;display:none;}
 .riw-body.open{display:flex;}
-
-/* model info box */
 .model-box{background:#09121e;border:0.5px solid var(--accent-dim);border-radius:12px;padding:11px 13px;}
-.model-title{font-size:10px;color:#7aaad8;letter-spacing:1.2px;text-transform:uppercase;font-weight:500;margin-bottom:8px;display:flex;align-items:center;gap:5px;}
+.model-title{font-size:10px;color:#7aaad8;letter-spacing:1.2px;text-transform:uppercase;font-weight:500;margin-bottom:8px;}
 .model-meta{font-size:11px;color:#5a80a8;margin-bottom:8px;}
 .model-meta b{color:var(--accent2);}
 .sesi-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
@@ -205,14 +219,10 @@ html,body{background:#07090f;color:var(--text);font-family:var(--sans);min-heigh
 .sb-manual{background:#1a1a09;color:var(--amber);border:0.5px solid #3a3a00;}
 .sb-stop{background:var(--red-dim);color:var(--red);border:0.5px solid #5c2a2a;}
 .sesi-note{font-size:10px;color:var(--text3);}
-
-/* stat boxes */
 .stat-row{display:flex;gap:8px;}
 .stat-box{flex:1;background:var(--bg);border:0.5px solid var(--border);border-radius:10px;padding:9px 8px;text-align:center;}
 .stat-val{font-size:16px;font-weight:600;color:var(--accent2);font-family:var(--mono);}
 .stat-lbl{font-size:9px;color:var(--text3);margin-top:2px;}
-
-/* bar chart */
 .chart-sec-lbl{font-size:9px;color:var(--text3);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:6px;}
 .bar-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
 .bar-date{font-size:9px;color:var(--text3);width:36px;flex-shrink:0;text-align:right;font-family:var(--mono);}
@@ -222,10 +232,8 @@ html,body{background:#07090f;color:var(--text);font-family:var(--sans);min-heigh
 .bi-manual{background:linear-gradient(90deg,#2a2000,#fde047);opacity:.8;}
 .bi-stop{background:linear-gradient(90deg,#3a1a1a,#f87171);opacity:.7;}
 .bar-dur{font-size:9px;color:#e8f0ff;font-family:var(--mono);}
-
-/* table */
 .riw-table{width:100%;border-collapse:collapse;}
-.riw-table th{font-size:9px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;padding:4px 4px;text-align:left;border-bottom:0.5px solid var(--border);}
+.riw-table th{font-size:9px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;padding:4px;text-align:left;border-bottom:0.5px solid var(--border);}
 .riw-table td{font-size:10px;color:var(--text2);padding:6px 4px;border-bottom:0.5px solid #0f1420;font-family:var(--mono);}
 .td-date{font-family:var(--sans);color:var(--text3);}
 .td-ai{color:var(--accent2);}
@@ -248,7 +256,7 @@ html,body{background:#07090f;color:var(--text);font-family:var(--sans);min-heigh
 .alarm-title{font-size:22px;font-weight:600;color:var(--text);}
 .alarm-fired-time{font-size:48px;font-weight:600;color:var(--accent2);font-family:var(--mono);letter-spacing:4px;}
 .alarm-fired-sub{font-size:13px;color:var(--text3);}
-.alarm-stop-btn{margin-top:10px;width:100%;max-width:260px;padding:16px;border-radius:16px;border:none;background:var(--red);color:#fff;font-size:16px;font-weight:600;cursor:pointer;font-family:var(--sans);transition:all .15s;}
+.alarm-stop-btn{margin-top:10px;width:100%;max-width:260px;padding:16px;border-radius:16px;border:none;background:var(--red);color:#fff;font-size:16px;font-weight:600;cursor:pointer;font-family:var(--sans);}
 .alarm-stop-btn:active{transform:scale(0.96);background:#dc2626;}
 .ringing{animation:ring-pulse .6s infinite;}
 </style>
@@ -260,17 +268,18 @@ html,body{background:#07090f;color:var(--text);font-family:var(--sans);min-heigh
   <!-- HEADER -->
   <div class="hdr">
     <div class="hdr-icon">⚡</div>
-    <div>
+    <div class="hdr-text">
       <div class="hdr-title">EV Smart Charger</div>
       <div class="hdr-sub">Belajar dari kebiasaan charging Anda</div>
     </div>
+    <button class="hdr-reset-btn" onclick="resetInput()" title="Reset input">↺</button>
   </div>
 
   <!-- SISA BATERAI -->
   <div class="card">
     <div class="batt-hdr">
       <div class="card-lbl" style="margin-bottom:0;">Sisa Baterai</div>
-      <button class="info-btn" id="infoBtn" onclick="toggleInfo()" aria-label="Info kesehatan baterai">i</button>
+      <button class="icon-btn" id="infoBtn" onclick="toggleInfo()">i</button>
     </div>
     <div class="batt-row">
       <div class="batt-num-wrap">
@@ -307,7 +316,7 @@ html,body{background:#07090f;color:var(--text);font-family:var(--sans);min-heigh
     <span id="warnText"></span>
   </div>
 
-  <!-- ESTIMASI CARD — adaptive -->
+  <!-- ESTIMASI CARD -->
   <div class="est-card" id="estCard">
     <div class="est-hdr">
       <div class="est-lbl">Estimasi Waktu ke 100%</div>
@@ -342,21 +351,26 @@ html,body{background:#07090f;color:var(--text);font-family:var(--sans);min-heigh
       </div>
       <div class="dd-wrap">
         <div class="dd-lbl">Target</div>
-        <select class="dd" id="targetPct" onchange="calculate()"></select>
+        <select class="dd" id="targetPct" onchange="onTargetChange()"></select>
       </div>
     </div>
     <div class="res-nums">
       <div class="res-box">
         <div class="res-box-lbl">Durasi</div>
-        <div class="res-box-val" id="resDur" style="font-size:22px;">--:--</div>
+        <div class="res-box-val" id="resDur">--:--</div>
         <div class="res-box-sub" id="resMins">— menit</div>
       </div>
       <div class="res-sep"></div>
       <div class="res-box">
         <div class="res-box-lbl">Selesai Pukul</div>
-        <div class="res-box-val" id="resFinish" style="font-size:22px;">--:--</div>
+        <div class="res-box-val" id="resFinish">--:--</div>
         <div class="res-box-sub" id="resNow">sekarang --:--</div>
       </div>
+    </div>
+    <!-- CEK BATERAI RESULT INFO -->
+    <div class="cek-info" id="cekInfo">
+      <span style="font-size:15px;flex-shrink:0;">🔋</span>
+      <span id="cekInfoText"></span>
     </div>
     <div class="prog-wrap">
       <div class="prog-header">
@@ -385,10 +399,15 @@ html,body{background:#07090f;color:var(--text);font-family:var(--sans);min-heigh
 
   <!-- TIMER -->
   <div class="timer-sec show" id="timerSec">
-    <div class="timer-disp" id="timerDisp" onclick="showTimerEdit()">
-      <span id="tH">00</span><span class="timer-col">:</span><span id="tM">00</span><span class="timer-col">:</span><span id="tS">00</span>
+    <div class="timer-top">
+      <div style="width:1px;"></div>
+      <div class="timer-disp" id="timerDisp" onclick="showTimerEdit()" style="flex:1;">
+        <span id="tH">00</span><span class="timer-col">:</span><span id="tM">00</span><span class="timer-col">:</span><span id="tS">00</span>
+      </div>
+      <div class="timer-badge" id="timerBadge"></div>
     </div>
     <div class="timer-hint" id="timerHint">tap angka untuk edit manual</div>
+    <div class="timer-update-note" id="timerUpdateNote"></div>
     <div class="timer-edit" id="timerEdit">
       <div class="te-wrap"><input class="te-input" type="number" id="teH" min="0" max="99" placeholder="00"><div class="te-lbl">Jam</div></div>
       <div class="te-sep">:</div>
@@ -402,6 +421,7 @@ html,body{background:#07090f;color:var(--text);font-family:var(--sans);min-heigh
       <button class="btn btn-stop" onclick="stopTimer()">■ Stop</button>
       <button class="btn btn-reset" onclick="resetTimer()">↺ Reset</button>
     </div>
+    <button class="btn-cek" id="btnCek" onclick="cekBaterai()">🔋 Cek Estimasi Baterai dari Timer Ini</button>
     <div class="timer-note">Auto-terisi dari estimasi · tap angka untuk edit</div>
   </div>
 
@@ -439,40 +459,35 @@ html,body{background:#07090f;color:var(--text);font-family:var(--sans);min-heigh
       <div class="riw-toggle-btn" id="riwToggleBtn">Lihat ▾</div>
     </div>
     <div class="riw-body" id="riwBody">
-      <!-- model info -->
-      <div class="model-box" id="modelBox">
+      <div class="model-box">
         <div class="model-title">🤖 Model Prediksi</div>
         <div class="model-meta" id="modelMeta">—</div>
         <div id="modelSesiList"></div>
       </div>
-      <!-- stats -->
       <div class="stat-row">
         <div class="stat-box"><div class="stat-val" id="statTotal">0</div><div class="stat-lbl">Total Sesi</div></div>
         <div class="stat-box"><div class="stat-val" id="statAvg">--:--</div><div class="stat-lbl">Rata-rata</div></div>
         <div class="stat-box"><div class="stat-val" id="statRate">—</div><div class="stat-lbl">Rate/mnt</div></div>
       </div>
-      <!-- chart -->
-      <div id="chartSection">
+      <div>
         <div class="chart-sec-lbl">Durasi Per Sesi</div>
         <div id="chartBars"></div>
       </div>
-      <!-- table -->
-      <div id="tableSection">
+      <div>
         <table class="riw-table">
           <tr><th>#</th><th>Tgl</th><th>Dari</th><th>Target</th><th>Durasi</th><th>Mode</th></tr>
         </table>
-        <table class="riw-table" id="riwTable" style="margin-top:0;"></table>
+        <table class="riw-table" id="riwTable"></table>
       </div>
-      <!-- actions -->
       <div class="riw-actions">
         <div class="riw-btn" onclick="exportData()">📤 Export</div>
         <div class="riw-btn" onclick="importData()">📥 Import</div>
-        <div class="riw-btn danger" onclick="resetData()">🗑 Reset</div>
+        <div class="riw-btn danger" onclick="resetData()">🗑 Reset Riwayat</div>
       </div>
     </div>
   </div>
 
-  <div class="footer" style="text-align:center;">⚡ EV Smart Charger<br>made by anmax308</div>
+  <div class="footer">⚡ EV Smart Charger<br>made by anmax308</div>
 
 </div><!-- screen -->
 
@@ -489,103 +504,77 @@ html,body{background:#07090f;color:var(--text);font-family:var(--sans);min-heigh
 
 <script>
 // ═══════════════════════════════════════
-// STORAGE KEY
+// CONSTANTS & STATE
 // ═══════════════════════════════════════
-const STORAGE_KEY = 'ev_smart_sessions';
+const STORAGE_KEY='ev_smart_sessions';
 
-// ═══════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════
 let timerInterval=null, timerSecs=0, timerRunning=false;
 let timerTotalSecs=0, timerStartBatt=0, timerTargetBatt=0;
-let timerStartTime=null; // Date when timer started
-let alarmTimeout=null, selectedSound='beep', audioCtx=null, infoOpen=false;
+let timerStartTime=null;
+let timerHasBeenStopped=false;  // true after first stop, enables recalc on target change
+let timerIsCustom=false;        // true when user manually edited timer
+
+let alarmTimeout=null, selectedSound='beep', audioCtx=null;
 let alarmRingingInterval=null;
-let currentMode='timer';
-let predictionMins=null;   // calculated prediction in minutes, null if no data
-let isManualOverride=false; // user manually changed est input
-let riwayatOpen=false;
+let infoOpen=false, riwayatOpen=false, currentMode='timer';
+
+let predictionMins=null;
+let isManualOverride=false;
 
 // ═══════════════════════════════════════
 // UTILS
 // ═══════════════════════════════════════
 function pad(n){return String(n).padStart(2,'0');}
-
-// Format minutes as HH:MM
 function fmtMins(m){
-  if(m==null||isNaN(m)) return '--:--';
-  const h=Math.floor(m/60), mm=Math.round(m%60);
+  if(m==null||isNaN(m)||m<0) return '--:--';
+  const h=Math.floor(m/60),mm=Math.round(m%60);
   return pad(h)+':'+pad(mm);
 }
 
 // ═══════════════════════════════════════
-// SESSION STORAGE
+// STORAGE
 // ═══════════════════════════════════════
-function loadSessions(){
-  try{ return JSON.parse(localStorage.getItem(STORAGE_KEY))||[]; }
-  catch(e){ return []; }
-}
-function saveSessions(sessions){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(sessions));
-}
+function loadSessions(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||[];}catch(e){return [];}}
+function saveSessions(s){localStorage.setItem(STORAGE_KEY,JSON.stringify(s));}
 
 // ═══════════════════════════════════════
 // PREDICTION ENGINE
 // ═══════════════════════════════════════
-function calcPrediction(battStart, battTarget){
-  const sessions = loadSessions().filter(s=>s.selesai && s.durasi_aktual>0);
+function calcPrediction(battStart,battTarget){
+  const sessions=loadSessions().filter(s=>s.selesai&&s.durasi_aktual>0);
   if(sessions.length===0) return null;
-
-  // group by batt_awal range, prefer sessions with similar starting %
-  // fallback to all sessions average
-  const rangeMatch = sessions.filter(s=>{
-    const diff = Math.abs(s.batt_awal - battStart);
-    return diff <= 15;
-  });
-  const pool = rangeMatch.length >= 2 ? rangeMatch : sessions;
-
-  // compute average rate (%/min) from pool
-  const rates = pool.map(s=>{
-    const pctCharged = s.batt_target - s.batt_awal;
-    return pctCharged / s.durasi_aktual; // %/min
-  }).filter(r=>r>0);
-
+  const pool=sessions.filter(s=>Math.abs(s.batt_awal-battStart)<=15);
+  const src=pool.length>=2?pool:sessions;
+  const rates=src.map(s=>(s.batt_target-s.batt_awal)/s.durasi_aktual).filter(r=>r>0);
   if(rates.length===0) return null;
-
-  const avgRate = rates.reduce((a,b)=>a+b,0)/rates.length;
-  const pctNeeded = battTarget - battStart;
+  const avgRate=rates.reduce((a,b)=>a+b,0)/rates.length;
+  const pctNeeded=battTarget-battStart;
   if(pctNeeded<=0) return null;
-
-  // extrapolate to 100% then scale to actual target
-  const minsTo100 = (100-battStart)/avgRate;
-  const minsToTarget = (pctNeeded/(100-battStart))*minsTo100;
-  return Math.round(minsToTarget);
+  const minsTo100=(100-battStart)/avgRate;
+  return Math.round((pctNeeded/(100-battStart))*minsTo100);
 }
 
-function getSessionCount(){
-  return loadSessions().filter(s=>s.selesai).length;
-}
+function getSessionCount(){return loadSessions().filter(s=>s.selesai).length;}
 
 // ═══════════════════════════════════════
 // RECORD SESSION (auto)
 // ═══════════════════════════════════════
 function recordSession(selesai){
   if(!timerStartTime) return;
-  const durasiAktual = Math.round((Date.now()-timerStartTime)/60000);
-  const sessions = loadSessions();
-  const mode = isManualOverride ? 'manual' : 'prediksi';
-  const fullH=parseInt(document.getElementById('fullHour').value)||0;
-  const fullM=parseInt(document.getElementById('fullMin').value)||0;
+  const durasiAktual=Math.max(1,Math.round((Date.now()-timerStartTime)/60000));
+  const fh=parseInt(document.getElementById('fullHour').value)||0;
+  const fm=parseInt(document.getElementById('fullMin').value)||0;
+  const sessions=loadSessions();
   sessions.push({
-    id: sessions.length+1,
-    tanggal: new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'short'}),
-    batt_awal: timerStartBatt,
-    batt_target: timerTargetBatt,
-    durasi_prediksi: predictionMins,
-    durasi_dipakai: fullH*60+fullM,
-    durasi_aktual: durasiAktual,
-    mode: mode,
-    selesai: selesai
+    id:sessions.length+1,
+    tanggal:new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'short'}),
+    batt_awal:timerStartBatt,
+    batt_target:timerTargetBatt,
+    durasi_prediksi:predictionMins,
+    durasi_dipakai:fh*60+fm,
+    durasi_aktual:durasiAktual,
+    mode:isManualOverride?'manual':'prediksi',
+    selesai:selesai
   });
   saveSessions(sessions);
   renderRiwayat();
@@ -610,6 +599,53 @@ function toggleInfo(){
 }
 
 // ═══════════════════════════════════════
+// RESET INPUT (header button)
+// ═══════════════════════════════════════
+function resetInput(){
+  if(timerRunning){
+    if(!confirm('Timer sedang berjalan. Yakin reset semua input?')) return;
+    clearInterval(timerInterval);
+    timerRunning=false;
+    timerStartTime=null;
+  }
+  // stop alarm
+  cancelAlarm();
+
+  // reset fields
+  document.getElementById('battPct').value=0;
+  document.getElementById('fullHour').value='';
+  document.getElementById('fullMin').value='';
+
+  // reset state
+  isManualOverride=false;
+  timerIsCustom=false;
+  timerHasBeenStopped=false;
+  timerSecs=0;timerTotalSecs=0;
+  timerStartTime=null;
+  predictionMins=null;
+
+  // reset timer display
+  updateTimerDisplay();
+  setTimerBadge('none');
+  hideTimerUpdateNote();
+  hideCekBtn();
+  hideCekInfo();
+
+  // reset progress bar
+  setProgBar(0);
+
+  // close timer edit if open
+  document.getElementById('timerEdit').classList.remove('show');
+  document.getElementById('teDone').style.display='none';
+  document.getElementById('timerDisp').style.display='';
+  document.getElementById('timerHint').style.display='';
+
+  // rebuild and recalculate
+  rebuildTargetDropdown();
+  calculate();
+}
+
+// ═══════════════════════════════════════
 // TARGET DROPDOWN
 // ═══════════════════════════════════════
 function rebuildTargetDropdown(){
@@ -619,7 +655,7 @@ function rebuildTargetDropdown(){
   sel.innerHTML='';
   for(let i=batt+1;i<=100;i++){
     const o=document.createElement('option');
-    o.value=i; o.textContent=i+'%';
+    o.value=i;o.textContent=i+'%';
     sel.appendChild(o);
   }
   const want=prev>batt?prev:80;
@@ -628,24 +664,48 @@ function rebuildTargetDropdown(){
   else sel.options[Math.max(0,sel.options.length-1)].selected=true;
 }
 
+// Called when target dropdown changes
+function onTargetChange(){
+  hideCekInfo();
+
+  // if timer was stopped (not running, but has been started before), recalculate timer
+  if(!timerRunning && timerHasBeenStopped && !timerIsCustom){
+    recalcTimerForTarget();
+  }
+  calculate();
+}
+
+// Recalculate timer based on new target, using estimasi field rate
+function recalcTimerForTarget(){
+  const batt=Math.min(99,Math.max(0,parseInt(document.getElementById('battPct').value)||0));
+  const target=parseInt(document.getElementById('targetPct').value)||80;
+  const fh=parseInt(document.getElementById('fullHour').value)||0;
+  const fm=parseInt(document.getElementById('fullMin').value)||0;
+  const totalMins=fh*60+fm;
+  if(totalMins<=0||batt>=target) return;
+  const rangeFull=100-batt, rangeTarget=target-batt;
+  const mins=Math.round((rangeTarget/rangeFull)*totalMins);
+  timerSecs=mins*60;
+  timerTotalSecs=mins*60;
+  timerTargetBatt=target;
+  updateTimerDisplay();
+  setTimerBadge('auto');
+  showTimerUpdateNote('Timer diperbarui ke '+fmtMins(mins)+' untuk target '+target+'%');
+}
+
 // ═══════════════════════════════════════
-// EST INPUT HANDLER — user typing
+// EST INPUT HANDLER
 // ═══════════════════════════════════════
 function onEstInput(){
   const h=document.getElementById('fullHour').value;
   const m=document.getElementById('fullMin').value;
-  const isEmpty=(h===''||h==='0')&&(m===''||m==='0');
-
+  const isEmpty=(!h||h==='0'||h==='00')&&(!m||m==='0'||m==='00');
   if(predictionMins!==null){
-    if(isEmpty){
-      // user cleared → revert to prediction
-      revertToPrediction();
-      return;
-    }
-    // user typed something → manual override
+    if(isEmpty){revertToPrediction();return;}
     isManualOverride=true;
     setEstState('manual');
   }
+  hideCekInfo();
   calculate();
 }
 
@@ -654,68 +714,56 @@ function setEstState(state){
   const badge=document.getElementById('estBadge');
   const hint=document.getElementById('estHint');
   const revert=document.getElementById('revertBtn');
-  const hInput=document.getElementById('fullHour');
-  const mInput=document.getElementById('fullMin');
-
+  const hI=document.getElementById('fullHour');
+  const mI=document.getElementById('fullMin');
   card.className='est-card';
   badge.style.display='none';
   revert.style.display='none';
-
+  hint.style.display='block';
   if(state==='empty'){
-    hInput.className='tbox empty'; mInput.className='tbox empty';
+    hI.className='tbox empty';mI.className='tbox empty';
     hint.style.color='var(--text3)';
     hint.textContent='Belum ada data — masukkan waktu charging';
-  } else if(state==='ai'){
+  }else if(state==='ai'){
     card.classList.add('state-ai');
-    hInput.className='tbox ai'; mInput.className='tbox ai';
+    hI.className='tbox ai';mI.className='tbox ai';
     badge.className='est-badge ai';
-    const cnt=getSessionCount();
-    badge.textContent='🤖 '+cnt+' sesi';
-    badge.style.display='block';
+    badge.textContent='🤖 '+getSessionCount()+' sesi';
+    badge.style.display='inline-block';
     hint.style.color='#3a5a7a';
     hint.textContent='Terisi dari prediksi · ketik langsung untuk ubah';
-  } else if(state==='manual'){
+  }else if(state==='manual'){
     card.classList.add('state-manual');
-    hInput.className='tbox manual'; mInput.className='tbox manual';
+    hI.className='tbox manual';mI.className='tbox manual';
     badge.className='est-badge manual';
     badge.textContent='✏️ Manual';
-    badge.style.display='block';
+    badge.style.display='inline-block';
     hint.style.display='none';
     revert.style.display='flex';
-    if(predictionMins!==null){
-      document.getElementById('revertLabel').textContent=
-        'Kembali ke prediksi ('+fmtMins(predictionMins)+')';
-    }
+    if(predictionMins!==null)
+      document.getElementById('revertLabel').textContent='Kembali ke prediksi ('+fmtMins(predictionMins)+')';
   }
 }
 
 function revertToPrediction(){
   if(predictionMins===null) return;
   isManualOverride=false;
-  const h=Math.floor(predictionMins/60), m=predictionMins%60;
-  document.getElementById('fullHour').value=pad(h);
-  document.getElementById('fullMin').value=pad(m);
+  document.getElementById('fullHour').value=pad(Math.floor(predictionMins/60));
+  document.getElementById('fullMin').value=pad(predictionMins%60);
   setEstState('ai');
-  document.getElementById('estHint').style.display='';
+  hideCekInfo();
   calculate();
 }
 
-function applyPredictionToField(batt, target){
+function applyPredictionToField(batt,target){
   const mins=calcPrediction(batt,target);
   predictionMins=mins;
-  if(mins===null){
-    if(!isManualOverride){
-      setEstState('empty');
-    }
-    return;
-  }
+  if(mins===null){if(!isManualOverride)setEstState('empty');return;}
   if(!isManualOverride){
-    const h=Math.floor(mins/60), m=mins%60;
-    document.getElementById('fullHour').value=pad(h);
-    document.getElementById('fullMin').value=pad(m);
+    document.getElementById('fullHour').value=pad(Math.floor(mins/60));
+    document.getElementById('fullMin').value=pad(mins%60);
     setEstState('ai');
-    document.getElementById('estHint').style.display='';
-  } else {
+  }else{
     setEstState('manual');
   }
 }
@@ -733,33 +781,33 @@ function calculate(){
   updateBatteryUI(batt);
   applyPredictionToField(batt,target);
 
-  if(batt>=target){ setResErr('Baterai sudah ≥ target!'); resetProgBar(batt); return; }
-  if(totalMins<=0){ setResEmpty(); resetProgBar(batt); return; }
+  if(batt>=target){setResErr('Baterai sudah ≥ target!');resetProgBar(batt);return;}
+  if(totalMins<=0){setResEmpty();resetProgBar(batt);return;}
 
-  const rangeFull=100-batt, rangeTarget=target-batt;
+  const rangeFull=100-batt,rangeTarget=target-batt;
   const mins=Math.round((rangeTarget/rangeFull)*totalMins);
 
-  // duration as HH:MM
   document.getElementById('resDur').textContent=fmtMins(mins);
   document.getElementById('resMins').textContent='≈ '+mins+' menit total';
 
-  const now=new Date(), fin=new Date(now.getTime()+mins*60000);
-  document.getElementById('resFinish').textContent=pad(fin.getHours())+':'+pad(fin.getMinutes());
+  const now=new Date(),fin=new Date(now.getTime()+mins*60000);
+  const fhh=pad(fin.getHours()),fmm=pad(fin.getMinutes());
+  document.getElementById('resFinish').textContent=fhh+':'+fmm;
   document.getElementById('resNow').textContent='sekarang '+pad(now.getHours())+':'+pad(now.getMinutes());
   document.getElementById('resFrom').textContent='dari '+batt+'% menuju '+target+'%';
 
-  const prog=Math.round((rangeTarget/rangeFull)*100);
-  if(!timerRunning) setProgBar(batt);
-
   if(!timerRunning){
-    timerSecs=mins*60;
-    timerTotalSecs=mins*60;
-    timerStartBatt=batt;
-    timerTargetBatt=target;
-    updateTimerDisplay();
+    setProgBar(batt);
+    // only update timer if not custom-edited and not stopped
+    if(!timerIsCustom&&!timerHasBeenStopped){
+      timerSecs=mins*60;
+      timerTotalSecs=mins*60;
+      timerStartBatt=batt;
+      timerTargetBatt=target;
+      updateTimerDisplay();
+    }
   }
 
-  const fhh=pad(fin.getHours()), fmm=pad(fin.getMinutes());
   document.getElementById('alarmNote').textContent='Estimasi selesai pukul '+fhh+':'+fmm;
   document.getElementById('alarmTime').value=fhh+':'+fmm;
 }
@@ -776,13 +824,63 @@ function setResEmpty(){
 }
 
 // ═══════════════════════════════════════
+// CEK BATERAI dari Timer
+// ═══════════════════════════════════════
+function cekBaterai(){
+  const batt=Math.min(99,Math.max(0,parseInt(document.getElementById('battPct').value)||0));
+  const fh=parseInt(document.getElementById('fullHour').value)||0;
+  const fm=parseInt(document.getElementById('fullMin').value)||0;
+  const totalMinsFull=fh*60+fm;
+  if(totalMinsFull<=0){alert('Isi estimasi waktu ke 100% terlebih dahulu.');return;}
+
+  // current timer value in minutes
+  const timerH=Math.floor(timerSecs/3600);
+  const timerM=Math.floor((timerSecs%3600)/60);
+  const timerS=timerSecs%60;
+  const timerMinutes=timerH*60+timerM+(timerS/60);
+
+  if(timerMinutes<=0){alert('Timer sudah 00:00:00, tidak bisa dihitung.');return;}
+
+  // rate = (100 - batt) / totalMinsFull
+  const rate=(100-batt)/totalMinsFull;
+  const estimatedBatt=Math.min(100,Math.round(batt+rate*timerMinutes));
+
+  // update dropdown to closest available option
+  const sel=document.getElementById('targetPct');
+  let closest=estimatedBatt;
+  if(!sel.querySelector('option[value="'+closest+'"]')){
+    // find nearest
+    let minDiff=999,bestVal=parseInt(sel.options[sel.options.length-1].value);
+    for(const o of sel.options){
+      const diff=Math.abs(parseInt(o.value)-estimatedBatt);
+      if(diff<minDiff){minDiff=diff;bestVal=parseInt(o.value);}
+    }
+    closest=bestVal;
+  }
+  const opt=sel.querySelector('option[value="'+closest+'"]');
+  if(opt)opt.selected=true;
+
+  // show info
+  const timerStr=pad(timerH)+':'+pad(timerM)+':'+pad(timerS);
+  document.getElementById('cekInfoText').textContent=
+    'Timer '+timerStr+' → estimasi baterai ~'+estimatedBatt+'%, target diset ke '+closest+'%';
+  document.getElementById('cekInfo').classList.add('show');
+
+  calculate();
+}
+
+function hideCekInfo(){
+  document.getElementById('cekInfo').classList.remove('show');
+}
+
+// ═══════════════════════════════════════
 // PROGRESS BAR
 // ═══════════════════════════════════════
 function getHeadColor(p){
-  if(p<=10) return '#f87171';
-  if(p<=20) return '#fb923c';
-  if(p<=40) return '#fde047';
-  if(p<=80) return '#4ade80';
+  if(p<=10)return '#f87171';
+  if(p<=20)return '#fb923c';
+  if(p<=40)return '#fde047';
+  if(p<=80)return '#4ade80';
   return '#7dd3fc';
 }
 function setProgBar(pct){
@@ -795,9 +893,7 @@ function setProgBar(pct){
   document.getElementById('progPct').textContent=Math.round(pct)+'%';
   document.getElementById('progPct').style.color=col;
 }
-function resetProgBar(batt){
-  setProgBar(batt||parseInt(document.getElementById('battPct').value)||0);
-}
+function resetProgBar(batt){setProgBar(batt||parseInt(document.getElementById('battPct').value)||0);}
 
 // ═══════════════════════════════════════
 // BATTERY UI — 5 LEVELS
@@ -805,26 +901,28 @@ function resetProgBar(batt){
 function updateBatteryUI(b){
   const bar=document.getElementById('battBar'),hint=document.getElementById('battHint');
   const st=document.getElementById('battStatus'),warn=document.getElementById('warnBox');
-  const warnText=document.getElementById('warnText'),warnIcon=document.getElementById('warnIcon');
   bar.style.width=b+'%';
   if(b<=10){
     bar.style.background='linear-gradient(90deg,#7c1f1f,#f87171)';
     hint.style.color='#f87171';hint.textContent='kritis!';
     st.style.color='#f87171';st.textContent=b+'% — Kritis! Segera charge!';
     warn.className='warn-box warn-lv1 show';
-    warnIcon.textContent='🚨';warnText.textContent='Baterai kritis ('+b+'%)! Segera hubungkan ke charger sekarang!';
+    document.getElementById('warnIcon').textContent='🚨';
+    document.getElementById('warnText').textContent='Baterai kritis ('+b+'%)! Segera hubungkan ke charger sekarang!';
   }else if(b<=20){
     bar.style.background='linear-gradient(90deg,#7c4a00,#fb923c)';
     hint.style.color='#fb923c';hint.textContent='rendah';
     st.style.color='#fb923c';st.textContent=b+'% — Rendah! Segera charge!';
     warn.className='warn-box warn-lv2 show';
-    warnIcon.textContent='⚠️';warnText.textContent='Baterai di bawah 20% ('+b+'%). Segera rencanakan pengisian.';
+    document.getElementById('warnIcon').textContent='⚠️';
+    document.getElementById('warnText').textContent='Baterai di bawah 20% ('+b+'%). Segera rencanakan pengisian.';
   }else if(b<=40){
     bar.style.background='linear-gradient(90deg,#6b5a00,#fde047)';
     hint.style.color='#fde047';hint.textContent='siaga';
     st.style.color='#fde047';st.textContent=b+'% — Siaga';
     warn.className='warn-box warn-lv3 show';
-    warnIcon.textContent='💛';warnText.textContent='Baterai '+b+'% — pertimbangkan charge jika berencana perjalanan jauh.';
+    document.getElementById('warnIcon').textContent='💛';
+    document.getElementById('warnText').textContent='Baterai '+b+'% — pertimbangkan charge jika berencana perjalanan jauh.';
   }else if(b<=80){
     bar.style.background='linear-gradient(90deg,#15803d,#4ade80)';
     hint.style.color='#4ade80';hint.textContent='zona aman';
@@ -847,8 +945,29 @@ function switchMode(m){
   document.getElementById('tabAlarm').classList.toggle('on',m==='alarm');
   document.getElementById('timerSec').classList.toggle('show',m==='timer');
   document.getElementById('alarmSec').classList.toggle('show',m==='alarm');
-  if(m==='alarm'&&!timerRunning) resetProgBar();
+  if(m==='alarm'&&!timerRunning)resetProgBar();
 }
+
+// ═══════════════════════════════════════
+// TIMER BADGE & NOTE HELPERS
+// ═══════════════════════════════════════
+function setTimerBadge(type){
+  const b=document.getElementById('timerBadge');
+  b.className='timer-badge';
+  if(type==='custom'){b.classList.add('custom');b.textContent='✏️ Custom';}
+  else if(type==='auto'){b.classList.add('auto');b.textContent='↺ Auto';}
+  // 'none' = hidden
+}
+function showTimerUpdateNote(msg){
+  const n=document.getElementById('timerUpdateNote');
+  n.textContent=msg;n.classList.add('show');
+  setTimeout(()=>n.classList.remove('show'),3000);
+}
+function hideTimerUpdateNote(){
+  document.getElementById('timerUpdateNote').classList.remove('show');
+}
+function showCekBtn(){document.getElementById('btnCek').classList.add('show');}
+function hideCekBtn(){document.getElementById('btnCek').classList.remove('show');}
 
 // ═══════════════════════════════════════
 // TIMER
@@ -861,18 +980,23 @@ function updateTimerDisplay(){
 }
 
 function startTimer(){
-  if(timerRunning) return;
+  if(timerRunning)return;
   if(timerSecs<=0){alert('Set durasi timer terlebih dahulu.');return;}
   timerTotalSecs=timerSecs;
   timerStartBatt=Math.min(99,Math.max(0,parseInt(document.getElementById('battPct').value)||0));
   timerTargetBatt=parseInt(document.getElementById('targetPct').value)||80;
   timerStartTime=Date.now();
   timerRunning=true;
+  timerHasBeenStopped=false;
+  hideTimerUpdateNote();
+  hideCekBtn();
+  hideCekInfo();
+
   timerInterval=setInterval(()=>{
     if(timerSecs<=0){
       clearInterval(timerInterval);timerRunning=false;
       setProgBar(timerTargetBatt);
-      recordSession(true); // auto record on finish
+      recordSession(true);
       playAlarm();
       document.getElementById('timerDisp').classList.add('ringing');
     }else{
@@ -886,20 +1010,28 @@ function startTimer(){
 }
 
 function stopTimer(){
-  if(!timerRunning) return;
+  if(!timerRunning)return;
   clearInterval(timerInterval);timerRunning=false;
-  recordSession(false); // auto record as stopped
+  timerHasBeenStopped=true;
+  recordSession(false);
   timerStartTime=null;
+  // show cek baterai button after stop
+  showCekBtn();
 }
 
 function resetTimer(){
-  stopTimer();
-  timerStartTime=null;
+  if(timerRunning){clearInterval(timerInterval);timerRunning=false;timerStartTime=null;}
+  timerHasBeenStopped=false;
+  timerIsCustom=false;
+  hideCekBtn();
+  hideCekInfo();
+  hideTimerUpdateNote();
+  setTimerBadge('none');
   calculate();
 }
 
 function showTimerEdit(){
-  if(timerRunning) return;
+  if(timerRunning)return;
   document.getElementById('teH').value=pad(Math.floor(timerSecs/3600));
   document.getElementById('teM').value=pad(Math.floor((timerSecs%3600)/60));
   document.getElementById('teS').value=pad(timerSecs%60);
@@ -913,7 +1045,12 @@ function applyTimerEdit(){
   const h=parseInt(document.getElementById('teH').value)||0;
   const m=parseInt(document.getElementById('teM').value)||0;
   const s=parseInt(document.getElementById('teS').value)||0;
-  timerSecs=h*3600+m*60+s;timerTotalSecs=timerSecs;
+  timerSecs=h*3600+m*60+s;
+  timerTotalSecs=timerSecs;
+  timerIsCustom=true;
+  setTimerBadge('custom');
+  showCekBtn();
+  hideCekInfo();
   updateTimerDisplay();
   document.getElementById('timerEdit').classList.remove('show');
   document.getElementById('teDone').style.display='none';
@@ -934,7 +1071,7 @@ function setAlarm(){
   if(t<=now)t.setDate(t.getDate()+1);
   const diff=t-now,mins=Math.round(diff/60000);
   const hrs=Math.floor(mins/60),rem=mins%60;
-  let ds=(hrs>0?hrs+' jam ':'')+rem+' menit lagi';
+  const ds=(hrs>0?hrs+' jam ':'')+rem+' menit lagi';
   alarmTimeout=setTimeout(()=>{playAlarm('Alarm pukul '+val+' berbunyi!');showAlarmFired(val);},diff);
   const s=document.getElementById('alarmStatus');
   s.className='alarm-status show active';
@@ -944,8 +1081,7 @@ function setAlarm(){
 function cancelAlarm(){
   if(alarmTimeout){clearTimeout(alarmTimeout);alarmTimeout=null;}
   const s=document.getElementById('alarmStatus');
-  s.className='alarm-status show off';
-  s.textContent='Tidak ada alarm aktif';
+  if(s){s.className='alarm-status show off';s.textContent='Tidak ada alarm aktif';}
 }
 
 function showAlarmFired(t){
@@ -963,13 +1099,11 @@ function playAlarm(label){
   alarmRingingInterval=setInterval(()=>{playSound(selectedSound,1);},2000);
   showAlarmOverlay(label);
 }
-
 function stopAlarmRinging(){
   if(alarmRingingInterval){clearInterval(alarmRingingInterval);alarmRingingInterval=null;}
   document.getElementById('alarmOverlay').classList.remove('show');
   document.getElementById('timerDisp').classList.remove('ringing');
 }
-
 function showAlarmOverlay(label){
   const now=new Date();
   document.getElementById('overlayTime').textContent=pad(now.getHours())+':'+pad(now.getMinutes());
@@ -1008,7 +1142,7 @@ function playSound(type,vol){
 }
 
 // ═══════════════════════════════════════
-// RIWAYAT TOGGLE
+// RIWAYAT
 // ═══════════════════════════════════════
 function toggleRiwayat(){
   riwayatOpen=!riwayatOpen;
@@ -1016,97 +1150,79 @@ function toggleRiwayat(){
   document.getElementById('riwToggleBtn').textContent=riwayatOpen?'Tutup ▴':'Lihat ▾';
 }
 
-// ═══════════════════════════════════════
-// RENDER RIWAYAT
-// ═══════════════════════════════════════
 function renderRiwayat(){
   const sessions=loadSessions();
   const done=sessions.filter(s=>s.selesai);
-
-  // header stats
   const statEl=document.getElementById('riwStats');
+
   if(sessions.length===0){
     statEl.innerHTML='Belum ada sesi tercatat';
-  } else {
-    const avgMins=done.length>0?Math.round(done.reduce((a,s)=>a+s.durasi_aktual,0)/done.length):0;
-    const rates=done.map(s=>(s.batt_target-s.batt_awal)/s.durasi_aktual).filter(r=>r>0);
-    const avgRate=rates.length>0?(rates.reduce((a,b)=>a+b,0)/rates.length).toFixed(2):0;
-    statEl.innerHTML='<b>'+sessions.length+' sesi</b> · avg <b>'+fmtMins(avgMins)+'</b> · <b>'+avgRate+'%</b>/mnt';
-    document.getElementById('statTotal').textContent=sessions.length;
-    document.getElementById('statAvg').textContent=fmtMins(avgMins);
-    document.getElementById('statRate').textContent=avgRate+'%';
+    document.getElementById('statTotal').textContent='0';
+    document.getElementById('statAvg').textContent='--:--';
+    document.getElementById('statRate').textContent='—';
+    document.getElementById('modelMeta').innerHTML='Belum ada data — mulai timer untuk rekam sesi pertama';
+    document.getElementById('modelSesiList').innerHTML='';
+    document.getElementById('chartBars').innerHTML='<div style="font-size:10px;color:var(--text3);text-align:center;padding:8px 0;">Belum ada data</div>';
+    document.getElementById('riwTable').innerHTML='';
+    return;
   }
 
-  // model info
-  const modelMeta=document.getElementById('modelMeta');
-  const modelList=document.getElementById('modelSesiList');
+  // header stats
+  const avgMins=done.length>0?Math.round(done.reduce((a,s)=>a+s.durasi_aktual,0)/done.length):0;
+  const rates=done.map(s=>(s.batt_target-s.batt_awal)/s.durasi_aktual).filter(r=>r>0);
+  const avgRate=rates.length>0?(rates.reduce((a,b)=>a+b,0)/rates.length).toFixed(2):0;
+  statEl.innerHTML='<b>'+sessions.length+' sesi</b> · avg <b>'+fmtMins(avgMins)+'</b> · <b>'+avgRate+'%</b>/mnt';
+  document.getElementById('statTotal').textContent=sessions.length;
+  document.getElementById('statAvg').textContent=fmtMins(avgMins);
+  document.getElementById('statRate').textContent=avgRate+'%';
+
+  // model
   if(done.length===0){
-    modelMeta.innerHTML='Belum ada data — mulai timer untuk rekam sesi pertama';
-    modelList.innerHTML='';
-  } else {
-    const rates2=done.map(s=>(s.batt_target-s.batt_awal)/s.durasi_aktual).filter(r=>r>0);
-    const avgR=rates2.length>0?(rates2.reduce((a,b)=>a+b,0)/rates2.length):0;
-    const dev=rates2.length>1?Math.round(Math.sqrt(rates2.map(r=>(r-avgR)**2).reduce((a,b)=>a+b,0)/rates2.length)*100):0;
-    modelMeta.innerHTML='Berdasarkan <b>'+done.length+' sesi</b> · estimasi ±<b>'+dev+' menit</b>';
+    document.getElementById('modelMeta').innerHTML='Belum ada sesi selesai';
+    document.getElementById('modelSesiList').innerHTML='';
+  }else{
+    const dev=rates.length>1?Math.round(Math.sqrt(rates.map(r=>(r-parseFloat(avgRate))**2).reduce((a,b)=>a+b,0)/rates.length)*100):0;
+    document.getElementById('modelMeta').innerHTML='Berdasarkan <b>'+done.length+' sesi</b> · estimasi ±<b>'+dev+' menit</b>';
     let listHTML='';
     sessions.slice(-5).forEach(s=>{
-      let badgeClass='sb-ai', badgeText='🤖 prediksi';
-      if(!s.selesai){badgeClass='sb-stop';badgeText='⚠ dihentikan';}
-      else if(s.mode==='manual'){badgeClass='sb-manual';badgeText='✏️ manual';}
-      const note=s.mode==='manual'&&s.durasi_prediksi?'diubah dari '+fmtMins(s.durasi_prediksi):'';
-      listHTML+=`<div class="sesi-row"><span class="sesi-num">Sesi ${s.id}</span><div class="sesi-badge ${badgeClass}">${badgeText}</div><span class="sesi-note">${note}</span></div>`;
+      let cls='sb-ai',txt='🤖 prediksi';
+      if(!s.selesai){cls='sb-stop';txt='⚠ dihentikan';}
+      else if(s.mode==='manual'){cls='sb-manual';txt='✏️ manual';}
+      const note=(s.mode==='manual'&&s.durasi_prediksi)?'diubah dari '+fmtMins(s.durasi_prediksi):'';
+      listHTML+=`<div class="sesi-row"><span class="sesi-num">Sesi ${s.id}</span><div class="sesi-badge ${cls}">${txt}</div><span class="sesi-note">${note}</span></div>`;
     });
-    modelList.innerHTML=listHTML;
+    document.getElementById('modelSesiList').innerHTML=listHTML;
   }
 
-  // bar chart — last 7 sessions
-  const chartBars=document.getElementById('chartBars');
-  if(sessions.length===0){chartBars.innerHTML='<div style="font-size:10px;color:var(--text3);text-align:center;padding:8px 0;">Belum ada data</div>';}
-  else{
-    const maxDur=Math.max(...sessions.map(s=>s.durasi_aktual),1);
-    let chartHTML='';
-    sessions.slice(-7).forEach(s=>{
-      const w=Math.round((s.durasi_aktual/maxDur)*100);
-      let cls=s.mode==='manual'?'bi-manual':'bi-ai';
-      if(!s.selesai) cls='bi-stop';
-      chartHTML+=`<div class="bar-row">
-        <div class="bar-date">${s.tanggal}</div>
-        <div class="bar-outer"><div class="bar-inner ${cls}" style="width:${w}%;">
-          <span class="bar-dur">${fmtMins(s.durasi_aktual)}</span>
-        </div></div>
-      </div>`;
-    });
-    chartBars.innerHTML=chartHTML;
-  }
+  // chart
+  const maxDur=Math.max(...sessions.map(s=>s.durasi_aktual),1);
+  let chartHTML='';
+  sessions.slice(-7).forEach(s=>{
+    const w=Math.round((s.durasi_aktual/maxDur)*100);
+    let cls=s.mode==='manual'?'bi-manual':'bi-ai';
+    if(!s.selesai)cls='bi-stop';
+    chartHTML+=`<div class="bar-row"><div class="bar-date">${s.tanggal}</div><div class="bar-outer"><div class="bar-inner ${cls}" style="width:${w}%;"><span class="bar-dur">${fmtMins(s.durasi_aktual)}</span></div></div></div>`;
+  });
+  document.getElementById('chartBars').innerHTML=chartHTML;
 
   // table
-  const table=document.getElementById('riwTable');
-  if(sessions.length===0){table.innerHTML='';return;}
   let tHTML='';
   sessions.slice().reverse().forEach(s=>{
-    let modeCls='td-ai', modeStr='🤖';
-    if(!s.selesai){modeCls='td-stop';modeStr='⚠';}
-    else if(s.mode==='manual'){modeCls='td-manual';modeStr='✏️';}
-    tHTML+=`<tr>
-      <td>${s.id}</td>
-      <td class="td-date">${s.tanggal}</td>
-      <td>${s.batt_awal}%</td>
-      <td>${s.batt_target}%</td>
-      <td>${fmtMins(s.durasi_aktual)}</td>
-      <td class="${modeCls}">${modeStr}</td>
-    </tr>`;
+    let cls='td-ai',icon='🤖';
+    if(!s.selesai){cls='td-stop';icon='⚠';}
+    else if(s.mode==='manual'){cls='td-manual';icon='✏️';}
+    tHTML+=`<tr><td>${s.id}</td><td class="td-date">${s.tanggal}</td><td>${s.batt_awal}%</td><td>${s.batt_target}%</td><td>${fmtMins(s.durasi_aktual)}</td><td class="${cls}">${icon}</td></tr>`;
   });
-  table.innerHTML=tHTML;
+  document.getElementById('riwTable').innerHTML=tHTML;
 }
 
 // ═══════════════════════════════════════
-// EXPORT / IMPORT / RESET
+// EXPORT / IMPORT / RESET RIWAYAT
 // ═══════════════════════════════════════
 function exportData(){
   const data=localStorage.getItem(STORAGE_KEY)||'[]';
-  const blob=new Blob([data],{type:'application/json'});
   const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
+  a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));
   a.download='ev_sessions_'+new Date().toISOString().slice(0,10)+'.json';
   a.click();
 }
@@ -1116,33 +1232,28 @@ function importData(){
   input.type='file';input.accept='.json';
   input.onchange=e=>{
     const f=e.target.files[0];if(!f)return;
-    const reader=new FileReader();
-    reader.onload=ev=>{
+    const r=new FileReader();
+    r.onload=ev=>{
       try{
         const data=JSON.parse(ev.target.result);
-        if(Array.isArray(data)){
-          saveSessions(data);
-          renderRiwayat();
-          calculate();
-          alert('Import berhasil! '+data.length+' sesi dimuat.');
-        }else{alert('Format file tidak valid.');}
+        if(Array.isArray(data)){saveSessions(data);renderRiwayat();calculate();alert('Import berhasil! '+data.length+' sesi dimuat.');}
+        else alert('Format file tidak valid.');
       }catch(e){alert('Gagal membaca file.');}
     };
-    reader.readAsText(f);
+    r.readAsText(f);
   };
   input.click();
 }
 
 function resetData(){
-  if(confirm('Hapus semua data riwayat sesi? Prediksi akan direset.')){
-    localStorage.removeItem(STORAGE_KEY);
-    predictionMins=null;isManualOverride=false;
-    renderRiwayat();
-    setEstState('empty');
-    document.getElementById('fullHour').value='';
-    document.getElementById('fullMin').value='';
-    calculate();
-  }
+  if(!confirm('Hapus semua data riwayat sesi?\nData tidak bisa dikembalikan.\n\nInput form tidak akan terpengaruh.'))return;
+  localStorage.removeItem(STORAGE_KEY);
+  predictionMins=null;isManualOverride=false;
+  renderRiwayat();
+  setEstState('empty');
+  document.getElementById('fullHour').value='';
+  document.getElementById('fullMin').value='';
+  calculate();
 }
 
 // ═══════════════════════════════════════
@@ -1154,12 +1265,10 @@ document.getElementById('battPct').addEventListener('change',function(){
   rebuildTargetDropdown();calculate();
 });
 document.getElementById('fullHour').addEventListener('change',function(){
-  let v=parseInt(this.value);if(isNaN(v))v=0;if(v<0)v=0;this.value=v;
-  onEstInput();
+  let v=parseInt(this.value);if(isNaN(v))v=0;if(v<0)v=0;this.value=v;onEstInput();
 });
 document.getElementById('fullMin').addEventListener('change',function(){
-  let v=parseInt(this.value);if(isNaN(v))v=0;if(v<0)v=0;if(v>59)v=59;this.value=v;
-  onEstInput();
+  let v=parseInt(this.value);if(isNaN(v))v=0;if(v<0)v=0;if(v>59)v=59;this.value=v;onEstInput();
 });
 </script>
 </body>
