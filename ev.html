@@ -2,483 +2,1165 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EV Smart Charger — Mockup v5</title>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>EV Smart Charger</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Sora',sans-serif;background:#07090f;display:flex;justify-content:center;padding:2rem 1rem;gap:20px;flex-wrap:wrap;}
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Sora:wght@300;400;500;600&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#0a0d14;--surface:#111520;--surface2:#161c2a;
+  --border:#1e2640;--border2:#2a3456;
+  --accent:#4a9eff;--accent2:#7dd3fc;--accent-dim:#1a3a5c;
+  --green:#4ade80;--green-dim:#1a3a20;
+  --red:#f87171;--red-dim:#3a1a1a;
+  --amber:#fde047;--amber-dim:#251e00;
+  --orange:#fb923c;--orange-dim:#2a1400;
+  --text:#e8f0ff;--text2:#8a9fc8;--text3:#6a80a8;
+  --mono:'JetBrains Mono',monospace;--sans:'Sora',sans-serif;
+}
+html,body{background:#07090f;color:var(--text);font-family:var(--sans);min-height:100vh;display:flex;justify-content:center;align-items:flex-start;}
+.phone{width:100%;max-width:390px;min-height:100vh;background:var(--bg);display:flex;flex-direction:column;position:relative;overflow:hidden;}
+.phone::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;max-width:390px;margin:0 auto;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:40px 40px;opacity:0.15;pointer-events:none;z-index:0;}
+.screen{position:relative;z-index:1;padding-bottom:36px;}
 
-.col{display:flex;flex-direction:column;gap:14px;align-items:center;}
-.section-title{font-size:10px;color:#4a6a9a;letter-spacing:1.2px;text-transform:uppercase;text-align:center;}
+/* HEADER */
+.hdr{padding:16px 18px 14px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;gap:12px;}
+.hdr-icon{width:40px;height:40px;border-radius:12px;background:var(--accent-dim);border:0.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.hdr-title{font-size:15px;font-weight:600;color:var(--accent2);letter-spacing:.5px;}
+.hdr-sub{font-size:10px;color:#5a7090;margin-top:1px;font-weight:300;}
 
-/* PHONE */
-.phone{width:320px;background:#0a0d14;border-radius:32px;border:2px solid #1e2640;padding:12px 10px 16px;}
+/* CARD */
+.card{margin:10px 14px 0;background:var(--surface);border-radius:16px;border:0.5px solid var(--border);padding:13px 14px;}
+.card-lbl{font-size:10px;color:var(--text3);letter-spacing:1.4px;text-transform:uppercase;font-weight:500;margin-bottom:10px;}
 
-.hdr{padding:8px 12px 12px;border-bottom:0.5px solid #1e2640;display:flex;align-items:center;gap:10px;}
-.hdr-icon{width:36px;height:36px;border-radius:10px;background:#1a3a5c;border:0.5px solid #2a3456;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
-.hdr-title{font-size:13px;font-weight:600;color:#7dd3fc;}
-.hdr-sub{font-size:9px;color:#4a6080;margin-top:1px;}
+/* BATTERY */
+.batt-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.batt-hdr .card-lbl{margin-bottom:0;}
+.info-btn{width:26px;height:26px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);color:var(--accent2);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;font-family:var(--mono);flex-shrink:0;user-select:none;}
+.info-btn:active{background:var(--accent-dim);}
+.info-btn.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent);}
+.batt-row{display:flex;align-items:center;gap:12px;}
+.batt-num-wrap{position:relative;flex-shrink:0;}
+.batt-num{background:var(--bg);border:0.5px solid var(--border2);border-radius:12px;color:var(--accent2);font-size:30px;font-weight:600;text-align:center;padding:10px 0;width:78px;font-family:var(--mono);outline:none;transition:border-color .2s;-moz-appearance:textfield;}
+.batt-num::-webkit-inner-spin-button,.batt-num::-webkit-outer-spin-button{-webkit-appearance:none;}
+.batt-num:focus{border-color:var(--accent);}
+.batt-pct{position:absolute;right:9px;bottom:8px;font-size:11px;color:var(--text3);pointer-events:none;}
+.batt-right{flex:1;display:flex;flex-direction:column;gap:6px;}
+.batt-status-text{font-size:12px;font-weight:500;}
+.bar-track{height:7px;background:var(--surface2);border-radius:4px;overflow:hidden;border:0.5px solid var(--border);}
+.bar-fill{height:100%;border-radius:4px;transition:width .4s ease,background .4s;}
+.bar-hints{display:flex;justify-content:space-between;font-size:9px;color:var(--text3);}
 
-.card{margin:8px 8px 0;background:#111520;border-radius:14px;border:0.5px solid #1e2640;padding:11px 12px;}
-.card-lbl{font-size:9px;color:#6a80a8;letter-spacing:1.3px;text-transform:uppercase;font-weight:500;margin-bottom:8px;}
-
-/* BATERAI */
-.batt-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
-.info-btn{width:22px;height:22px;border-radius:50%;background:#161c2a;border:1px solid #2a3456;color:#7dd3fc;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;}
-.batt-row{display:flex;align-items:center;gap:10px;}
-.batt-box{background:#0a0d14;border:0.5px solid #2a3456;border-radius:10px;color:#fde047;font-size:24px;font-weight:600;text-align:center;padding:8px 0;width:66px;font-family:'JetBrains Mono',monospace;flex-shrink:0;position:relative;}
-.batt-pct{position:absolute;right:6px;bottom:6px;font-size:9px;color:#6a6a3a;}
-.batt-right{flex:1;display:flex;flex-direction:column;gap:5px;}
-.bar-track{height:6px;background:#161c2a;border-radius:3px;overflow:hidden;}
-.bar-hints{display:flex;justify-content:space-between;font-size:8px;color:#3a4a68;}
+/* INFO PANEL */
+.info-panel{overflow:hidden;max-height:0;opacity:0;transition:max-height .35s ease,opacity .3s,margin .3s;margin:0 14px;}
+.info-panel.open{max-height:380px;opacity:1;margin:8px 14px 0;}
+.info-inner{background:#09141e;border-radius:14px;border:1px solid var(--accent-dim);padding:13px 14px;display:flex;flex-direction:column;gap:9px;}
+.info-title{font-size:12px;color:var(--accent2);font-weight:600;display:flex;align-items:center;gap:6px;}
+.info-zone-bar{height:8px;border-radius:4px;overflow:hidden;display:flex;margin:2px 0 1px;}
+.izb1{flex:10;background:#7c1f1f;}.izb2{flex:10;background:#7c4a00;}
+.izb3{flex:20;background:#6b5a00;}.izb4{flex:40;background:#15803d;}.izb5{flex:20;background:#0369a1;}
+.info-zone-labels{display:flex;font-size:8px;}
+.izl{text-align:center;}.izl1{flex:10;color:#f87171;}.izl2{flex:10;color:#fb923c;}
+.izl3{flex:20;color:var(--amber);}.izl4{flex:40;color:var(--green);}.izl5{flex:20;color:var(--accent2);}
+.tip-row{display:flex;align-items:flex-start;gap:8px;}
+.tip-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.tip-text{font-size:11px;color:#7a9fc0;line-height:1.55;}
+.tip-text b{font-weight:600;}
 
 /* WARN */
-.warn{margin:6px 8px 0;border-radius:10px;padding:8px 11px;font-size:10px;display:flex;align-items:center;gap:7px;border:0.5px solid;}
+.warn-box{margin:8px 14px 0;border-radius:12px;padding:10px 13px;font-size:11px;display:none;align-items:center;gap:8px;line-height:1.5;border:0.5px solid;}
+.warn-box.show{display:flex;}
+.warn-lv1{background:#2a0808;border-color:#7c1f1f;color:var(--red);}
+.warn-lv2{background:#1e1000;border-color:#7c4a00;color:var(--orange);}
+.warn-lv3{background:var(--amber-dim);border-color:#6b5a00;color:var(--amber);}
 
-/* ESTIMASI CARD */
-.est-card{margin:8px 8px 0;border-radius:14px;padding:11px 12px;}
-.est-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;}
-.est-lbl{font-size:9px;color:#6a80a8;letter-spacing:1.3px;text-transform:uppercase;font-weight:500;}
-.badge{padding:3px 8px;border-radius:10px;font-size:9px;font-weight:500;}
-.badge-ai{background:#0c1929;color:#7dd3fc;border:0.5px solid #1a3a5c;}
-.badge-manual{background:#1a1a09;color:#fde047;border:0.5px solid #3a3a00;}
-.time-row{display:flex;gap:6px;align-items:flex-start;}
-.tbox-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;}
-.tbox{background:#0a0d14;border:0.5px solid #2a3456;border-radius:10px;font-size:20px;font-weight:600;text-align:center;padding:8px 0;width:100%;font-family:'JetBrains Mono',monospace;}
-.tbox.ai{color:#7dd3fc;border-color:#1a3a5c;}
-.tbox.manual{color:#fde047;border-color:#3a3a1a;}
-.tbox.empty{color:#3a4a68;}
-.tbox-lbl{font-size:9px;color:#5a7090;}
-.tsep{font-size:20px;color:#2a3a6c;padding-top:8px;font-family:'JetBrains Mono',monospace;}
-.est-hint{margin-top:6px;font-size:9px;text-align:center;}
+/* ESTIMASI CARD — adaptive */
+.est-card{margin:10px 14px 0;background:var(--surface);border-radius:16px;border:0.5px solid var(--border);padding:13px 14px;transition:border-color .3s;}
+.est-card.state-ai{border-color:var(--accent-dim);}
+.est-card.state-manual{border-color:#3a3a1a;}
+.est-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.est-lbl{font-size:10px;color:var(--text3);letter-spacing:1.4px;text-transform:uppercase;font-weight:500;}
+.est-badge{padding:3px 9px;border-radius:10px;font-size:10px;font-weight:500;transition:all .3s;}
+.est-badge.ai{background:#0c1929;color:var(--accent2);border:0.5px solid var(--accent-dim);}
+.est-badge.manual{background:#1a1a09;color:var(--amber);border:0.5px solid #3a3a00;}
+.time-row{display:flex;gap:8px;align-items:flex-start;}
+.tbox-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.tbox{background:var(--bg);border:0.5px solid var(--border2);border-radius:12px;font-size:26px;font-weight:600;text-align:center;padding:10px 0;width:100%;font-family:var(--mono);outline:none;transition:border-color .3s,color .3s;-moz-appearance:textfield;}
+.tbox::-webkit-inner-spin-button,.tbox::-webkit-outer-spin-button{-webkit-appearance:none;}
+.tbox.ai{color:var(--accent2);border-color:var(--accent-dim);}
+.tbox.manual{color:var(--amber);border-color:#3a3a1a;}
+.tbox.empty{color:var(--text3);}
+.tbox:focus{border-color:var(--accent);}
+.tbox-lbl{font-size:10px;color:var(--text3);}
+.tsep{color:var(--text3);font-size:26px;padding-top:10px;font-family:var(--mono);}
+.est-hint{margin-top:8px;font-size:10px;text-align:center;}
+.revert-btn{display:flex;align-items:center;justify-content:center;gap:5px;margin-top:8px;font-size:10px;color:#3a6a5a;cursor:pointer;user-select:none;}
+.revert-btn:active{opacity:.7;}
+.revert-btn .icon{color:var(--green);font-size:13px;}
+
+/* DIVIDER */
+.divider{height:0.5px;background:linear-gradient(90deg,transparent,var(--border2),transparent);margin:12px 14px 0;}
 
 /* RESULT */
-.res{margin:8px 8px 0;background:#09121e;border-radius:14px;border:0.5px solid #1a3a5c;padding:11px 12px;}
-.res-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:9px;}
-.res-tag{font-size:9px;color:#7aaad8;letter-spacing:1.3px;text-transform:uppercase;font-weight:500;}
-.res-from{font-size:10px;color:#5a7090;margin-top:1px;}
-.dd{background:#1a3a5c;border:0.5px solid #2a3456;border-radius:7px;color:#7dd3fc;font-size:11px;font-weight:600;padding:4px 8px;}
-.res-nums{display:flex;gap:6px;}
-.res-box{flex:1;background:#060f1a;border:0.5px solid #1a3a5c;border-radius:10px;padding:9px 8px;text-align:center;}
-.res-box-lbl{font-size:8px;color:#6a9ac8;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
-.res-box-val{font-size:20px;font-weight:600;color:#7dd3fc;line-height:1;font-family:'JetBrains Mono',monospace;}
-.u{font-size:11px;color:#4a7fb5;font-family:'Sora',sans-serif;}
-.res-box-sub{font-size:8px;color:#5a80a8;margin-top:3px;}
-.res-sep{width:0.5px;background:#1a3a5c;align-self:stretch;}
+.res{margin:10px 14px 0;background:#09121e;border-radius:16px;border:0.5px solid var(--accent-dim);padding:14px 14px;}
+.res-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;}
+.res-tag{font-size:10px;color:#7aaad8;letter-spacing:1.4px;text-transform:uppercase;font-weight:500;}
+.res-from{font-size:11px;color:#7a90b8;margin-top:2px;}
+.dd-wrap{display:flex;align-items:center;gap:5px;}
+.dd-lbl{font-size:11px;color:#7aaad8;}
+.dd{background:var(--accent-dim);border:0.5px solid var(--border2);border-radius:8px;color:var(--accent2);font-size:13px;font-weight:600;padding:6px 10px;outline:none;cursor:pointer;font-family:var(--sans);}
+.res-nums{display:flex;gap:8px;align-items:stretch;}
+.res-box{flex:1;background:#060f1a;border:0.5px solid var(--accent-dim);border-radius:12px;padding:11px 10px;text-align:center;}
+.res-box-lbl{font-size:9px;color:#6a9ac8;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;}
+.res-box-val{font-size:26px;font-weight:600;color:var(--accent2);line-height:1;font-family:var(--mono);}
+.res-box-sub{font-size:9px;color:#5a80a8;margin-top:4px;}
+.res-sep{width:0.5px;background:var(--accent-dim);align-self:stretch;flex-shrink:0;}
 
 /* PROGRESS BAR */
-.prog-wrap{margin-top:10px;}
-.prog-hdr{display:flex;justify-content:space-between;margin-bottom:4px;}
-.prog-lbl{font-size:8px;color:#6a9ac8;letter-spacing:1px;text-transform:uppercase;}
-.prog-pct{font-size:11px;font-weight:600;color:#fde047;font-family:'JetBrains Mono',monospace;}
-.prog-outer{position:relative;height:14px;border-radius:7px;overflow:hidden;border:0.5px solid #1a2a40;}
-.prog-track{position:absolute;inset:0;background:linear-gradient(90deg,#5c1515 0%,#c2410c 10%,#fb923c 20%,#a16207 30%,#fde047 40%,#15803d 55%,#4ade80 80%,#0369a1 90%,#7dd3fc 100%);}
-.prog-mask{position:absolute;top:0;bottom:0;right:0;background:#060f1a;border-radius:0 7px 7px 0;}
-.prog-head{position:absolute;top:0;bottom:0;width:2px;box-shadow:0 0 6px 2px #fde04799;}
-.zone-strip{display:flex;gap:2px;margin-top:4px;height:3px;}
-.zs{border-radius:1px;}
+.prog-wrap{margin-top:14px;}
+.prog-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.prog-lbl{font-size:9px;color:#6a9ac8;letter-spacing:1.2px;text-transform:uppercase;}
+.prog-pct{font-size:12px;font-weight:600;font-family:var(--mono);transition:color .4s;}
+.prog-outer{position:relative;height:18px;border-radius:9px;overflow:hidden;border:0.5px solid #1a2a40;}
+.prog-track{position:absolute;inset:0;background:linear-gradient(90deg,#5c1515 0%,#c2410c 10%,#fb923c 20%,#a16207 30%,#fde047 40%,#15803d 55%,#4ade80 80%,#0369a1 90%,#7dd3fc 100%);opacity:1;}
+.prog-mask{position:absolute;top:0;bottom:0;right:0;width:100%;background:#060f1a;transition:width .6s ease;border-radius:0 9px 9px 0;}
+.prog-head{position:absolute;top:0;bottom:0;width:2.5px;background:#fff;opacity:.8;transition:left .6s ease;box-shadow:0 0 8px 2px var(--accent2);}
+.prog-tick{position:absolute;top:0;bottom:0;width:1px;opacity:.5;background:#000;}
+.zone-strip{display:flex;gap:2px;margin-top:5px;}
+.zs{border-radius:2px;height:4px;}
 .zs1{flex:10;background:#7c1f1f;}.zs2{flex:10;background:#7c4a00;}.zs3{flex:20;background:#6b5a00;}.zs4{flex:40;background:#15803d;}.zs5{flex:20;background:#0369a1;}
-.zone-names{display:flex;gap:2px;margin-top:2px;}
-.zn{font-size:6px;color:#4a6080;text-align:center;}
+.zone-names{display:flex;gap:2px;margin-top:3px;}
+.zn{font-size:7px;color:#5a7098;text-align:center;}
 .zn1{flex:10;}.zn2{flex:10;}.zn3{flex:20;}.zn4{flex:40;}.zn5{flex:20;}
 
 /* TABS */
-.tabs{display:flex;margin:8px 8px 0;background:#111520;border-radius:11px;border:0.5px solid #1e2640;padding:3px;gap:3px;}
-.tab{flex:1;text-align:center;padding:7px 4px;border-radius:8px;font-size:10px;color:#3a4a68;}
-.tab.on{background:#1a3a5c;color:#7dd3fc;font-weight:500;}
+.tabs{display:flex;margin:12px 14px 0;background:var(--surface);border-radius:13px;border:0.5px solid var(--border);padding:4px;gap:4px;}
+.tab{flex:1;text-align:center;padding:9px 4px;border-radius:10px;font-size:12px;color:var(--text3);cursor:pointer;transition:all .2s;font-weight:400;user-select:none;}
+.tab.on{background:var(--accent-dim);color:var(--accent2);font-weight:500;}
 
 /* TIMER */
-.timer-sec{margin:8px 8px 0;background:#111520;border-radius:14px;border:0.5px solid #1e2640;padding:11px 10px;}
-.timer-disp{font-size:36px;font-weight:600;color:#e8f0ff;text-align:center;letter-spacing:5px;line-height:1;font-family:'JetBrains Mono',monospace;margin-bottom:3px;}
-.timer-col{color:#2a3a6c;}
-.timer-hint{text-align:center;font-size:8px;color:#4a6080;margin-bottom:9px;}
-.btn-row{display:flex;gap:6px;}
-.btn{flex:1;text-align:center;padding:9px 4px;border-radius:10px;font-size:11px;font-weight:500;border:0.5px solid;font-family:'Sora',sans-serif;}
-.btn-s{background:#1a3a5c;color:#7dd3fc;border-color:#2a3456;}
-.btn-x{background:#3a1a1a;color:#f87171;border-color:#5c2a2a;}
-.btn-r{background:#161c2a;color:#5a6a88;border-color:#1e2640;}
+.timer-sec{margin:10px 14px 0;background:var(--surface);border-radius:16px;border:0.5px solid var(--border);padding:16px 14px;display:none;}
+.timer-sec.show{display:block;}
+.timer-disp{font-size:48px;font-weight:600;color:var(--text);text-align:center;letter-spacing:6px;line-height:1;font-family:var(--mono);cursor:pointer;transition:color .2s;margin-bottom:4px;}
+.timer-disp:active{color:var(--accent2);}
+.timer-col{color:var(--text3);}
+.timer-hint{text-align:center;font-size:10px;color:var(--text3);margin-bottom:14px;}
+.timer-edit{display:none;justify-content:center;gap:6px;align-items:flex-end;margin-bottom:14px;}
+.timer-edit.show{display:flex;}
+.te-wrap{display:flex;flex-direction:column;align-items:center;gap:3px;}
+.te-input{background:var(--bg);border:1px solid var(--accent);border-radius:10px;color:var(--accent2);font-size:28px;font-weight:600;text-align:center;width:72px;padding:8px 0;outline:none;font-family:var(--mono);-moz-appearance:textfield;}
+.te-input::-webkit-inner-spin-button,.te-input::-webkit-outer-spin-button{-webkit-appearance:none;}
+.te-lbl{font-size:10px;color:var(--text3);}
+.te-sep{font-size:28px;color:var(--text3);font-family:var(--mono);padding-bottom:8px;}
+.te-done{width:100%;text-align:center;background:var(--accent-dim);border:0.5px solid var(--border2);border-radius:10px;color:var(--accent2);padding:9px;font-size:13px;font-weight:500;cursor:pointer;margin-bottom:14px;display:none;font-family:var(--sans);}
+.btn-row{display:flex;gap:8px;}
+.btn{flex:1;text-align:center;padding:12px 4px;border-radius:12px;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;border:none;font-family:var(--sans);}
+.btn:active{transform:scale(0.96);}
+.btn-start{background:var(--accent-dim);color:var(--accent2);border:0.5px solid var(--border2);}
+.btn-stop{background:var(--red-dim);color:var(--red);border:0.5px solid #5c2a2a;}
+.btn-reset{background:var(--surface2);color:var(--text3);border:0.5px solid var(--border);}
+.timer-note{margin-top:8px;font-size:10px;color:var(--text3);text-align:center;}
+
+/* ALARM */
+.alarm-sec{margin:10px 14px 0;background:var(--surface);border-radius:16px;border:0.5px solid var(--border);padding:16px 14px;display:none;}
+.alarm-sec.show{display:block;}
+.alarm-lbl{font-size:11px;color:var(--text2);margin-bottom:8px;}
+.alarm-time-input{width:100%;background:var(--bg);border:0.5px solid var(--border2);border-radius:12px;color:var(--accent2);font-size:34px;font-weight:600;text-align:center;padding:12px;outline:none;font-family:var(--mono);cursor:pointer;transition:border-color .2s;color-scheme:dark;}
+.alarm-time-input:focus{border-color:var(--accent);}
+.alarm-status{margin-top:10px;padding:10px 12px;border-radius:10px;font-size:12px;text-align:center;display:none;line-height:1.5;}
+.alarm-status.show{display:block;}
+.alarm-status.active{background:var(--green-dim);color:var(--green);border:0.5px solid #2a5a2a;}
+.alarm-status.off{background:var(--surface2);color:var(--text3);border:0.5px solid var(--border);}
+.alarm-btn-row{display:flex;gap:8px;margin-top:10px;}
+.alarm-note{margin-top:8px;font-size:10px;color:var(--text3);text-align:center;}
+.alarm-no-bar{margin-top:10px;background:#090f1a;border:0.5px solid var(--accent-dim);border-radius:10px;padding:9px 12px;font-size:11px;color:#6a9ac8;text-align:center;line-height:1.6;}
+.alarm-no-bar b{color:#7aaad8;}
 
 /* SOUND */
-.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;}
-.chip{padding:5px 10px;border-radius:16px;font-size:10px;border:0.5px solid #1e2640;color:#4a6080;background:#0a0d14;}
-.chip.on{background:#1a3a20;border-color:#2a5a2a;color:#4ade80;}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px;}
+.chip{padding:7px 13px;border-radius:20px;font-size:12px;border:0.5px solid var(--border);color:var(--text3);background:var(--bg);cursor:pointer;transition:all .2s;user-select:none;}
+.chip:active{transform:scale(0.96);}
+.chip.on{background:var(--green-dim);border-color:#2a5a2a;color:var(--green);}
 
 /* RIWAYAT */
-.riwayat{margin:8px 8px 0;background:#111520;border-radius:14px;border:0.5px solid #1e2640;overflow:hidden;}
-.riw-hdr{display:flex;align-items:center;justify-content:space-between;padding:11px 12px;cursor:pointer;}
-.riw-stats{font-size:10px;color:#6a80a8;}
-.riw-stats b{color:#7dd3fc;font-weight:600;}
-.riw-toggle{font-size:10px;color:#4a6a9a;padding:3px 8px;background:#0a0d14;border-radius:8px;border:0.5px solid #1e2640;}
-.riw-body{border-top:0.5px solid #1e2640;padding:10px 12px;display:flex;flex-direction:column;gap:8px;}
+.riwayat{margin:10px 14px 0;background:var(--surface);border-radius:16px;border:0.5px solid var(--border);overflow:hidden;}
+.riw-hdr{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;cursor:pointer;user-select:none;}
+.riw-hdr:active{background:var(--surface2);}
+.riw-left{display:flex;align-items:center;gap:8px;}
+.riw-stats{font-size:11px;color:var(--text3);}
+.riw-stats b{color:var(--accent2);font-weight:600;}
+.riw-toggle-btn{font-size:11px;color:var(--text3);padding:3px 9px;background:var(--bg);border-radius:8px;border:0.5px solid var(--border);transition:all .2s;}
+.riw-body{border-top:0.5px solid var(--border);padding:12px 14px;display:flex;flex-direction:column;gap:10px;display:none;}
+.riw-body.open{display:flex;}
 
-/* model info */
-.model-box{background:#09121e;border:0.5px solid #1a3a5c;border-radius:10px;padding:9px 11px;}
-.model-title{font-size:9px;color:#7aaad8;letter-spacing:1px;text-transform:uppercase;margin-bottom:7px;display:flex;align-items:center;gap:5px;}
-.model-meta{font-size:10px;color:#5a80a8;margin-bottom:6px;}
-.model-meta b{color:#7dd3fc;}
-.sesi-row{display:flex;align-items:center;gap:6px;margin-bottom:3px;}
-.sesi-num{font-size:9px;color:#4a6080;width:40px;font-family:'JetBrains Mono',monospace;}
-.sesi-badge{padding:2px 7px;border-radius:8px;font-size:9px;}
-.sb-ai{background:#0c1929;color:#7dd3fc;border:0.5px solid #1a3a5c;}
-.sb-manual{background:#1a1a09;color:#fde047;border:0.5px solid #3a3a00;}
-.sb-stop{background:#1a0a0a;color:#f87171;border:0.5px solid #5c2a2a;}
-.sesi-note{font-size:9px;color:#3a5a5a;}
+/* model info box */
+.model-box{background:#09121e;border:0.5px solid var(--accent-dim);border-radius:12px;padding:11px 13px;}
+.model-title{font-size:10px;color:#7aaad8;letter-spacing:1.2px;text-transform:uppercase;font-weight:500;margin-bottom:8px;display:flex;align-items:center;gap:5px;}
+.model-meta{font-size:11px;color:#5a80a8;margin-bottom:8px;}
+.model-meta b{color:var(--accent2);}
+.sesi-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.sesi-num{font-size:10px;color:var(--text3);width:44px;font-family:var(--mono);flex-shrink:0;}
+.sesi-badge{padding:2px 8px;border-radius:8px;font-size:10px;}
+.sb-ai{background:#0c1929;color:var(--accent2);border:0.5px solid var(--accent-dim);}
+.sb-manual{background:#1a1a09;color:var(--amber);border:0.5px solid #3a3a00;}
+.sb-stop{background:var(--red-dim);color:var(--red);border:0.5px solid #5c2a2a;}
+.sesi-note{font-size:10px;color:var(--text3);}
 
 /* stat boxes */
-.stat-row{display:flex;gap:6px;}
-.stat-box{flex:1;background:#0a0d14;border:0.5px solid #1e2640;border-radius:9px;padding:7px 8px;text-align:center;}
-.stat-val{font-size:14px;font-weight:600;color:#7dd3fc;font-family:'JetBrains Mono',monospace;}
-.stat-lbl{font-size:8px;color:#4a6080;margin-top:2px;}
+.stat-row{display:flex;gap:8px;}
+.stat-box{flex:1;background:var(--bg);border:0.5px solid var(--border);border-radius:10px;padding:9px 8px;text-align:center;}
+.stat-val{font-size:16px;font-weight:600;color:var(--accent2);font-family:var(--mono);}
+.stat-lbl{font-size:9px;color:var(--text3);margin-top:2px;}
 
 /* bar chart */
-.chart-lbl{font-size:8px;color:#4a6080;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;}
-.bar-row{display:flex;align-items:center;gap:6px;margin-bottom:4px;}
-.bar-date{font-size:8px;color:#5a7090;width:32px;flex-shrink:0;text-align:right;}
-.bar-outer{flex:1;background:#0a0d14;border-radius:3px;height:12px;overflow:hidden;border:0.5px solid #1e2640;}
-.bar-inner{height:100%;border-radius:3px;display:flex;align-items:center;padding-left:4px;}
-.bi-blue{background:linear-gradient(90deg,#1a3a5c,#4a9eff);}
-.bi-red{background:linear-gradient(90deg,#3a1a1a,#f87171);opacity:.7;}
-.bar-dur{font-size:8px;color:#7dd3fc;font-family:'JetBrains Mono',monospace;}
-.bar-stop-lbl{font-size:8px;color:#f87171;}
+.chart-sec-lbl{font-size:9px;color:var(--text3);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:6px;}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.bar-date{font-size:9px;color:var(--text3);width:36px;flex-shrink:0;text-align:right;font-family:var(--mono);}
+.bar-outer{flex:1;background:var(--bg);border-radius:4px;height:18px;overflow:hidden;border:0.5px solid var(--border);}
+.bar-inner{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:6px;min-width:2px;}
+.bi-ai{background:linear-gradient(90deg,#1a3a5c,#4a9eff);}
+.bi-manual{background:linear-gradient(90deg,#2a2000,#fde047);opacity:.8;}
+.bi-stop{background:linear-gradient(90deg,#3a1a1a,#f87171);opacity:.7;}
+.bar-dur{font-size:9px;color:#e8f0ff;font-family:var(--mono);}
 
 /* table */
 .riw-table{width:100%;border-collapse:collapse;}
-.riw-table th{font-size:8px;color:#4a6080;letter-spacing:1px;text-transform:uppercase;padding:3px 4px;text-align:left;border-bottom:0.5px solid #1e2640;}
-.riw-table td{font-size:9px;color:#7a90b8;padding:5px 4px;border-bottom:0.5px solid #0f1420;font-family:'JetBrains Mono',monospace;}
-.td-name{font-family:'Sora',sans-serif;color:#5a7090;}
-.td-stop{color:#f87171;}
-.riw-actions{display:flex;gap:6px;}
-.riw-btn{flex:1;text-align:center;padding:7px 4px;border-radius:9px;font-size:10px;border:0.5px solid #1e2640;color:#5a7090;background:#0a0d14;}
-.riw-btn.danger{color:#f87171;border-color:#5c2a2a;background:#1a0a0a;}
+.riw-table th{font-size:9px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;padding:4px 4px;text-align:left;border-bottom:0.5px solid var(--border);}
+.riw-table td{font-size:10px;color:var(--text2);padding:6px 4px;border-bottom:0.5px solid #0f1420;font-family:var(--mono);}
+.td-date{font-family:var(--sans);color:var(--text3);}
+.td-ai{color:var(--accent2);}
+.td-manual{color:var(--amber);}
+.td-stop{color:var(--red);}
+.riw-actions{display:flex;gap:8px;}
+.riw-btn{flex:1;text-align:center;padding:9px 4px;border-radius:11px;font-size:11px;border:0.5px solid var(--border);color:var(--text3);background:var(--bg);cursor:pointer;font-family:var(--sans);transition:all .15s;}
+.riw-btn:active{transform:scale(0.97);}
+.riw-btn.danger{color:var(--red);border-color:#5c2a2a;background:var(--red-dim);}
 
-.footer{margin:12px 8px 0;text-align:center;font-size:9px;color:#3a4a68;line-height:1.7;}
+/* FOOTER */
+.footer{margin:20px 14px 0;text-align:center;font-size:10px;color:var(--text3);line-height:1.7;}
+
+/* ALARM OVERLAY */
+.alarm-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:999;background:rgba(8,10,18,0.97);flex-direction:column;align-items:center;justify-content:center;gap:20px;text-align:center;padding:32px;max-width:390px;margin:0 auto;}
+.alarm-overlay.show{display:flex;}
+@keyframes pulse-ring{0%{transform:scale(1);opacity:1;}60%{transform:scale(1.18);opacity:.5;}100%{transform:scale(1);opacity:1;}}
+@keyframes ring-pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
+.alarm-icon-wrap{width:110px;height:110px;border-radius:50%;background:var(--red-dim);border:2px solid var(--red);display:flex;align-items:center;justify-content:center;font-size:50px;animation:pulse-ring 1s ease-in-out infinite;}
+.alarm-title{font-size:22px;font-weight:600;color:var(--text);}
+.alarm-fired-time{font-size:48px;font-weight:600;color:var(--accent2);font-family:var(--mono);letter-spacing:4px;}
+.alarm-fired-sub{font-size:13px;color:var(--text3);}
+.alarm-stop-btn{margin-top:10px;width:100%;max-width:260px;padding:16px;border-radius:16px;border:none;background:var(--red);color:#fff;font-size:16px;font-weight:600;cursor:pointer;font-family:var(--sans);transition:all .15s;}
+.alarm-stop-btn:active{transform:scale(0.96);background:#dc2626;}
+.ringing{animation:ring-pulse .6s infinite;}
 </style>
 </head>
 <body>
+<div class="phone">
+<div class="screen">
 
-<!-- ═══ PHONE A: BELUM ADA DATA ═══ -->
-<div class="col">
-  <div class="section-title">Sesi Pertama<br>Belum ada data</div>
-  <div class="phone">
-    <div class="hdr">
-      <div class="hdr-icon">⚡</div>
-      <div><div class="hdr-title">EV Smart Charger</div><div class="hdr-sub">Belajar dari kebiasaan charging</div></div>
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="hdr-icon">⚡</div>
+    <div>
+      <div class="hdr-title">EV Smart Charger</div>
+      <div class="hdr-sub">Belajar dari kebiasaan charging Anda</div>
     </div>
-
-    <div class="card">
-      <div class="batt-hdr"><div class="card-lbl" style="margin-bottom:0;">Sisa Baterai</div><div class="info-btn">i</div></div>
-      <div class="batt-row">
-        <div class="batt-box">15<span class="batt-pct">%</span></div>
-        <div class="batt-right">
-          <div style="font-size:11px;font-weight:500;color:#fb923c;">15% — Rendah!</div>
-          <div class="bar-track"><div style="height:100%;width:15%;background:linear-gradient(90deg,#7c4a00,#fb923c);border-radius:3px;"></div></div>
-          <div class="bar-hints"><span>0%</span><span style="color:#fb923c;">rendah</span><span>100%</span></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="warn" style="background:#1e1000;border-color:#7c4a00;color:#fb923c;">
-      <span>⚠️</span><span>Baterai di bawah 20% — segera rencanakan charge.</span>
-    </div>
-
-    <!-- ESTIMASI: KOSONG -->
-    <div class="est-card" style="background:#111520;border:0.5px solid #1e2640;">
-      <div class="est-hdr">
-        <div class="est-lbl">Estimasi Waktu ke 100%</div>
-      </div>
-      <div class="time-row">
-        <div class="tbox-wrap"><div class="tbox empty">00</div><div class="tbox-lbl">Jam</div></div>
-        <div class="tsep">:</div>
-        <div class="tbox-wrap"><div class="tbox empty">00</div><div class="tbox-lbl">Menit</div></div>
-      </div>
-      <div class="est-hint" style="color:#3a4a68;">Belum ada data — masukkan waktu charging</div>
-    </div>
-
-    <div class="res">
-      <div class="res-top">
-        <div><div class="res-tag">Estimasi Pengisian</div><div class="res-from">dari 15% menuju 80%</div></div>
-        <div style="display:flex;align-items:center;gap:4px;"><span style="font-size:9px;color:#7aaad8;">Target</span><div class="dd">80%</div></div>
-      </div>
-      <div class="res-nums">
-        <div class="res-box"><div class="res-box-lbl">Durasi</div><div class="res-box-val">—</div><div class="res-box-sub">— menit</div></div>
-        <div class="res-sep"></div>
-        <div class="res-box"><div class="res-box-lbl">Selesai Pukul</div><div class="res-box-val" style="font-size:18px;">--:--</div><div class="res-box-sub">sekarang 09:41</div></div>
-      </div>
-      <div class="prog-wrap">
-        <div class="prog-hdr"><div class="prog-lbl">Progres Pengisian</div><div class="prog-pct" style="color:#fb923c;">15%</div></div>
-        <div class="prog-outer">
-          <div class="prog-track"></div>
-          <div class="prog-mask" style="width:85%;"></div>
-          <div class="prog-head" style="left:calc(15% - 1px);background:#fb923c;box-shadow:0 0 6px 2px #fb923c99;"></div>
-        </div>
-        <div class="zone-strip"><div class="zs zs1"></div><div class="zs zs2"></div><div class="zs zs3"></div><div class="zs zs4"></div><div class="zs zs5"></div></div>
-        <div class="zone-names"><div class="zn zn1">Kritis</div><div class="zn zn2">Rendah</div><div class="zn zn3">Siaga</div><div class="zn zn4">Zona Aman</div><div class="zn zn5">Full</div></div>
-      </div>
-    </div>
-
-    <div class="tabs"><div class="tab on">⏱ Timer</div><div class="tab">🔔 Alarm Jam</div></div>
-
-    <div class="timer-sec">
-      <div class="timer-disp">00<span class="timer-col">:</span>00<span class="timer-col">:</span>00</div>
-      <div class="timer-hint">tap angka untuk edit manual</div>
-      <div class="btn-row">
-        <div class="btn btn-s">▶ Mulai</div>
-        <div class="btn btn-x">■ Stop</div>
-        <div class="btn btn-r">↺ Reset</div>
-      </div>
-    </div>
-
-    <div class="card" style="margin-top:8px;">
-      <div class="card-lbl">Suara Alarm</div>
-      <div class="chips">
-        <div class="chip on">✓ Beep</div><div class="chip">Notif Halus</div>
-        <div class="chip">Klakson</div><div class="chip">Tanpa Suara</div>
-      </div>
-    </div>
-
-    <!-- RIWAYAT TERLIPAT -->
-    <div class="riwayat">
-      <div class="riw-hdr">
-        <div style="display:flex;align-items:center;gap:7px;">
-          <span style="font-size:13px;">📊</span>
-          <div class="riw-stats">Belum ada sesi tercatat</div>
-        </div>
-        <div class="riw-toggle">Lihat ▾</div>
-      </div>
-    </div>
-
-    <div class="footer">⚡ EV Smart Charger<br>made by anmax308</div>
   </div>
-</div>
 
-<!-- ═══ PHONE B: ADA PREDIKSI (3 SESI) ═══ -->
-<div class="col">
-  <div class="section-title">Sudah 3 Sesi<br>Prediksi aktif</div>
-  <div class="phone">
-    <div class="hdr">
-      <div class="hdr-icon">⚡</div>
-      <div><div class="hdr-title">EV Smart Charger</div><div class="hdr-sub">Belajar dari kebiasaan charging</div></div>
+  <!-- SISA BATERAI -->
+  <div class="card">
+    <div class="batt-hdr">
+      <div class="card-lbl" style="margin-bottom:0;">Sisa Baterai</div>
+      <button class="info-btn" id="infoBtn" onclick="toggleInfo()" aria-label="Info kesehatan baterai">i</button>
     </div>
-
-    <div class="card">
-      <div class="batt-hdr"><div class="card-lbl" style="margin-bottom:0;">Sisa Baterai</div><div class="info-btn">i</div></div>
-      <div class="batt-row">
-        <div class="batt-box">25<span class="batt-pct">%</span></div>
-        <div class="batt-right">
-          <div style="font-size:11px;font-weight:500;color:#fde047;">25% — Siaga</div>
-          <div class="bar-track"><div style="height:100%;width:25%;background:linear-gradient(90deg,#6b5a00,#fde047);border-radius:3px;"></div></div>
-          <div class="bar-hints"><span>0%</span><span style="color:#fde047;">siaga</span><span>100%</span></div>
-        </div>
+    <div class="batt-row">
+      <div class="batt-num-wrap">
+        <input class="batt-num" type="number" id="battPct" value="30" min="0" max="99" oninput="rebuildTargetDropdown();calculate()">
+        <span class="batt-pct">%</span>
+      </div>
+      <div class="batt-right">
+        <div class="batt-status-text" id="battStatus">30%</div>
+        <div class="bar-track"><div class="bar-fill" id="battBar"></div></div>
+        <div class="bar-hints"><span>0%</span><span id="battHint"></span><span>100%</span></div>
       </div>
     </div>
+  </div>
 
-    <div class="warn" style="background:#181400;border-color:#6b5a00;color:#fde047;">
-      <span>💛</span><span>Baterai 25% — pertimbangkan charge jika perjalanan jauh.</span>
+  <!-- INFO PANEL -->
+  <div class="info-panel" id="infoPanel">
+    <div class="info-inner">
+      <div class="info-title">⚡ Tips Kesehatan Baterai EV</div>
+      <div class="info-zone-bar"><div class="izb1"></div><div class="izb2"></div><div class="izb3"></div><div class="izb4"></div><div class="izb5"></div></div>
+      <div class="info-zone-labels">
+        <div class="izl izl1">Kritis<br>0–10%</div><div class="izl izl2">Rendah<br>11–20%</div>
+        <div class="izl izl3">Siaga<br>21–40%</div><div class="izl izl4">Zona Aman<br>41–80%</div>
+        <div class="izl izl5">Full<br>81–100%</div>
+      </div>
+      <div class="tip-row"><div class="tip-dot" style="background:var(--red);"></div><div class="tip-text">Jangan biarkan baterai turun di bawah <b style="color:#fca5a5;">20%</b> — segera charge sebelum mencapai level ini.</div></div>
+      <div class="tip-row"><div class="tip-dot" style="background:var(--green);"></div><div class="tip-text">Hindari charge rutin ke <b style="color:#86efac;">100%</b> — cukup hingga 80% untuk menjaga umur baterai.</div></div>
+      <div class="tip-row"><div class="tip-dot" style="background:var(--accent2);"></div><div class="tip-text">Rentang ideal harian: <b style="color:var(--accent2);">41% – 80%</b> untuk memperpanjang masa pakai baterai.</div></div>
     </div>
+  </div>
 
-    <!-- ESTIMASI: PREDIKSI AKTIF -->
-    <div class="est-card" style="background:#111520;border:0.5px solid #1a3a5c;">
-      <div class="est-hdr">
-        <div class="est-lbl">Estimasi Waktu ke 100%</div>
-        <div class="badge badge-ai">🤖 3 sesi</div>
-      </div>
-      <div class="time-row">
-        <div class="tbox-wrap"><div class="tbox ai">01</div><div class="tbox-lbl">Jam</div></div>
-        <div class="tsep">:</div>
-        <div class="tbox-wrap"><div class="tbox ai">22</div><div class="tbox-lbl">Menit</div></div>
-      </div>
-      <div class="est-hint" style="color:#3a5a7a;">Terisi dari prediksi · ketik langsung untuk ubah</div>
+  <!-- WARN -->
+  <div class="warn-box" id="warnBox">
+    <span style="font-size:18px;flex-shrink:0;" id="warnIcon">⚠️</span>
+    <span id="warnText"></span>
+  </div>
+
+  <!-- ESTIMASI CARD — adaptive -->
+  <div class="est-card" id="estCard">
+    <div class="est-hdr">
+      <div class="est-lbl">Estimasi Waktu ke 100%</div>
+      <div class="est-badge" id="estBadge" style="display:none;"></div>
     </div>
-
-    <div class="res">
-      <div class="res-top">
-        <div><div class="res-tag">Estimasi Pengisian</div><div class="res-from">dari 25% menuju 80%</div></div>
-        <div style="display:flex;align-items:center;gap:4px;"><span style="font-size:9px;color:#7aaad8;">Target</span><div class="dd">80%</div></div>
+    <div class="time-row">
+      <div class="tbox-wrap">
+        <input class="tbox empty" type="number" id="fullHour" value="" min="0" max="23" placeholder="00" oninput="onEstInput()">
+        <div class="tbox-lbl">Jam</div>
       </div>
-      <div class="res-nums">
-        <div class="res-box"><div class="res-box-lbl">Durasi</div><div class="res-box-val">0<span class="u">j</span> 55<span class="u">m</span></div><div class="res-box-sub">≈ 55 menit</div></div>
-        <div class="res-sep"></div>
-        <div class="res-box"><div class="res-box-lbl">Selesai Pukul</div><div class="res-box-val" style="font-size:18px;">10:36</div><div class="res-box-sub">sekarang 09:41</div></div>
-      </div>
-      <div class="prog-wrap">
-        <div class="prog-hdr"><div class="prog-lbl">Progres Pengisian</div><div class="prog-pct" style="color:#fde047;">25%</div></div>
-        <div class="prog-outer">
-          <div class="prog-track"></div>
-          <div class="prog-mask" style="width:75%;"></div>
-          <div class="prog-head" style="left:calc(25% - 1px);background:#fde047;box-shadow:0 0 6px 2px #fde04799;"></div>
-        </div>
-        <div class="zone-strip"><div class="zs zs1"></div><div class="zs zs2"></div><div class="zs zs3"></div><div class="zs zs4"></div><div class="zs zs5"></div></div>
-        <div class="zone-names"><div class="zn zn1">Kritis</div><div class="zn zn2">Rendah</div><div class="zn zn3">Siaga</div><div class="zn zn4">Zona Aman</div><div class="zn zn5">Full</div></div>
-      </div>
-    </div>
-
-    <div class="tabs"><div class="tab on">⏱ Timer</div><div class="tab">🔔 Alarm Jam</div></div>
-
-    <div class="timer-sec">
-      <div class="timer-disp">00<span class="timer-col">:</span>55<span class="timer-col">:</span>00</div>
-      <div class="timer-hint">tap angka untuk edit manual</div>
-      <div class="btn-row">
-        <div class="btn btn-s">▶ Mulai</div>
-        <div class="btn btn-x">■ Stop</div>
-        <div class="btn btn-r">↺ Reset</div>
+      <div class="tsep">:</div>
+      <div class="tbox-wrap">
+        <input class="tbox empty" type="number" id="fullMin" value="" min="0" max="59" placeholder="00" oninput="onEstInput()">
+        <div class="tbox-lbl">Menit</div>
       </div>
     </div>
+    <div class="est-hint" id="estHint" style="color:var(--text3);">Belum ada data — masukkan waktu charging</div>
+    <div class="revert-btn" id="revertBtn" style="display:none;" onclick="revertToPrediction()">
+      <span class="icon">↺</span>
+      <span id="revertLabel">Kembali ke prediksi</span>
+    </div>
+  </div>
 
-    <div class="card" style="margin-top:8px;">
-      <div class="card-lbl">Suara Alarm</div>
-      <div class="chips">
-        <div class="chip on">✓ Beep</div><div class="chip">Notif Halus</div>
-        <div class="chip">Klakson</div><div class="chip">Tanpa Suara</div>
+  <div class="divider"></div>
+
+  <!-- RESULT -->
+  <div class="res">
+    <div class="res-top">
+      <div>
+        <div class="res-tag">Estimasi Pengisian</div>
+        <div class="res-from" id="resFrom">dari — menuju —</div>
+      </div>
+      <div class="dd-wrap">
+        <div class="dd-lbl">Target</div>
+        <select class="dd" id="targetPct" onchange="calculate()"></select>
       </div>
     </div>
-
-    <!-- RIWAYAT TERBUKA (untuk demo) -->
-    <div class="riwayat">
-      <div class="riw-hdr">
-        <div style="display:flex;align-items:center;gap:7px;">
-          <span style="font-size:13px;">📊</span>
-          <div class="riw-stats"><b>3 sesi</b> · avg <b>1j 22m</b> · <b>0.5%</b>/mnt</div>
-        </div>
-        <div class="riw-toggle">Tutup ▴</div>
+    <div class="res-nums">
+      <div class="res-box">
+        <div class="res-box-lbl">Durasi</div>
+        <div class="res-box-val" id="resDur" style="font-size:22px;">--:--</div>
+        <div class="res-box-sub" id="resMins">— menit</div>
       </div>
-      <div class="riw-body">
+      <div class="res-sep"></div>
+      <div class="res-box">
+        <div class="res-box-lbl">Selesai Pukul</div>
+        <div class="res-box-val" id="resFinish" style="font-size:22px;">--:--</div>
+        <div class="res-box-sub" id="resNow">sekarang --:--</div>
+      </div>
+    </div>
+    <div class="prog-wrap">
+      <div class="prog-header">
+        <div class="prog-lbl">Progres Pengisian</div>
+        <div class="prog-pct" id="progPct">—</div>
+      </div>
+      <div class="prog-outer">
+        <div class="prog-track"></div>
+        <div class="prog-mask" id="progMask" style="width:100%;"></div>
+        <div class="prog-head" id="progHead" style="left:0;"></div>
+        <div class="prog-tick" style="left:10%;"></div>
+        <div class="prog-tick" style="left:20%;"></div>
+        <div class="prog-tick" style="left:40%;"></div>
+        <div class="prog-tick" style="left:80%;"></div>
+      </div>
+      <div class="zone-strip"><div class="zs zs1"></div><div class="zs zs2"></div><div class="zs zs3"></div><div class="zs zs4"></div><div class="zs zs5"></div></div>
+      <div class="zone-names"><div class="zn zn1">Kritis</div><div class="zn zn2">Rendah</div><div class="zn zn3">Siaga</div><div class="zn zn4">Zona Aman</div><div class="zn zn5">Full Charged</div></div>
+    </div>
+  </div>
 
-        <!-- MODEL INFO -->
-        <div class="model-box">
-          <div class="model-title">🤖 Model Prediksi</div>
-          <div class="model-meta">Berdasarkan <b>3 sesi</b> · estimasi ±<b>10 menit</b></div>
-          <div class="sesi-row"><span class="sesi-num">Sesi 1</span><div class="sesi-badge sb-ai">🤖 prediksi</div><span class="sesi-note" style="color:#2a5a7a;">—</span></div>
-          <div class="sesi-row"><span class="sesi-num">Sesi 2</span><div class="sesi-badge sb-ai">🤖 prediksi</div><span class="sesi-note" style="color:#2a5a7a;">—</span></div>
-          <div class="sesi-row"><span class="sesi-num">Sesi 3</span><div class="sesi-badge sb-manual">✏️ manual</div><span class="sesi-note">diubah ke 1j 35m</span></div>
-        </div>
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab on" id="tabTimer" onclick="switchMode('timer')">⏱ Timer</div>
+    <div class="tab" id="tabAlarm" onclick="switchMode('alarm')">🔔 Alarm Jam</div>
+  </div>
 
-        <div class="stat-row">
-          <div class="stat-box"><div class="stat-val">3</div><div class="stat-lbl">Total Sesi</div></div>
-          <div class="stat-box"><div class="stat-val">1j22m</div><div class="stat-lbl">Rata-rata</div></div>
-          <div class="stat-box"><div class="stat-val">0.5%</div><div class="stat-lbl">Rate/mnt</div></div>
-        </div>
+  <!-- TIMER -->
+  <div class="timer-sec show" id="timerSec">
+    <div class="timer-disp" id="timerDisp" onclick="showTimerEdit()">
+      <span id="tH">00</span><span class="timer-col">:</span><span id="tM">00</span><span class="timer-col">:</span><span id="tS">00</span>
+    </div>
+    <div class="timer-hint" id="timerHint">tap angka untuk edit manual</div>
+    <div class="timer-edit" id="timerEdit">
+      <div class="te-wrap"><input class="te-input" type="number" id="teH" min="0" max="99" placeholder="00"><div class="te-lbl">Jam</div></div>
+      <div class="te-sep">:</div>
+      <div class="te-wrap"><input class="te-input" type="number" id="teM" min="0" max="59" placeholder="00"><div class="te-lbl">Menit</div></div>
+      <div class="te-sep">:</div>
+      <div class="te-wrap"><input class="te-input" type="number" id="teS" min="0" max="59" placeholder="00"><div class="te-lbl">Detik</div></div>
+    </div>
+    <button class="te-done" id="teDone" onclick="applyTimerEdit()">✓ Terapkan</button>
+    <div class="btn-row">
+      <button class="btn btn-start" onclick="startTimer()">▶ Mulai</button>
+      <button class="btn btn-stop" onclick="stopTimer()">■ Stop</button>
+      <button class="btn btn-reset" onclick="resetTimer()">↺ Reset</button>
+    </div>
+    <div class="timer-note">Auto-terisi dari estimasi · tap angka untuk edit</div>
+  </div>
 
-        <div>
-          <div class="chart-lbl">Durasi Per Sesi</div>
-          <div class="bar-row"><div class="bar-date">12 Jan</div><div class="bar-outer"><div class="bar-inner bi-blue" style="width:90%;"><span class="bar-dur">1j30m</span></div></div></div>
-          <div class="bar-row"><div class="bar-date">15 Jan</div><div class="bar-outer"><div class="bar-inner bi-blue" style="width:75%;"><span class="bar-dur">1j15m</span></div></div></div>
-          <div class="bar-row"><div class="bar-date">18 Jan</div><div class="bar-outer"><div class="bar-inner bi-blue" style="width:85%;"><span class="bar-dur">1j22m</span></div></div></div>
-        </div>
+  <!-- ALARM -->
+  <div class="alarm-sec" id="alarmSec">
+    <div class="alarm-lbl">Setel alarm berbunyi pada pukul:</div>
+    <input class="alarm-time-input" type="time" id="alarmTime">
+    <div class="alarm-status" id="alarmStatus"></div>
+    <div class="alarm-btn-row">
+      <button class="btn btn-start" onclick="setAlarm()">🔔 Aktifkan</button>
+      <button class="btn btn-reset" onclick="cancelAlarm()">✕ Batalkan</button>
+    </div>
+    <div class="alarm-note" id="alarmNote"></div>
+    <div class="alarm-no-bar">Bar progres <b>tidak bergerak</b> pada mode alarm.<br>Aktifkan Timer untuk memantau progres pengisian.</div>
+  </div>
 
+  <!-- SOUND -->
+  <div class="card" style="margin-top:10px;">
+    <div class="card-lbl">Suara Alarm</div>
+    <div class="chips">
+      <div class="chip on" onclick="selectSound(this,'beep')" data-s="beep">✓ Beep Klasik</div>
+      <div class="chip" onclick="selectSound(this,'notif')" data-s="notif">Notif Halus</div>
+      <div class="chip" onclick="selectSound(this,'horn')" data-s="horn">Klakson</div>
+      <div class="chip" onclick="selectSound(this,'silent')" data-s="silent">Tanpa Suara</div>
+    </div>
+  </div>
+
+  <!-- RIWAYAT -->
+  <div class="riwayat">
+    <div class="riw-hdr" onclick="toggleRiwayat()">
+      <div class="riw-left">
+        <span style="font-size:14px;">📊</span>
+        <div class="riw-stats" id="riwStats">Belum ada sesi tercatat</div>
+      </div>
+      <div class="riw-toggle-btn" id="riwToggleBtn">Lihat ▾</div>
+    </div>
+    <div class="riw-body" id="riwBody">
+      <!-- model info -->
+      <div class="model-box" id="modelBox">
+        <div class="model-title">🤖 Model Prediksi</div>
+        <div class="model-meta" id="modelMeta">—</div>
+        <div id="modelSesiList"></div>
+      </div>
+      <!-- stats -->
+      <div class="stat-row">
+        <div class="stat-box"><div class="stat-val" id="statTotal">0</div><div class="stat-lbl">Total Sesi</div></div>
+        <div class="stat-box"><div class="stat-val" id="statAvg">--:--</div><div class="stat-lbl">Rata-rata</div></div>
+        <div class="stat-box"><div class="stat-val" id="statRate">—</div><div class="stat-lbl">Rate/mnt</div></div>
+      </div>
+      <!-- chart -->
+      <div id="chartSection">
+        <div class="chart-sec-lbl">Durasi Per Sesi</div>
+        <div id="chartBars"></div>
+      </div>
+      <!-- table -->
+      <div id="tableSection">
         <table class="riw-table">
-          <tr><th>#</th><th>Tgl</th><th>Dari</th><th>Ke</th><th>Durasi</th><th>Mode</th></tr>
-          <tr><td>1</td><td class="td-name">12 Jan</td><td>25%</td><td>80%</td><td>1j30m</td><td style="color:#7dd3fc;">🤖</td></tr>
-          <tr><td>2</td><td class="td-name">15 Jan</td><td>30%</td><td>80%</td><td>1j15m</td><td style="color:#7dd3fc;">🤖</td></tr>
-          <tr><td>3</td><td class="td-name">18 Jan</td><td>20%</td><td>80%</td><td>1j22m</td><td style="color:#fde047;">✏️</td></tr>
+          <tr><th>#</th><th>Tgl</th><th>Dari</th><th>Target</th><th>Durasi</th><th>Mode</th></tr>
         </table>
-
-        <div class="riw-actions">
-          <div class="riw-btn">📤 Export</div>
-          <div class="riw-btn">📥 Import</div>
-          <div class="riw-btn danger">🗑 Reset</div>
-        </div>
+        <table class="riw-table" id="riwTable" style="margin-top:0;"></table>
+      </div>
+      <!-- actions -->
+      <div class="riw-actions">
+        <div class="riw-btn" onclick="exportData()">📤 Export</div>
+        <div class="riw-btn" onclick="importData()">📥 Import</div>
+        <div class="riw-btn danger" onclick="resetData()">🗑 Reset</div>
       </div>
     </div>
-
-    <div class="footer">⚡ EV Smart Charger<br>made by anmax308</div>
   </div>
+
+  <div class="footer" style="text-align:center;">⚡ EV Smart Charger<br>made by anmax308</div>
+
+</div><!-- screen -->
+
+<!-- ALARM OVERLAY -->
+<div class="alarm-overlay" id="alarmOverlay">
+  <div class="alarm-icon-wrap">🔔</div>
+  <div class="alarm-title">Charging Selesai!</div>
+  <div class="alarm-fired-time" id="overlayTime">--:--</div>
+  <div class="alarm-fired-sub" id="overlaySub">Target pengisian tercapai</div>
+  <button class="alarm-stop-btn" onclick="stopAlarmRinging()">■ Hentikan Alarm</button>
 </div>
 
-<!-- ═══ PHONE C: EDIT MANUAL ═══ -->
-<div class="col">
-  <div class="section-title">User Edit Manual<br>Override prediksi</div>
-  <div class="phone">
-    <div class="hdr">
-      <div class="hdr-icon">⚡</div>
-      <div><div class="hdr-title">EV Smart Charger</div><div class="hdr-sub">Belajar dari kebiasaan charging</div></div>
-    </div>
+</div><!-- phone -->
 
-    <div class="card">
-      <div class="batt-hdr"><div class="card-lbl" style="margin-bottom:0;">Sisa Baterai</div><div class="info-btn">i</div></div>
-      <div class="batt-row">
-        <div class="batt-box">55<span class="batt-pct">%</span></div>
-        <div class="batt-right">
-          <div style="font-size:11px;font-weight:500;color:#4ade80;">55% — Zona Aman ✓</div>
-          <div class="bar-track"><div style="height:100%;width:55%;background:linear-gradient(90deg,#15803d,#4ade80);border-radius:3px;"></div></div>
-          <div class="bar-hints"><span>0%</span><span style="color:#4ade80;">zona aman</span><span>100%</span></div>
-        </div>
-      </div>
-    </div>
+<script>
+// ═══════════════════════════════════════
+// STORAGE KEY
+// ═══════════════════════════════════════
+const STORAGE_KEY = 'ev_smart_sessions';
 
-    <!-- ESTIMASI: MANUAL OVERRIDE -->
-    <div class="est-card" style="background:#111520;border:0.5px solid #3a3a1a;">
-      <div class="est-hdr">
-        <div class="est-lbl">Estimasi Waktu ke 100%</div>
-        <div class="badge badge-manual">✏️ Manual</div>
-      </div>
-      <div class="time-row">
-        <div class="tbox-wrap"><div class="tbox manual">01</div><div class="tbox-lbl">Jam</div></div>
-        <div class="tsep">:</div>
-        <div class="tbox-wrap"><div class="tbox manual">35</div><div class="tbox-lbl">Menit</div></div>
-      </div>
-      <div style="margin-top:7px;display:flex;align-items:center;justify-content:center;gap:5px;">
-        <span style="color:#4ade80;font-size:11px;">↺</span>
-        <span style="font-size:9px;color:#3a6a5a;cursor:pointer;">Kembali ke prediksi (1j 22m)</span>
-      </div>
-    </div>
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+let timerInterval=null, timerSecs=0, timerRunning=false;
+let timerTotalSecs=0, timerStartBatt=0, timerTargetBatt=0;
+let timerStartTime=null; // Date when timer started
+let alarmTimeout=null, selectedSound='beep', audioCtx=null, infoOpen=false;
+let alarmRingingInterval=null;
+let currentMode='timer';
+let predictionMins=null;   // calculated prediction in minutes, null if no data
+let isManualOverride=false; // user manually changed est input
+let riwayatOpen=false;
 
-    <div class="res">
-      <div class="res-top">
-        <div><div class="res-tag">Estimasi Pengisian</div><div class="res-from">dari 55% menuju 80%</div></div>
-        <div style="display:flex;align-items:center;gap:4px;"><span style="font-size:9px;color:#7aaad8;">Target</span><div class="dd">80%</div></div>
-      </div>
-      <div class="res-nums">
-        <div class="res-box"><div class="res-box-lbl">Durasi</div><div class="res-box-val">0<span class="u">j</span> 35<span class="u">m</span></div><div class="res-box-sub">≈ 35 menit</div></div>
-        <div class="res-sep"></div>
-        <div class="res-box"><div class="res-box-lbl">Selesai Pukul</div><div class="res-box-val" style="font-size:18px;">10:16</div><div class="res-box-sub">sekarang 09:41</div></div>
-      </div>
-      <div class="prog-wrap">
-        <div class="prog-hdr"><div class="prog-lbl">Progres Pengisian</div><div class="prog-pct" style="color:#4ade80;">55%</div></div>
-        <div class="prog-outer">
-          <div class="prog-track"></div>
-          <div class="prog-mask" style="width:45%;"></div>
-          <div class="prog-head" style="left:calc(55% - 1px);background:#4ade80;box-shadow:0 0 6px 2px #4ade8099;"></div>
-        </div>
-        <div class="zone-strip"><div class="zs zs1"></div><div class="zs zs2"></div><div class="zs zs3"></div><div class="zs zs4"></div><div class="zs zs5"></div></div>
-        <div class="zone-names"><div class="zn zn1">Kritis</div><div class="zn zn2">Rendah</div><div class="zn zn3">Siaga</div><div class="zn zn4">Zona Aman</div><div class="zn zn5">Full</div></div>
-      </div>
-    </div>
+// ═══════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════
+function pad(n){return String(n).padStart(2,'0');}
 
-    <div class="tabs"><div class="tab on">⏱ Timer</div><div class="tab">🔔 Alarm Jam</div></div>
+// Format minutes as HH:MM
+function fmtMins(m){
+  if(m==null||isNaN(m)) return '--:--';
+  const h=Math.floor(m/60), mm=Math.round(m%60);
+  return pad(h)+':'+pad(mm);
+}
 
-    <div class="timer-sec">
-      <div class="timer-disp">00<span class="timer-col">:</span>35<span class="timer-col">:</span>00</div>
-      <div class="timer-hint">tap angka untuk edit manual</div>
-      <div class="btn-row">
-        <div class="btn btn-s">▶ Mulai</div>
-        <div class="btn btn-x">■ Stop</div>
-        <div class="btn btn-r">↺ Reset</div>
-      </div>
-    </div>
+// ═══════════════════════════════════════
+// SESSION STORAGE
+// ═══════════════════════════════════════
+function loadSessions(){
+  try{ return JSON.parse(localStorage.getItem(STORAGE_KEY))||[]; }
+  catch(e){ return []; }
+}
+function saveSessions(sessions){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(sessions));
+}
 
-    <div class="card" style="margin-top:8px;">
-      <div class="card-lbl">Suara Alarm</div>
-      <div class="chips">
-        <div class="chip on">✓ Beep</div><div class="chip">Notif Halus</div>
-        <div class="chip">Klakson</div><div class="chip">Tanpa Suara</div>
-      </div>
-    </div>
+// ═══════════════════════════════════════
+// PREDICTION ENGINE
+// ═══════════════════════════════════════
+function calcPrediction(battStart, battTarget){
+  const sessions = loadSessions().filter(s=>s.selesai && s.durasi_aktual>0);
+  if(sessions.length===0) return null;
 
-    <!-- RIWAYAT TERLIPAT -->
-    <div class="riwayat">
-      <div class="riw-hdr">
-        <div style="display:flex;align-items:center;gap:7px;">
-          <span style="font-size:13px;">📊</span>
-          <div class="riw-stats"><b>3 sesi</b> · avg <b>1j 22m</b> · <b>0.5%</b>/mnt</div>
-        </div>
-        <div class="riw-toggle">Lihat ▾</div>
-      </div>
-    </div>
+  // group by batt_awal range, prefer sessions with similar starting %
+  // fallback to all sessions average
+  const rangeMatch = sessions.filter(s=>{
+    const diff = Math.abs(s.batt_awal - battStart);
+    return diff <= 15;
+  });
+  const pool = rangeMatch.length >= 2 ? rangeMatch : sessions;
 
-    <div class="footer">⚡ EV Smart Charger<br>made by anmax308</div>
-  </div>
-</div>
+  // compute average rate (%/min) from pool
+  const rates = pool.map(s=>{
+    const pctCharged = s.batt_target - s.batt_awal;
+    return pctCharged / s.durasi_aktual; // %/min
+  }).filter(r=>r>0);
 
+  if(rates.length===0) return null;
+
+  const avgRate = rates.reduce((a,b)=>a+b,0)/rates.length;
+  const pctNeeded = battTarget - battStart;
+  if(pctNeeded<=0) return null;
+
+  // extrapolate to 100% then scale to actual target
+  const minsTo100 = (100-battStart)/avgRate;
+  const minsToTarget = (pctNeeded/(100-battStart))*minsTo100;
+  return Math.round(minsToTarget);
+}
+
+function getSessionCount(){
+  return loadSessions().filter(s=>s.selesai).length;
+}
+
+// ═══════════════════════════════════════
+// RECORD SESSION (auto)
+// ═══════════════════════════════════════
+function recordSession(selesai){
+  if(!timerStartTime) return;
+  const durasiAktual = Math.round((Date.now()-timerStartTime)/60000);
+  const sessions = loadSessions();
+  const mode = isManualOverride ? 'manual' : 'prediksi';
+  const fullH=parseInt(document.getElementById('fullHour').value)||0;
+  const fullM=parseInt(document.getElementById('fullMin').value)||0;
+  sessions.push({
+    id: sessions.length+1,
+    tanggal: new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'short'}),
+    batt_awal: timerStartBatt,
+    batt_target: timerTargetBatt,
+    durasi_prediksi: predictionMins,
+    durasi_dipakai: fullH*60+fullM,
+    durasi_aktual: durasiAktual,
+    mode: mode,
+    selesai: selesai
+  });
+  saveSessions(sessions);
+  renderRiwayat();
+}
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+window.onload=function(){
+  rebuildTargetDropdown();
+  renderRiwayat();
+  calculate();
+};
+
+// ═══════════════════════════════════════
+// INFO TOGGLE
+// ═══════════════════════════════════════
+function toggleInfo(){
+  infoOpen=!infoOpen;
+  document.getElementById('infoPanel').classList.toggle('open',infoOpen);
+  document.getElementById('infoBtn').classList.toggle('active',infoOpen);
+}
+
+// ═══════════════════════════════════════
+// TARGET DROPDOWN
+// ═══════════════════════════════════════
+function rebuildTargetDropdown(){
+  const batt=Math.min(99,Math.max(0,parseInt(document.getElementById('battPct').value)||0));
+  const sel=document.getElementById('targetPct');
+  const prev=parseInt(sel.value)||80;
+  sel.innerHTML='';
+  for(let i=batt+1;i<=100;i++){
+    const o=document.createElement('option');
+    o.value=i; o.textContent=i+'%';
+    sel.appendChild(o);
+  }
+  const want=prev>batt?prev:80;
+  const opt=sel.querySelector('option[value="'+want+'"]');
+  if(opt) opt.selected=true;
+  else sel.options[Math.max(0,sel.options.length-1)].selected=true;
+}
+
+// ═══════════════════════════════════════
+// EST INPUT HANDLER — user typing
+// ═══════════════════════════════════════
+function onEstInput(){
+  const h=document.getElementById('fullHour').value;
+  const m=document.getElementById('fullMin').value;
+  const isEmpty=(h===''||h==='0')&&(m===''||m==='0');
+
+  if(predictionMins!==null){
+    if(isEmpty){
+      // user cleared → revert to prediction
+      revertToPrediction();
+      return;
+    }
+    // user typed something → manual override
+    isManualOverride=true;
+    setEstState('manual');
+  }
+  calculate();
+}
+
+function setEstState(state){
+  const card=document.getElementById('estCard');
+  const badge=document.getElementById('estBadge');
+  const hint=document.getElementById('estHint');
+  const revert=document.getElementById('revertBtn');
+  const hInput=document.getElementById('fullHour');
+  const mInput=document.getElementById('fullMin');
+
+  card.className='est-card';
+  badge.style.display='none';
+  revert.style.display='none';
+
+  if(state==='empty'){
+    hInput.className='tbox empty'; mInput.className='tbox empty';
+    hint.style.color='var(--text3)';
+    hint.textContent='Belum ada data — masukkan waktu charging';
+  } else if(state==='ai'){
+    card.classList.add('state-ai');
+    hInput.className='tbox ai'; mInput.className='tbox ai';
+    badge.className='est-badge ai';
+    const cnt=getSessionCount();
+    badge.textContent='🤖 '+cnt+' sesi';
+    badge.style.display='block';
+    hint.style.color='#3a5a7a';
+    hint.textContent='Terisi dari prediksi · ketik langsung untuk ubah';
+  } else if(state==='manual'){
+    card.classList.add('state-manual');
+    hInput.className='tbox manual'; mInput.className='tbox manual';
+    badge.className='est-badge manual';
+    badge.textContent='✏️ Manual';
+    badge.style.display='block';
+    hint.style.display='none';
+    revert.style.display='flex';
+    if(predictionMins!==null){
+      document.getElementById('revertLabel').textContent=
+        'Kembali ke prediksi ('+fmtMins(predictionMins)+')';
+    }
+  }
+}
+
+function revertToPrediction(){
+  if(predictionMins===null) return;
+  isManualOverride=false;
+  const h=Math.floor(predictionMins/60), m=predictionMins%60;
+  document.getElementById('fullHour').value=pad(h);
+  document.getElementById('fullMin').value=pad(m);
+  setEstState('ai');
+  document.getElementById('estHint').style.display='';
+  calculate();
+}
+
+function applyPredictionToField(batt, target){
+  const mins=calcPrediction(batt,target);
+  predictionMins=mins;
+  if(mins===null){
+    if(!isManualOverride){
+      setEstState('empty');
+    }
+    return;
+  }
+  if(!isManualOverride){
+    const h=Math.floor(mins/60), m=mins%60;
+    document.getElementById('fullHour').value=pad(h);
+    document.getElementById('fullMin').value=pad(m);
+    setEstState('ai');
+    document.getElementById('estHint').style.display='';
+  } else {
+    setEstState('manual');
+  }
+}
+
+// ═══════════════════════════════════════
+// CALCULATE
+// ═══════════════════════════════════════
+function calculate(){
+  const batt=Math.min(99,Math.max(0,parseInt(document.getElementById('battPct').value)||0));
+  const target=parseInt(document.getElementById('targetPct').value)||80;
+  const fh=parseInt(document.getElementById('fullHour').value)||0;
+  const fm=parseInt(document.getElementById('fullMin').value)||0;
+  const totalMins=fh*60+fm;
+
+  updateBatteryUI(batt);
+  applyPredictionToField(batt,target);
+
+  if(batt>=target){ setResErr('Baterai sudah ≥ target!'); resetProgBar(batt); return; }
+  if(totalMins<=0){ setResEmpty(); resetProgBar(batt); return; }
+
+  const rangeFull=100-batt, rangeTarget=target-batt;
+  const mins=Math.round((rangeTarget/rangeFull)*totalMins);
+
+  // duration as HH:MM
+  document.getElementById('resDur').textContent=fmtMins(mins);
+  document.getElementById('resMins').textContent='≈ '+mins+' menit total';
+
+  const now=new Date(), fin=new Date(now.getTime()+mins*60000);
+  document.getElementById('resFinish').textContent=pad(fin.getHours())+':'+pad(fin.getMinutes());
+  document.getElementById('resNow').textContent='sekarang '+pad(now.getHours())+':'+pad(now.getMinutes());
+  document.getElementById('resFrom').textContent='dari '+batt+'% menuju '+target+'%';
+
+  const prog=Math.round((rangeTarget/rangeFull)*100);
+  if(!timerRunning) setProgBar(batt);
+
+  if(!timerRunning){
+    timerSecs=mins*60;
+    timerTotalSecs=mins*60;
+    timerStartBatt=batt;
+    timerTargetBatt=target;
+    updateTimerDisplay();
+  }
+
+  const fhh=pad(fin.getHours()), fmm=pad(fin.getMinutes());
+  document.getElementById('alarmNote').textContent='Estimasi selesai pukul '+fhh+':'+fmm;
+  document.getElementById('alarmTime').value=fhh+':'+fmm;
+}
+
+function setResErr(m){
+  document.getElementById('resDur').textContent='--:--';
+  document.getElementById('resMins').textContent=m;
+  document.getElementById('resFinish').textContent='--:--';
+}
+function setResEmpty(){
+  document.getElementById('resDur').textContent='--:--';
+  document.getElementById('resMins').textContent='— menit';
+  document.getElementById('resFinish').textContent='--:--';
+}
+
+// ═══════════════════════════════════════
+// PROGRESS BAR
+// ═══════════════════════════════════════
+function getHeadColor(p){
+  if(p<=10) return '#f87171';
+  if(p<=20) return '#fb923c';
+  if(p<=40) return '#fde047';
+  if(p<=80) return '#4ade80';
+  return '#7dd3fc';
+}
+function setProgBar(pct){
+  pct=Math.min(100,Math.max(0,pct));
+  document.getElementById('progMask').style.width=(100-pct)+'%';
+  document.getElementById('progHead').style.left='calc('+pct+'% - 1.5px)';
+  const col=getHeadColor(pct);
+  document.getElementById('progHead').style.background=col;
+  document.getElementById('progHead').style.boxShadow='0 0 8px 3px '+col+'99';
+  document.getElementById('progPct').textContent=Math.round(pct)+'%';
+  document.getElementById('progPct').style.color=col;
+}
+function resetProgBar(batt){
+  setProgBar(batt||parseInt(document.getElementById('battPct').value)||0);
+}
+
+// ═══════════════════════════════════════
+// BATTERY UI — 5 LEVELS
+// ═══════════════════════════════════════
+function updateBatteryUI(b){
+  const bar=document.getElementById('battBar'),hint=document.getElementById('battHint');
+  const st=document.getElementById('battStatus'),warn=document.getElementById('warnBox');
+  const warnText=document.getElementById('warnText'),warnIcon=document.getElementById('warnIcon');
+  bar.style.width=b+'%';
+  if(b<=10){
+    bar.style.background='linear-gradient(90deg,#7c1f1f,#f87171)';
+    hint.style.color='#f87171';hint.textContent='kritis!';
+    st.style.color='#f87171';st.textContent=b+'% — Kritis! Segera charge!';
+    warn.className='warn-box warn-lv1 show';
+    warnIcon.textContent='🚨';warnText.textContent='Baterai kritis ('+b+'%)! Segera hubungkan ke charger sekarang!';
+  }else if(b<=20){
+    bar.style.background='linear-gradient(90deg,#7c4a00,#fb923c)';
+    hint.style.color='#fb923c';hint.textContent='rendah';
+    st.style.color='#fb923c';st.textContent=b+'% — Rendah! Segera charge!';
+    warn.className='warn-box warn-lv2 show';
+    warnIcon.textContent='⚠️';warnText.textContent='Baterai di bawah 20% ('+b+'%). Segera rencanakan pengisian.';
+  }else if(b<=40){
+    bar.style.background='linear-gradient(90deg,#6b5a00,#fde047)';
+    hint.style.color='#fde047';hint.textContent='siaga';
+    st.style.color='#fde047';st.textContent=b+'% — Siaga';
+    warn.className='warn-box warn-lv3 show';
+    warnIcon.textContent='💛';warnText.textContent='Baterai '+b+'% — pertimbangkan charge jika berencana perjalanan jauh.';
+  }else if(b<=80){
+    bar.style.background='linear-gradient(90deg,#15803d,#4ade80)';
+    hint.style.color='#4ade80';hint.textContent='zona aman';
+    st.style.color='#4ade80';st.textContent=b+'% — Zona Aman ✓';
+    warn.className='warn-box';
+  }else{
+    bar.style.background='linear-gradient(90deg,#0369a1,#7dd3fc)';
+    hint.style.color='#7dd3fc';hint.textContent='full charged';
+    st.style.color='#7dd3fc';st.textContent=b+'% — Full Charged';
+    warn.className='warn-box';
+  }
+}
+
+// ═══════════════════════════════════════
+// MODE SWITCH
+// ═══════════════════════════════════════
+function switchMode(m){
+  currentMode=m;
+  document.getElementById('tabTimer').classList.toggle('on',m==='timer');
+  document.getElementById('tabAlarm').classList.toggle('on',m==='alarm');
+  document.getElementById('timerSec').classList.toggle('show',m==='timer');
+  document.getElementById('alarmSec').classList.toggle('show',m==='alarm');
+  if(m==='alarm'&&!timerRunning) resetProgBar();
+}
+
+// ═══════════════════════════════════════
+// TIMER
+// ═══════════════════════════════════════
+function updateTimerDisplay(){
+  const h=Math.floor(timerSecs/3600),m=Math.floor((timerSecs%3600)/60),s=timerSecs%60;
+  document.getElementById('tH').textContent=pad(h);
+  document.getElementById('tM').textContent=pad(m);
+  document.getElementById('tS').textContent=pad(s);
+}
+
+function startTimer(){
+  if(timerRunning) return;
+  if(timerSecs<=0){alert('Set durasi timer terlebih dahulu.');return;}
+  timerTotalSecs=timerSecs;
+  timerStartBatt=Math.min(99,Math.max(0,parseInt(document.getElementById('battPct').value)||0));
+  timerTargetBatt=parseInt(document.getElementById('targetPct').value)||80;
+  timerStartTime=Date.now();
+  timerRunning=true;
+  timerInterval=setInterval(()=>{
+    if(timerSecs<=0){
+      clearInterval(timerInterval);timerRunning=false;
+      setProgBar(timerTargetBatt);
+      recordSession(true); // auto record on finish
+      playAlarm();
+      document.getElementById('timerDisp').classList.add('ringing');
+    }else{
+      timerSecs--;
+      updateTimerDisplay();
+      const elapsed=timerTotalSecs-timerSecs;
+      const ratio=timerTotalSecs>0?elapsed/timerTotalSecs:0;
+      setProgBar(timerStartBatt+(timerTargetBatt-timerStartBatt)*ratio);
+    }
+  },1000);
+}
+
+function stopTimer(){
+  if(!timerRunning) return;
+  clearInterval(timerInterval);timerRunning=false;
+  recordSession(false); // auto record as stopped
+  timerStartTime=null;
+}
+
+function resetTimer(){
+  stopTimer();
+  timerStartTime=null;
+  calculate();
+}
+
+function showTimerEdit(){
+  if(timerRunning) return;
+  document.getElementById('teH').value=pad(Math.floor(timerSecs/3600));
+  document.getElementById('teM').value=pad(Math.floor((timerSecs%3600)/60));
+  document.getElementById('teS').value=pad(timerSecs%60);
+  document.getElementById('timerEdit').classList.add('show');
+  document.getElementById('teDone').style.display='block';
+  document.getElementById('timerDisp').style.display='none';
+  document.getElementById('timerHint').style.display='none';
+}
+
+function applyTimerEdit(){
+  const h=parseInt(document.getElementById('teH').value)||0;
+  const m=parseInt(document.getElementById('teM').value)||0;
+  const s=parseInt(document.getElementById('teS').value)||0;
+  timerSecs=h*3600+m*60+s;timerTotalSecs=timerSecs;
+  updateTimerDisplay();
+  document.getElementById('timerEdit').classList.remove('show');
+  document.getElementById('teDone').style.display='none';
+  document.getElementById('timerDisp').style.display='';
+  document.getElementById('timerHint').style.display='';
+}
+
+// ═══════════════════════════════════════
+// ALARM JAM
+// ═══════════════════════════════════════
+function setAlarm(){
+  cancelAlarm();
+  const val=document.getElementById('alarmTime').value;
+  if(!val){alert('Pilih waktu alarm terlebih dahulu.');return;}
+  const [ah,am]=val.split(':').map(Number);
+  const now=new Date(),t=new Date();
+  t.setHours(ah,am,0,0);
+  if(t<=now)t.setDate(t.getDate()+1);
+  const diff=t-now,mins=Math.round(diff/60000);
+  const hrs=Math.floor(mins/60),rem=mins%60;
+  let ds=(hrs>0?hrs+' jam ':'')+rem+' menit lagi';
+  alarmTimeout=setTimeout(()=>{playAlarm('Alarm pukul '+val+' berbunyi!');showAlarmFired(val);},diff);
+  const s=document.getElementById('alarmStatus');
+  s.className='alarm-status show active';
+  s.textContent='🔔 Alarm aktif pukul '+val+' · '+ds;
+}
+
+function cancelAlarm(){
+  if(alarmTimeout){clearTimeout(alarmTimeout);alarmTimeout=null;}
+  const s=document.getElementById('alarmStatus');
+  s.className='alarm-status show off';
+  s.textContent='Tidak ada alarm aktif';
+}
+
+function showAlarmFired(t){
+  const s=document.getElementById('alarmStatus');
+  s.className='alarm-status show active';
+  s.innerHTML='🔔 <b>ALARM!</b> Pukul '+t+' — Charging selesai!';
+}
+
+// ═══════════════════════════════════════
+// ALARM SOUND & OVERLAY
+// ═══════════════════════════════════════
+function playAlarm(label){
+  if(selectedSound==='silent'){showAlarmOverlay(label);return;}
+  playSound(selectedSound,1);
+  alarmRingingInterval=setInterval(()=>{playSound(selectedSound,1);},2000);
+  showAlarmOverlay(label);
+}
+
+function stopAlarmRinging(){
+  if(alarmRingingInterval){clearInterval(alarmRingingInterval);alarmRingingInterval=null;}
+  document.getElementById('alarmOverlay').classList.remove('show');
+  document.getElementById('timerDisp').classList.remove('ringing');
+}
+
+function showAlarmOverlay(label){
+  const now=new Date();
+  document.getElementById('overlayTime').textContent=pad(now.getHours())+':'+pad(now.getMinutes());
+  document.getElementById('overlaySub').textContent=label||'Target pengisian tercapai';
+  document.getElementById('alarmOverlay').classList.add('show');
+}
+
+function selectSound(el,sound){
+  document.querySelectorAll('.chip').forEach(c=>{
+    c.classList.remove('on');
+    const map={beep:'Beep Klasik',notif:'Notif Halus',horn:'Klakson',silent:'Tanpa Suara'};
+    c.textContent=map[c.getAttribute('data-s')];
+  });
+  el.classList.add('on');el.textContent='✓ '+el.textContent;
+  selectedSound=sound;playSound(sound,0.3);
+}
+
+function getCtx(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
+function tone(ctx,freq,delay,dur,vol,type){
+  const o=ctx.createOscillator(),g=ctx.createGain();
+  o.connect(g);g.connect(ctx.destination);
+  o.type=type||'sine';o.frequency.value=freq;
+  g.gain.setValueAtTime(0,ctx.currentTime+delay);
+  g.gain.linearRampToValueAtTime(vol,ctx.currentTime+delay+0.02);
+  g.gain.linearRampToValueAtTime(0,ctx.currentTime+delay+dur);
+  o.start(ctx.currentTime+delay);o.stop(ctx.currentTime+delay+dur+0.05);
+}
+function playSound(type,vol){
+  if(type==='silent')return;
+  try{
+    const c=getCtx(),v=vol||1;
+    if(type==='beep'){tone(c,880,0,.15,v);tone(c,880,.2,.15,v);tone(c,1100,.4,.25,v);}
+    else if(type==='notif'){tone(c,523,0,.1,v);tone(c,659,.12,.1,v);tone(c,784,.24,.2,v);}
+    else if(type==='horn'){tone(c,220,0,.3,v,'sawtooth');tone(c,277,0,.3,v,'sawtooth');tone(c,330,.35,.4,v,'sawtooth');}
+  }catch(e){}
+}
+
+// ═══════════════════════════════════════
+// RIWAYAT TOGGLE
+// ═══════════════════════════════════════
+function toggleRiwayat(){
+  riwayatOpen=!riwayatOpen;
+  document.getElementById('riwBody').classList.toggle('open',riwayatOpen);
+  document.getElementById('riwToggleBtn').textContent=riwayatOpen?'Tutup ▴':'Lihat ▾';
+}
+
+// ═══════════════════════════════════════
+// RENDER RIWAYAT
+// ═══════════════════════════════════════
+function renderRiwayat(){
+  const sessions=loadSessions();
+  const done=sessions.filter(s=>s.selesai);
+
+  // header stats
+  const statEl=document.getElementById('riwStats');
+  if(sessions.length===0){
+    statEl.innerHTML='Belum ada sesi tercatat';
+  } else {
+    const avgMins=done.length>0?Math.round(done.reduce((a,s)=>a+s.durasi_aktual,0)/done.length):0;
+    const rates=done.map(s=>(s.batt_target-s.batt_awal)/s.durasi_aktual).filter(r=>r>0);
+    const avgRate=rates.length>0?(rates.reduce((a,b)=>a+b,0)/rates.length).toFixed(2):0;
+    statEl.innerHTML='<b>'+sessions.length+' sesi</b> · avg <b>'+fmtMins(avgMins)+'</b> · <b>'+avgRate+'%</b>/mnt';
+    document.getElementById('statTotal').textContent=sessions.length;
+    document.getElementById('statAvg').textContent=fmtMins(avgMins);
+    document.getElementById('statRate').textContent=avgRate+'%';
+  }
+
+  // model info
+  const modelMeta=document.getElementById('modelMeta');
+  const modelList=document.getElementById('modelSesiList');
+  if(done.length===0){
+    modelMeta.innerHTML='Belum ada data — mulai timer untuk rekam sesi pertama';
+    modelList.innerHTML='';
+  } else {
+    const rates2=done.map(s=>(s.batt_target-s.batt_awal)/s.durasi_aktual).filter(r=>r>0);
+    const avgR=rates2.length>0?(rates2.reduce((a,b)=>a+b,0)/rates2.length):0;
+    const dev=rates2.length>1?Math.round(Math.sqrt(rates2.map(r=>(r-avgR)**2).reduce((a,b)=>a+b,0)/rates2.length)*100):0;
+    modelMeta.innerHTML='Berdasarkan <b>'+done.length+' sesi</b> · estimasi ±<b>'+dev+' menit</b>';
+    let listHTML='';
+    sessions.slice(-5).forEach(s=>{
+      let badgeClass='sb-ai', badgeText='🤖 prediksi';
+      if(!s.selesai){badgeClass='sb-stop';badgeText='⚠ dihentikan';}
+      else if(s.mode==='manual'){badgeClass='sb-manual';badgeText='✏️ manual';}
+      const note=s.mode==='manual'&&s.durasi_prediksi?'diubah dari '+fmtMins(s.durasi_prediksi):'';
+      listHTML+=`<div class="sesi-row"><span class="sesi-num">Sesi ${s.id}</span><div class="sesi-badge ${badgeClass}">${badgeText}</div><span class="sesi-note">${note}</span></div>`;
+    });
+    modelList.innerHTML=listHTML;
+  }
+
+  // bar chart — last 7 sessions
+  const chartBars=document.getElementById('chartBars');
+  if(sessions.length===0){chartBars.innerHTML='<div style="font-size:10px;color:var(--text3);text-align:center;padding:8px 0;">Belum ada data</div>';}
+  else{
+    const maxDur=Math.max(...sessions.map(s=>s.durasi_aktual),1);
+    let chartHTML='';
+    sessions.slice(-7).forEach(s=>{
+      const w=Math.round((s.durasi_aktual/maxDur)*100);
+      let cls=s.mode==='manual'?'bi-manual':'bi-ai';
+      if(!s.selesai) cls='bi-stop';
+      chartHTML+=`<div class="bar-row">
+        <div class="bar-date">${s.tanggal}</div>
+        <div class="bar-outer"><div class="bar-inner ${cls}" style="width:${w}%;">
+          <span class="bar-dur">${fmtMins(s.durasi_aktual)}</span>
+        </div></div>
+      </div>`;
+    });
+    chartBars.innerHTML=chartHTML;
+  }
+
+  // table
+  const table=document.getElementById('riwTable');
+  if(sessions.length===0){table.innerHTML='';return;}
+  let tHTML='';
+  sessions.slice().reverse().forEach(s=>{
+    let modeCls='td-ai', modeStr='🤖';
+    if(!s.selesai){modeCls='td-stop';modeStr='⚠';}
+    else if(s.mode==='manual'){modeCls='td-manual';modeStr='✏️';}
+    tHTML+=`<tr>
+      <td>${s.id}</td>
+      <td class="td-date">${s.tanggal}</td>
+      <td>${s.batt_awal}%</td>
+      <td>${s.batt_target}%</td>
+      <td>${fmtMins(s.durasi_aktual)}</td>
+      <td class="${modeCls}">${modeStr}</td>
+    </tr>`;
+  });
+  table.innerHTML=tHTML;
+}
+
+// ═══════════════════════════════════════
+// EXPORT / IMPORT / RESET
+// ═══════════════════════════════════════
+function exportData(){
+  const data=localStorage.getItem(STORAGE_KEY)||'[]';
+  const blob=new Blob([data],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='ev_sessions_'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();
+}
+
+function importData(){
+  const input=document.createElement('input');
+  input.type='file';input.accept='.json';
+  input.onchange=e=>{
+    const f=e.target.files[0];if(!f)return;
+    const reader=new FileReader();
+    reader.onload=ev=>{
+      try{
+        const data=JSON.parse(ev.target.result);
+        if(Array.isArray(data)){
+          saveSessions(data);
+          renderRiwayat();
+          calculate();
+          alert('Import berhasil! '+data.length+' sesi dimuat.');
+        }else{alert('Format file tidak valid.');}
+      }catch(e){alert('Gagal membaca file.');}
+    };
+    reader.readAsText(f);
+  };
+  input.click();
+}
+
+function resetData(){
+  if(confirm('Hapus semua data riwayat sesi? Prediksi akan direset.')){
+    localStorage.removeItem(STORAGE_KEY);
+    predictionMins=null;isManualOverride=false;
+    renderRiwayat();
+    setEstState('empty');
+    document.getElementById('fullHour').value='';
+    document.getElementById('fullMin').value='';
+    calculate();
+  }
+}
+
+// ═══════════════════════════════════════
+// INPUT CLAMP
+// ═══════════════════════════════════════
+document.getElementById('battPct').addEventListener('change',function(){
+  let v=parseInt(this.value);if(isNaN(v))v=0;
+  if(v<0)v=0;if(v>99)v=99;this.value=v;
+  rebuildTargetDropdown();calculate();
+});
+document.getElementById('fullHour').addEventListener('change',function(){
+  let v=parseInt(this.value);if(isNaN(v))v=0;if(v<0)v=0;this.value=v;
+  onEstInput();
+});
+document.getElementById('fullMin').addEventListener('change',function(){
+  let v=parseInt(this.value);if(isNaN(v))v=0;if(v<0)v=0;if(v>59)v=59;this.value=v;
+  onEstInput();
+});
+</script>
 </body>
 </html>
