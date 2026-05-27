@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EV Smart Charger — Mockup v5</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Sora',sans-serif;background:#07090f;display:flex;justify-content:center;padding:2rem 1rem;gap:20px;flex-wrap:wrap;}
+
+.col{display:flex;flex-direction:column;gap:14px;align-items:center;}
+.section-title{font-size:10px;color:#4a6a9a;letter-spacing:1.2px;text-transform:uppercase;text-align:center;}
+
+/* PHONE */
+.phone{width:320px;background:#0a0d14;border-radius:32px;border:2px solid #1e2640;padding:12px 10px 16px;}
+
+.hdr{padding:8px 12px 12px;border-bottom:0.5px solid #1e2640;display:flex;align-items:center;gap:10px;}
+.hdr-icon{width:36px;height:36px;border-radius:10px;background:#1a3a5c;border:0.5px solid #2a3456;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.hdr-title{font-size:13px;font-weight:600;color:#7dd3fc;}
+.hdr-sub{font-size:9px;color:#4a6080;margin-top:1px;}
+
+.card{margin:8px 8px 0;background:#111520;border-radius:14px;border:0.5px solid #1e2640;padding:11px 12px;}
+.card-lbl{font-size:9px;color:#6a80a8;letter-spacing:1.3px;text-transform:uppercase;font-weight:500;margin-bottom:8px;}
+
+/* BATERAI */
+.batt-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.info-btn{width:22px;height:22px;border-radius:50%;background:#161c2a;border:1px solid #2a3456;color:#7dd3fc;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;}
+.batt-row{display:flex;align-items:center;gap:10px;}
+.batt-box{background:#0a0d14;border:0.5px solid #2a3456;border-radius:10px;color:#fde047;font-size:24px;font-weight:600;text-align:center;padding:8px 0;width:66px;font-family:'JetBrains Mono',monospace;flex-shrink:0;position:relative;}
+.batt-pct{position:absolute;right:6px;bottom:6px;font-size:9px;color:#6a6a3a;}
+.batt-right{flex:1;display:flex;flex-direction:column;gap:5px;}
+.bar-track{height:6px;background:#161c2a;border-radius:3px;overflow:hidden;}
+.bar-hints{display:flex;justify-content:space-between;font-size:8px;color:#3a4a68;}
+
+/* WARN */
+.warn{margin:6px 8px 0;border-radius:10px;padding:8px 11px;font-size:10px;display:flex;align-items:center;gap:7px;border:0.5px solid;}
+
+/* ESTIMASI CARD */
+.est-card{margin:8px 8px 0;border-radius:14px;padding:11px 12px;}
+.est-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;}
+.est-lbl{font-size:9px;color:#6a80a8;letter-spacing:1.3px;text-transform:uppercase;font-weight:500;}
+.badge{padding:3px 8px;border-radius:10px;font-size:9px;font-weight:500;}
+.badge-ai{background:#0c1929;color:#7dd3fc;border:0.5px solid #1a3a5c;}
+.badge-manual{background:#1a1a09;color:#fde047;border:0.5px solid #3a3a00;}
+.time-row{display:flex;gap:6px;align-items:flex-start;}
+.tbox-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.tbox{background:#0a0d14;border:0.5px solid #2a3456;border-radius:10px;font-size:20px;font-weight:600;text-align:center;padding:8px 0;width:100%;font-family:'JetBrains Mono',monospace;}
+.tbox.ai{color:#7dd3fc;border-color:#1a3a5c;}
+.tbox.manual{color:#fde047;border-color:#3a3a1a;}
+.tbox.empty{color:#3a4a68;}
+.tbox-lbl{font-size:9px;color:#5a7090;}
+.tsep{font-size:20px;color:#2a3a6c;padding-top:8px;font-family:'JetBrains Mono',monospace;}
+.est-hint{margin-top:6px;font-size:9px;text-align:center;}
+
+/* RESULT */
+.res{margin:8px 8px 0;background:#09121e;border-radius:14px;border:0.5px solid #1a3a5c;padding:11px 12px;}
+.res-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:9px;}
+.res-tag{font-size:9px;color:#7aaad8;letter-spacing:1.3px;text-transform:uppercase;font-weight:500;}
+.res-from{font-size:10px;color:#5a7090;margin-top:1px;}
+.dd{background:#1a3a5c;border:0.5px solid #2a3456;border-radius:7px;color:#7dd3fc;font-size:11px;font-weight:600;padding:4px 8px;}
+.res-nums{display:flex;gap:6px;}
+.res-box{flex:1;background:#060f1a;border:0.5px solid #1a3a5c;border-radius:10px;padding:9px 8px;text-align:center;}
+.res-box-lbl{font-size:8px;color:#6a9ac8;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+.res-box-val{font-size:20px;font-weight:600;color:#7dd3fc;line-height:1;font-family:'JetBrains Mono',monospace;}
+.u{font-size:11px;color:#4a7fb5;font-family:'Sora',sans-serif;}
+.res-box-sub{font-size:8px;color:#5a80a8;margin-top:3px;}
+.res-sep{width:0.5px;background:#1a3a5c;align-self:stretch;}
+
+/* PROGRESS BAR */
+.prog-wrap{margin-top:10px;}
+.prog-hdr{display:flex;justify-content:space-between;margin-bottom:4px;}
+.prog-lbl{font-size:8px;color:#6a9ac8;letter-spacing:1px;text-transform:uppercase;}
+.prog-pct{font-size:11px;font-weight:600;color:#fde047;font-family:'JetBrains Mono',monospace;}
+.prog-outer{position:relative;height:14px;border-radius:7px;overflow:hidden;border:0.5px solid #1a2a40;}
+.prog-track{position:absolute;inset:0;background:linear-gradient(90deg,#5c1515 0%,#c2410c 10%,#fb923c 20%,#a16207 30%,#fde047 40%,#15803d 55%,#4ade80 80%,#0369a1 90%,#7dd3fc 100%);}
+.prog-mask{position:absolute;top:0;bottom:0;right:0;background:#060f1a;border-radius:0 7px 7px 0;}
+.prog-head{position:absolute;top:0;bottom:0;width:2px;box-shadow:0 0 6px 2px #fde04799;}
+.zone-strip{display:flex;gap:2px;margin-top:4px;height:3px;}
+.zs{border-radius:1px;}
+.zs1{flex:10;background:#7c1f1f;}.zs2{flex:10;background:#7c4a00;}.zs3{flex:20;background:#6b5a00;}.zs4{flex:40;background:#15803d;}.zs5{flex:20;background:#0369a1;}
+.zone-names{display:flex;gap:2px;margin-top:2px;}
+.zn{font-size:6px;color:#4a6080;text-align:center;}
+.zn1{flex:10;}.zn2{flex:10;}.zn3{flex:20;}.zn4{flex:40;}.zn5{flex:20;}
+
+/* TABS */
+.tabs{display:flex;margin:8px 8px 0;background:#111520;border-radius:11px;border:0.5px solid #1e2640;padding:3px;gap:3px;}
+.tab{flex:1;text-align:center;padding:7px 4px;border-radius:8px;font-size:10px;color:#3a4a68;}
+.tab.on{background:#1a3a5c;color:#7dd3fc;font-weight:500;}
+
+/* TIMER */
+.timer-sec{margin:8px 8px 0;background:#111520;border-radius:14px;border:0.5px solid #1e2640;padding:11px 10px;}
+.timer-disp{font-size:36px;font-weight:600;color:#e8f0ff;text-align:center;letter-spacing:5px;line-height:1;font-family:'JetBrains Mono',monospace;margin-bottom:3px;}
+.timer-col{color:#2a3a6c;}
+.timer-hint{text-align:center;font-size:8px;color:#4a6080;margin-bottom:9px;}
+.btn-row{display:flex;gap:6px;}
+.btn{flex:1;text-align:center;padding:9px 4px;border-radius:10px;font-size:11px;font-weight:500;border:0.5px solid;font-family:'Sora',sans-serif;}
+.btn-s{background:#1a3a5c;color:#7dd3fc;border-color:#2a3456;}
+.btn-x{background:#3a1a1a;color:#f87171;border-color:#5c2a2a;}
+.btn-r{background:#161c2a;color:#5a6a88;border-color:#1e2640;}
+
+/* SOUND */
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;}
+.chip{padding:5px 10px;border-radius:16px;font-size:10px;border:0.5px solid #1e2640;color:#4a6080;background:#0a0d14;}
+.chip.on{background:#1a3a20;border-color:#2a5a2a;color:#4ade80;}
+
+/* RIWAYAT */
+.riwayat{margin:8px 8px 0;background:#111520;border-radius:14px;border:0.5px solid #1e2640;overflow:hidden;}
+.riw-hdr{display:flex;align-items:center;justify-content:space-between;padding:11px 12px;cursor:pointer;}
+.riw-stats{font-size:10px;color:#6a80a8;}
+.riw-stats b{color:#7dd3fc;font-weight:600;}
+.riw-toggle{font-size:10px;color:#4a6a9a;padding:3px 8px;background:#0a0d14;border-radius:8px;border:0.5px solid #1e2640;}
+.riw-body{border-top:0.5px solid #1e2640;padding:10px 12px;display:flex;flex-direction:column;gap:8px;}
+
+/* model info */
+.model-box{background:#09121e;border:0.5px solid #1a3a5c;border-radius:10px;padding:9px 11px;}
+.model-title{font-size:9px;color:#7aaad8;letter-spacing:1px;text-transform:uppercase;margin-bottom:7px;display:flex;align-items:center;gap:5px;}
+.model-meta{font-size:10px;color:#5a80a8;margin-bottom:6px;}
+.model-meta b{color:#7dd3fc;}
+.sesi-row{display:flex;align-items:center;gap:6px;margin-bottom:3px;}
+.sesi-num{font-size:9px;color:#4a6080;width:40px;font-family:'JetBrains Mono',monospace;}
+.sesi-badge{padding:2px 7px;border-radius:8px;font-size:9px;}
+.sb-ai{background:#0c1929;color:#7dd3fc;border:0.5px solid #1a3a5c;}
+.sb-manual{background:#1a1a09;color:#fde047;border:0.5px solid #3a3a00;}
+.sb-stop{background:#1a0a0a;color:#f87171;border:0.5px solid #5c2a2a;}
+.sesi-note{font-size:9px;color:#3a5a5a;}
+
+/* stat boxes */
+.stat-row{display:flex;gap:6px;}
+.stat-box{flex:1;background:#0a0d14;border:0.5px solid #1e2640;border-radius:9px;padding:7px 8px;text-align:center;}
+.stat-val{font-size:14px;font-weight:600;color:#7dd3fc;font-family:'JetBrains Mono',monospace;}
+.stat-lbl{font-size:8px;color:#4a6080;margin-top:2px;}
+
+/* bar chart */
+.chart-lbl{font-size:8px;color:#4a6080;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;}
+.bar-row{display:flex;align-items:center;gap:6px;margin-bottom:4px;}
+.bar-date{font-size:8px;color:#5a7090;width:32px;flex-shrink:0;text-align:right;}
+.bar-outer{flex:1;background:#0a0d14;border-radius:3px;height:12px;overflow:hidden;border:0.5px solid #1e2640;}
+.bar-inner{height:100%;border-radius:3px;display:flex;align-items:center;padding-left:4px;}
+.bi-blue{background:linear-gradient(90deg,#1a3a5c,#4a9eff);}
+.bi-red{background:linear-gradient(90deg,#3a1a1a,#f87171);opacity:.7;}
+.bar-dur{font-size:8px;color:#7dd3fc;font-family:'JetBrains Mono',monospace;}
+.bar-stop-lbl{font-size:8px;color:#f87171;}
+
+/* table */
+.riw-table{width:100%;border-collapse:collapse;}
+.riw-table th{font-size:8px;color:#4a6080;letter-spacing:1px;text-transform:uppercase;padding:3px 4px;text-align:left;border-bottom:0.5px solid #1e2640;}
+.riw-table td{font-size:9px;color:#7a90b8;padding:5px 4px;border-bottom:0.5px solid #0f1420;font-family:'JetBrains Mono',monospace;}
+.td-name{font-family:'Sora',sans-serif;color:#5a7090;}
+.td-stop{color:#f87171;}
+.riw-actions{display:flex;gap:6px;}
+.riw-btn{flex:1;text-align:center;padding:7px 4px;border-radius:9px;font-size:10px;border:0.5px solid #1e2640;color:#5a7090;background:#0a0d14;}
+.riw-btn.danger{color:#f87171;border-color:#5c2a2a;background:#1a0a0a;}
+
+.footer{margin:12px 8px 0;text-align:center;font-size:9px;color:#3a4a68;line-height:1.7;}
+</style>
+</head>
+<body>
+
+<!-- ═══ PHONE A: BELUM ADA DATA ═══ -->
+<div class="col">
+  <div class="section-title">Sesi Pertama<br>Belum ada data</div>
+  <div class="phone">
+    <div class="hdr">
+      <div class="hdr-icon">⚡</div>
+      <div><div class="hdr-title">EV Smart Charger</div><div class="hdr-sub">Belajar dari kebiasaan charging</div></div>
+    </div>
+
+    <div class="card">
+      <div class="batt-hdr"><div class="card-lbl" style="margin-bottom:0;">Sisa Baterai</div><div class="info-btn">i</div></div>
+      <div class="batt-row">
+        <div class="batt-box">15<span class="batt-pct">%</span></div>
+        <div class="batt-right">
+          <div style="font-size:11px;font-weight:500;color:#fb923c;">15% — Rendah!</div>
+          <div class="bar-track"><div style="height:100%;width:15%;background:linear-gradient(90deg,#7c4a00,#fb923c);border-radius:3px;"></div></div>
+          <div class="bar-hints"><span>0%</span><span style="color:#fb923c;">rendah</span><span>100%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="warn" style="background:#1e1000;border-color:#7c4a00;color:#fb923c;">
+      <span>⚠️</span><span>Baterai di bawah 20% — segera rencanakan charge.</span>
+    </div>
+
+    <!-- ESTIMASI: KOSONG -->
+    <div class="est-card" style="background:#111520;border:0.5px solid #1e2640;">
+      <div class="est-hdr">
+        <div class="est-lbl">Estimasi Waktu ke 100%</div>
+      </div>
+      <div class="time-row">
+        <div class="tbox-wrap"><div class="tbox empty">00</div><div class="tbox-lbl">Jam</div></div>
+        <div class="tsep">:</div>
+        <div class="tbox-wrap"><div class="tbox empty">00</div><div class="tbox-lbl">Menit</div></div>
+      </div>
+      <div class="est-hint" style="color:#3a4a68;">Belum ada data — masukkan waktu charging</div>
+    </div>
+
+    <div class="res">
+      <div class="res-top">
+        <div><div class="res-tag">Estimasi Pengisian</div><div class="res-from">dari 15% menuju 80%</div></div>
+        <div style="display:flex;align-items:center;gap:4px;"><span style="font-size:9px;color:#7aaad8;">Target</span><div class="dd">80%</div></div>
+      </div>
+      <div class="res-nums">
+        <div class="res-box"><div class="res-box-lbl">Durasi</div><div class="res-box-val">—</div><div class="res-box-sub">— menit</div></div>
+        <div class="res-sep"></div>
+        <div class="res-box"><div class="res-box-lbl">Selesai Pukul</div><div class="res-box-val" style="font-size:18px;">--:--</div><div class="res-box-sub">sekarang 09:41</div></div>
+      </div>
+      <div class="prog-wrap">
+        <div class="prog-hdr"><div class="prog-lbl">Progres Pengisian</div><div class="prog-pct" style="color:#fb923c;">15%</div></div>
+        <div class="prog-outer">
+          <div class="prog-track"></div>
+          <div class="prog-mask" style="width:85%;"></div>
+          <div class="prog-head" style="left:calc(15% - 1px);background:#fb923c;box-shadow:0 0 6px 2px #fb923c99;"></div>
+        </div>
+        <div class="zone-strip"><div class="zs zs1"></div><div class="zs zs2"></div><div class="zs zs3"></div><div class="zs zs4"></div><div class="zs zs5"></div></div>
+        <div class="zone-names"><div class="zn zn1">Kritis</div><div class="zn zn2">Rendah</div><div class="zn zn3">Siaga</div><div class="zn zn4">Zona Aman</div><div class="zn zn5">Full</div></div>
+      </div>
+    </div>
+
+    <div class="tabs"><div class="tab on">⏱ Timer</div><div class="tab">🔔 Alarm Jam</div></div>
+
+    <div class="timer-sec">
+      <div class="timer-disp">00<span class="timer-col">:</span>00<span class="timer-col">:</span>00</div>
+      <div class="timer-hint">tap angka untuk edit manual</div>
+      <div class="btn-row">
+        <div class="btn btn-s">▶ Mulai</div>
+        <div class="btn btn-x">■ Stop</div>
+        <div class="btn btn-r">↺ Reset</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:8px;">
+      <div class="card-lbl">Suara Alarm</div>
+      <div class="chips">
+        <div class="chip on">✓ Beep</div><div class="chip">Notif Halus</div>
+        <div class="chip">Klakson</div><div class="chip">Tanpa Suara</div>
+      </div>
+    </div>
+
+    <!-- RIWAYAT TERLIPAT -->
+    <div class="riwayat">
+      <div class="riw-hdr">
+        <div style="display:flex;align-items:center;gap:7px;">
+          <span style="font-size:13px;">📊</span>
+          <div class="riw-stats">Belum ada sesi tercatat</div>
+        </div>
+        <div class="riw-toggle">Lihat ▾</div>
+      </div>
+    </div>
+
+    <div class="footer">⚡ EV Smart Charger<br>made by anmax308</div>
+  </div>
+</div>
+
+<!-- ═══ PHONE B: ADA PREDIKSI (3 SESI) ═══ -->
+<div class="col">
+  <div class="section-title">Sudah 3 Sesi<br>Prediksi aktif</div>
+  <div class="phone">
+    <div class="hdr">
+      <div class="hdr-icon">⚡</div>
+      <div><div class="hdr-title">EV Smart Charger</div><div class="hdr-sub">Belajar dari kebiasaan charging</div></div>
+    </div>
+
+    <div class="card">
+      <div class="batt-hdr"><div class="card-lbl" style="margin-bottom:0;">Sisa Baterai</div><div class="info-btn">i</div></div>
+      <div class="batt-row">
+        <div class="batt-box">25<span class="batt-pct">%</span></div>
+        <div class="batt-right">
+          <div style="font-size:11px;font-weight:500;color:#fde047;">25% — Siaga</div>
+          <div class="bar-track"><div style="height:100%;width:25%;background:linear-gradient(90deg,#6b5a00,#fde047);border-radius:3px;"></div></div>
+          <div class="bar-hints"><span>0%</span><span style="color:#fde047;">siaga</span><span>100%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="warn" style="background:#181400;border-color:#6b5a00;color:#fde047;">
+      <span>💛</span><span>Baterai 25% — pertimbangkan charge jika perjalanan jauh.</span>
+    </div>
+
+    <!-- ESTIMASI: PREDIKSI AKTIF -->
+    <div class="est-card" style="background:#111520;border:0.5px solid #1a3a5c;">
+      <div class="est-hdr">
+        <div class="est-lbl">Estimasi Waktu ke 100%</div>
+        <div class="badge badge-ai">🤖 3 sesi</div>
+      </div>
+      <div class="time-row">
+        <div class="tbox-wrap"><div class="tbox ai">01</div><div class="tbox-lbl">Jam</div></div>
+        <div class="tsep">:</div>
+        <div class="tbox-wrap"><div class="tbox ai">22</div><div class="tbox-lbl">Menit</div></div>
+      </div>
+      <div class="est-hint" style="color:#3a5a7a;">Terisi dari prediksi · ketik langsung untuk ubah</div>
+    </div>
+
+    <div class="res">
+      <div class="res-top">
+        <div><div class="res-tag">Estimasi Pengisian</div><div class="res-from">dari 25% menuju 80%</div></div>
+        <div style="display:flex;align-items:center;gap:4px;"><span style="font-size:9px;color:#7aaad8;">Target</span><div class="dd">80%</div></div>
+      </div>
+      <div class="res-nums">
+        <div class="res-box"><div class="res-box-lbl">Durasi</div><div class="res-box-val">0<span class="u">j</span> 55<span class="u">m</span></div><div class="res-box-sub">≈ 55 menit</div></div>
+        <div class="res-sep"></div>
+        <div class="res-box"><div class="res-box-lbl">Selesai Pukul</div><div class="res-box-val" style="font-size:18px;">10:36</div><div class="res-box-sub">sekarang 09:41</div></div>
+      </div>
+      <div class="prog-wrap">
+        <div class="prog-hdr"><div class="prog-lbl">Progres Pengisian</div><div class="prog-pct" style="color:#fde047;">25%</div></div>
+        <div class="prog-outer">
+          <div class="prog-track"></div>
+          <div class="prog-mask" style="width:75%;"></div>
+          <div class="prog-head" style="left:calc(25% - 1px);background:#fde047;box-shadow:0 0 6px 2px #fde04799;"></div>
+        </div>
+        <div class="zone-strip"><div class="zs zs1"></div><div class="zs zs2"></div><div class="zs zs3"></div><div class="zs zs4"></div><div class="zs zs5"></div></div>
+        <div class="zone-names"><div class="zn zn1">Kritis</div><div class="zn zn2">Rendah</div><div class="zn zn3">Siaga</div><div class="zn zn4">Zona Aman</div><div class="zn zn5">Full</div></div>
+      </div>
+    </div>
+
+    <div class="tabs"><div class="tab on">⏱ Timer</div><div class="tab">🔔 Alarm Jam</div></div>
+
+    <div class="timer-sec">
+      <div class="timer-disp">00<span class="timer-col">:</span>55<span class="timer-col">:</span>00</div>
+      <div class="timer-hint">tap angka untuk edit manual</div>
+      <div class="btn-row">
+        <div class="btn btn-s">▶ Mulai</div>
+        <div class="btn btn-x">■ Stop</div>
+        <div class="btn btn-r">↺ Reset</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:8px;">
+      <div class="card-lbl">Suara Alarm</div>
+      <div class="chips">
+        <div class="chip on">✓ Beep</div><div class="chip">Notif Halus</div>
+        <div class="chip">Klakson</div><div class="chip">Tanpa Suara</div>
+      </div>
+    </div>
+
+    <!-- RIWAYAT TERBUKA (untuk demo) -->
+    <div class="riwayat">
+      <div class="riw-hdr">
+        <div style="display:flex;align-items:center;gap:7px;">
+          <span style="font-size:13px;">📊</span>
+          <div class="riw-stats"><b>3 sesi</b> · avg <b>1j 22m</b> · <b>0.5%</b>/mnt</div>
+        </div>
+        <div class="riw-toggle">Tutup ▴</div>
+      </div>
+      <div class="riw-body">
+
+        <!-- MODEL INFO -->
+        <div class="model-box">
+          <div class="model-title">🤖 Model Prediksi</div>
+          <div class="model-meta">Berdasarkan <b>3 sesi</b> · estimasi ±<b>10 menit</b></div>
+          <div class="sesi-row"><span class="sesi-num">Sesi 1</span><div class="sesi-badge sb-ai">🤖 prediksi</div><span class="sesi-note" style="color:#2a5a7a;">—</span></div>
+          <div class="sesi-row"><span class="sesi-num">Sesi 2</span><div class="sesi-badge sb-ai">🤖 prediksi</div><span class="sesi-note" style="color:#2a5a7a;">—</span></div>
+          <div class="sesi-row"><span class="sesi-num">Sesi 3</span><div class="sesi-badge sb-manual">✏️ manual</div><span class="sesi-note">diubah ke 1j 35m</span></div>
+        </div>
+
+        <div class="stat-row">
+          <div class="stat-box"><div class="stat-val">3</div><div class="stat-lbl">Total Sesi</div></div>
+          <div class="stat-box"><div class="stat-val">1j22m</div><div class="stat-lbl">Rata-rata</div></div>
+          <div class="stat-box"><div class="stat-val">0.5%</div><div class="stat-lbl">Rate/mnt</div></div>
+        </div>
+
+        <div>
+          <div class="chart-lbl">Durasi Per Sesi</div>
+          <div class="bar-row"><div class="bar-date">12 Jan</div><div class="bar-outer"><div class="bar-inner bi-blue" style="width:90%;"><span class="bar-dur">1j30m</span></div></div></div>
+          <div class="bar-row"><div class="bar-date">15 Jan</div><div class="bar-outer"><div class="bar-inner bi-blue" style="width:75%;"><span class="bar-dur">1j15m</span></div></div></div>
+          <div class="bar-row"><div class="bar-date">18 Jan</div><div class="bar-outer"><div class="bar-inner bi-blue" style="width:85%;"><span class="bar-dur">1j22m</span></div></div></div>
+        </div>
+
+        <table class="riw-table">
+          <tr><th>#</th><th>Tgl</th><th>Dari</th><th>Ke</th><th>Durasi</th><th>Mode</th></tr>
+          <tr><td>1</td><td class="td-name">12 Jan</td><td>25%</td><td>80%</td><td>1j30m</td><td style="color:#7dd3fc;">🤖</td></tr>
+          <tr><td>2</td><td class="td-name">15 Jan</td><td>30%</td><td>80%</td><td>1j15m</td><td style="color:#7dd3fc;">🤖</td></tr>
+          <tr><td>3</td><td class="td-name">18 Jan</td><td>20%</td><td>80%</td><td>1j22m</td><td style="color:#fde047;">✏️</td></tr>
+        </table>
+
+        <div class="riw-actions">
+          <div class="riw-btn">📤 Export</div>
+          <div class="riw-btn">📥 Import</div>
+          <div class="riw-btn danger">🗑 Reset</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">⚡ EV Smart Charger<br>made by anmax308</div>
+  </div>
+</div>
+
+<!-- ═══ PHONE C: EDIT MANUAL ═══ -->
+<div class="col">
+  <div class="section-title">User Edit Manual<br>Override prediksi</div>
+  <div class="phone">
+    <div class="hdr">
+      <div class="hdr-icon">⚡</div>
+      <div><div class="hdr-title">EV Smart Charger</div><div class="hdr-sub">Belajar dari kebiasaan charging</div></div>
+    </div>
+
+    <div class="card">
+      <div class="batt-hdr"><div class="card-lbl" style="margin-bottom:0;">Sisa Baterai</div><div class="info-btn">i</div></div>
+      <div class="batt-row">
+        <div class="batt-box">55<span class="batt-pct">%</span></div>
+        <div class="batt-right">
+          <div style="font-size:11px;font-weight:500;color:#4ade80;">55% — Zona Aman ✓</div>
+          <div class="bar-track"><div style="height:100%;width:55%;background:linear-gradient(90deg,#15803d,#4ade80);border-radius:3px;"></div></div>
+          <div class="bar-hints"><span>0%</span><span style="color:#4ade80;">zona aman</span><span>100%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ESTIMASI: MANUAL OVERRIDE -->
+    <div class="est-card" style="background:#111520;border:0.5px solid #3a3a1a;">
+      <div class="est-hdr">
+        <div class="est-lbl">Estimasi Waktu ke 100%</div>
+        <div class="badge badge-manual">✏️ Manual</div>
+      </div>
+      <div class="time-row">
+        <div class="tbox-wrap"><div class="tbox manual">01</div><div class="tbox-lbl">Jam</div></div>
+        <div class="tsep">:</div>
+        <div class="tbox-wrap"><div class="tbox manual">35</div><div class="tbox-lbl">Menit</div></div>
+      </div>
+      <div style="margin-top:7px;display:flex;align-items:center;justify-content:center;gap:5px;">
+        <span style="color:#4ade80;font-size:11px;">↺</span>
+        <span style="font-size:9px;color:#3a6a5a;cursor:pointer;">Kembali ke prediksi (1j 22m)</span>
+      </div>
+    </div>
+
+    <div class="res">
+      <div class="res-top">
+        <div><div class="res-tag">Estimasi Pengisian</div><div class="res-from">dari 55% menuju 80%</div></div>
+        <div style="display:flex;align-items:center;gap:4px;"><span style="font-size:9px;color:#7aaad8;">Target</span><div class="dd">80%</div></div>
+      </div>
+      <div class="res-nums">
+        <div class="res-box"><div class="res-box-lbl">Durasi</div><div class="res-box-val">0<span class="u">j</span> 35<span class="u">m</span></div><div class="res-box-sub">≈ 35 menit</div></div>
+        <div class="res-sep"></div>
+        <div class="res-box"><div class="res-box-lbl">Selesai Pukul</div><div class="res-box-val" style="font-size:18px;">10:16</div><div class="res-box-sub">sekarang 09:41</div></div>
+      </div>
+      <div class="prog-wrap">
+        <div class="prog-hdr"><div class="prog-lbl">Progres Pengisian</div><div class="prog-pct" style="color:#4ade80;">55%</div></div>
+        <div class="prog-outer">
+          <div class="prog-track"></div>
+          <div class="prog-mask" style="width:45%;"></div>
+          <div class="prog-head" style="left:calc(55% - 1px);background:#4ade80;box-shadow:0 0 6px 2px #4ade8099;"></div>
+        </div>
+        <div class="zone-strip"><div class="zs zs1"></div><div class="zs zs2"></div><div class="zs zs3"></div><div class="zs zs4"></div><div class="zs zs5"></div></div>
+        <div class="zone-names"><div class="zn zn1">Kritis</div><div class="zn zn2">Rendah</div><div class="zn zn3">Siaga</div><div class="zn zn4">Zona Aman</div><div class="zn zn5">Full</div></div>
+      </div>
+    </div>
+
+    <div class="tabs"><div class="tab on">⏱ Timer</div><div class="tab">🔔 Alarm Jam</div></div>
+
+    <div class="timer-sec">
+      <div class="timer-disp">00<span class="timer-col">:</span>35<span class="timer-col">:</span>00</div>
+      <div class="timer-hint">tap angka untuk edit manual</div>
+      <div class="btn-row">
+        <div class="btn btn-s">▶ Mulai</div>
+        <div class="btn btn-x">■ Stop</div>
+        <div class="btn btn-r">↺ Reset</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:8px;">
+      <div class="card-lbl">Suara Alarm</div>
+      <div class="chips">
+        <div class="chip on">✓ Beep</div><div class="chip">Notif Halus</div>
+        <div class="chip">Klakson</div><div class="chip">Tanpa Suara</div>
+      </div>
+    </div>
+
+    <!-- RIWAYAT TERLIPAT -->
+    <div class="riwayat">
+      <div class="riw-hdr">
+        <div style="display:flex;align-items:center;gap:7px;">
+          <span style="font-size:13px;">📊</span>
+          <div class="riw-stats"><b>3 sesi</b> · avg <b>1j 22m</b> · <b>0.5%</b>/mnt</div>
+        </div>
+        <div class="riw-toggle">Lihat ▾</div>
+      </div>
+    </div>
+
+    <div class="footer">⚡ EV Smart Charger<br>made by anmax308</div>
+  </div>
+</div>
+
+</body>
+</html>
