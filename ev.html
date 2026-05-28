@@ -284,7 +284,7 @@ html,body{background:#07090f;color:var(--text);font-family:var(--sans);min-heigh
     </div>
     <div class="batt-row">
       <div class="batt-num-wrap">
-        <input class="batt-num" type="number" id="battPct" value="30" min="0" max="99" oninput="rebuildTargetDropdown();calculate()">
+        <input class="batt-num" type="number" id="battPct" value="" min="0" max="99" placeholder="0" oninput="rebuildTargetDropdown();calculate()">
         <span class="batt-pct">%</span>
       </div>
       <div class="batt-right">
@@ -509,12 +509,13 @@ html,body{background:#07090f;color:var(--text);font-family:var(--sans);min-heigh
 // CONSTANTS & STATE
 // ═══════════════════════════════════════
 const STORAGE_KEY='ev_smart_sessions';
+const STATE_KEY='ev_timer_state';
 
 let timerInterval=null, timerSecs=0, timerRunning=false;
 let timerTotalSecs=0, timerStartBatt=0, timerTargetBatt=0;
-let timerStartTime=null;
-let timerHasBeenStopped=false;  // true after first stop, enables recalc on target change
-let timerIsCustom=false;        // true when user manually edited timer
+let timerStartTime=null;  // Unix timestamp ms — sumber kebenaran waktu
+let timerHasBeenStopped=false;
+let timerIsCustom=false;
 
 let alarmTimeout=null, selectedSound='beep', audioCtx=null;
 let alarmRingingInterval=null;
@@ -583,13 +584,123 @@ function recordSession(selesai){
 }
 
 // ═══════════════════════════════════════
+// TIMER STATE PERSISTENCE
+// ═══════════════════════════════════════
+function saveTimerState(){
+  const state={
+    running: timerRunning,
+    startTime: timerStartTime,
+    totalSecs: timerTotalSecs,
+    startBatt: timerStartBatt,
+    targetBatt: timerTargetBatt,
+    isCustom: timerIsCustom,
+    // form inputs
+    battPct: document.getElementById('battPct').value,
+    fullHour: document.getElementById('fullHour').value,
+    fullMin: document.getElementById('fullMin').value,
+    targetPct: document.getElementById('targetPct').value,
+    sound: selectedSound,
+    mode: currentMode,
+    isManualOverride: isManualOverride
+  };
+  localStorage.setItem(STATE_KEY, JSON.stringify(state));
+}
+
+function clearTimerState(){
+  localStorage.removeItem(STATE_KEY);
+}
+
+function loadTimerState(){
+  try{ return JSON.parse(localStorage.getItem(STATE_KEY)); }
+  catch(e){ return null; }
+}
+
+// Recalc timerSecs from timestamp — called on load and on visibility change
+function resyncTimerFromTimestamp(){
+  if(!timerStartTime||!timerTotalSecs) return;
+  const elapsed=Math.floor((Date.now()-timerStartTime)/1000);
+  const remaining=timerTotalSecs-elapsed;
+  if(remaining<=0){
+    // Timer already finished while away
+    timerSecs=0;
+    timerRunning=false;
+    clearInterval(timerInterval);
+    timerInterval=null;
+    clearTimerState();
+    updateTimerDisplay();
+    setProgBar(timerTargetBatt);
+    const overBy=Math.round(-remaining/60);
+    const label=overBy>0?'Charging selesai '+overBy+' menit yang lalu':'Charging selesai!';
+    recordSession(true);
+    playAlarm(label);
+    document.getElementById('timerDisp').classList.add('ringing');
+  } else {
+    timerSecs=remaining;
+    updateTimerDisplay();
+    const elapsed2=timerTotalSecs-remaining;
+    const ratio=timerTotalSecs>0?elapsed2/timerTotalSecs:0;
+    setProgBar(timerStartBatt+(timerTargetBatt-timerStartBatt)*ratio);
+  }
+}
+
+// ═══════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════
 window.onload=function(){
+  // Restore form + timer state from localStorage
+  const saved=loadTimerState();
+  if(saved){
+    // Restore form inputs
+    if(saved.battPct!==undefined) document.getElementById('battPct').value=saved.battPct;
+    if(saved.fullHour!==undefined) document.getElementById('fullHour').value=saved.fullHour;
+    if(saved.fullMin!==undefined) document.getElementById('fullMin').value=saved.fullMin;
+    if(saved.sound) selectedSound=saved.sound;
+    if(saved.isManualOverride!==undefined) isManualOverride=saved.isManualOverride;
+    // restore sound chip UI
+    document.querySelectorAll('.chip').forEach(c=>{
+      const map={beep:'Beep Klasik',notif:'Notif Halus',horn:'Klakson',silent:'Tanpa Suara'};
+      c.classList.remove('on');
+      c.textContent=map[c.getAttribute('data-s')];
+      if(c.getAttribute('data-s')===selectedSound){
+        c.classList.add('on');c.textContent='✓ '+c.textContent;
+      }
+    });
+    // restore mode tab
+    if(saved.mode) switchMode(saved.mode);
+  }
+
   rebuildTargetDropdown();
+
+  // restore target after dropdown built
+  if(saved&&saved.targetPct){
+    const sel=document.getElementById('targetPct');
+    const opt=sel.querySelector('option[value="'+saved.targetPct+'"]');
+    if(opt) opt.selected=true;
+  }
+
   renderRiwayat();
   calculate();
+
+  // Restore running timer
+  if(saved&&saved.running&&saved.startTime&&saved.totalSecs){
+    timerStartTime=saved.startTime;
+    timerTotalSecs=saved.totalSecs;
+    timerStartBatt=saved.startBatt||0;
+    timerTargetBatt=saved.targetBatt||80;
+    timerIsCustom=saved.isCustom||false;
+    timerRunning=true;
+    timerHasBeenStopped=false;
+    resyncTimerFromTimestamp();
+    if(timerRunning) startTimerTick();
+  }
 };
+
+// Page visibility — resync when user comes back to tab
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible'&&timerRunning){
+    resyncTimerFromTimestamp();
+  }
+});
 
 // ═══════════════════════════════════════
 // INFO TOGGLE
@@ -614,7 +725,7 @@ function resetInput(){
   cancelAlarm();
 
   // reset fields
-  document.getElementById('battPct').value=0;
+  document.getElementById('battPct').value='';
   document.getElementById('fullHour').value='';
   document.getElementById('fullMin').value='';
 
@@ -644,6 +755,7 @@ function resetInput(){
 
   // rebuild and recalculate
   rebuildTargetDropdown();
+  clearTimerState();
   calculate();
 }
 
@@ -768,11 +880,25 @@ function applyPredictionToField(batt,target){
 // CALCULATE
 // ═══════════════════════════════════════
 function calculate(){
-  const batt=Math.min(99,Math.max(0,parseInt(document.getElementById('battPct').value)||0));
+  const battRaw=document.getElementById('battPct').value;
+  const battEmpty=battRaw===''||battRaw===null;
+  const batt=battEmpty?0:Math.min(99,Math.max(0,parseInt(battRaw)||0));
   const target=parseInt(document.getElementById('targetPct').value)||80;
   const fh=parseInt(document.getElementById('fullHour').value)||0;
   const fm=parseInt(document.getElementById('fullMin').value)||0;
   const totalMins=fh*60+fm;
+
+  if(battEmpty){
+    // clear battery UI, no warning
+    document.getElementById('battBar').style.width='0%';
+    document.getElementById('battBar').style.background='var(--surface2)';
+    document.getElementById('battStatus').textContent='';
+    document.getElementById('battHint').textContent='';
+    document.getElementById('warnBox').className='warn-box';
+    setResEmpty();resetProgBar(0);
+    applyPredictionToField(0,target);
+    return;
+  }
 
   updateBatteryUI(batt);
   applyPredictionToField(batt,target);
@@ -978,6 +1104,16 @@ function updateTimerDisplay(){
   document.getElementById('tS').textContent=pad(s);
 }
 
+// Tick loop — uses timestamp as source of truth every second
+function startTimerTick(){
+  clearInterval(timerInterval);
+  timerInterval=setInterval(()=>{
+    if(!timerRunning){clearInterval(timerInterval);return;}
+    resyncTimerFromTimestamp();
+    if(timerRunning) saveTimerState(); // persist every tick
+  },1000);
+}
+
 function startTimer(){
   if(timerRunning)return;
   if(timerSecs<=0){alert('Set durasi timer terlebih dahulu.');return;}
@@ -990,22 +1126,8 @@ function startTimer(){
   hideTimerUpdateNote();
   hideCekBtn();
   hideCekInfo();
-
-  timerInterval=setInterval(()=>{
-    if(timerSecs<=0){
-      clearInterval(timerInterval);timerRunning=false;
-      setProgBar(timerTargetBatt);
-      recordSession(true);
-      playAlarm();
-      document.getElementById('timerDisp').classList.add('ringing');
-    }else{
-      timerSecs--;
-      updateTimerDisplay();
-      const elapsed=timerTotalSecs-timerSecs;
-      const ratio=timerTotalSecs>0?elapsed/timerTotalSecs:0;
-      setProgBar(timerStartBatt+(timerTargetBatt-timerStartBatt)*ratio);
-    }
-  },1000);
+  saveTimerState();
+  startTimerTick();
 }
 
 function stopTimer(){
@@ -1014,6 +1136,7 @@ function stopTimer(){
   timerHasBeenStopped=true;
   recordSession(false);
   timerStartTime=null;
+  clearTimerState();
   showCekBtn();
 }
 
@@ -1021,6 +1144,7 @@ function resetTimer(){
   if(timerRunning){clearInterval(timerInterval);timerRunning=false;timerStartTime=null;}
   timerHasBeenStopped=false;
   timerIsCustom=false;
+  clearTimerState();
   hideCekBtn();
   hideCekInfo();
   hideTimerUpdateNote();
@@ -1257,15 +1381,21 @@ function resetData(){
 // INPUT CLAMP
 // ═══════════════════════════════════════
 document.getElementById('battPct').addEventListener('change',function(){
+  if(this.value===''){rebuildTargetDropdown();calculate();saveTimerState();return;}
   let v=parseInt(this.value);if(isNaN(v))v=0;
   if(v<0)v=0;if(v>99)v=99;this.value=v;
-  rebuildTargetDropdown();calculate();
+  rebuildTargetDropdown();calculate();saveTimerState();
 });
 document.getElementById('fullHour').addEventListener('change',function(){
-  let v=parseInt(this.value);if(isNaN(v))v=0;if(v<0)v=0;this.value=v;onEstInput();
+  let v=parseInt(this.value);if(isNaN(v))v=0;if(v<0)v=0;this.value=v;
+  onEstInput();saveTimerState();
 });
 document.getElementById('fullMin').addEventListener('change',function(){
-  let v=parseInt(this.value);if(isNaN(v))v=0;if(v<0)v=0;if(v>59)v=59;this.value=v;onEstInput();
+  let v=parseInt(this.value);if(isNaN(v))v=0;if(v<0)v=0;if(v>59)v=59;this.value=v;
+  onEstInput();saveTimerState();
+});
+document.getElementById('targetPct').addEventListener('change',function(){
+  saveTimerState();
 });
 </script>
 </body>
