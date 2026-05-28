@@ -1152,6 +1152,8 @@ function startTimerTick(){
 function startTimer(){
   if(timerRunning)return;
   if(timerSecs<=0){alert('Set durasi timer terlebih dahulu.');return;}
+  // Pre-warm audio context while we have a user gesture
+  getCtx();
   timerTotalSecs=timerSecs;
   timerStartBatt=Math.min(99,Math.max(0,parseInt(document.getElementById('battPct').value)||0));
   timerTargetBatt=parseInt(document.getElementById('targetPct').value)||80;
@@ -1299,10 +1301,19 @@ function showAlarmFired(t){
 // ALARM SOUND & OVERLAY
 // ═══════════════════════════════════════
 function playAlarm(label){
-  if(selectedSound==='silent'){showAlarmOverlay(label);return;}
-  playSound(selectedSound,1);
-  alarmRingingInterval=setInterval(()=>{playSound(selectedSound,1);},2000);
   showAlarmOverlay(label);
+  if(selectedSound==='silent') return;
+  // Resume audio context then play — handles browser autoplay policy
+  const ctx=getCtx();
+  const doPlay=()=>{
+    playSound(selectedSound,1);
+    alarmRingingInterval=setInterval(()=>{playSound(selectedSound,1);},2000);
+  };
+  if(ctx.state==='suspended'){
+    ctx.resume().then(doPlay).catch(()=>doPlay());
+  } else {
+    doPlay();
+  }
 }
 function stopAlarmRinging(){
   if(alarmRingingInterval){clearInterval(alarmRingingInterval);alarmRingingInterval=null;}
@@ -1326,7 +1337,12 @@ function selectSound(el,sound){
   selectedSound=sound;playSound(sound,0.3);
 }
 
-function getCtx(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
+function getCtx(){
+  if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  // Resume if suspended (required after user inactivity or background)
+  if(audioCtx.state==='suspended') audioCtx.resume();
+  return audioCtx;
+}
 function tone(ctx,freq,delay,dur,vol,type){
   const o=ctx.createOscillator(),g=ctx.createGain();
   o.connect(g);g.connect(ctx.destination);
