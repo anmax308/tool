@@ -172,9 +172,7 @@ html,body{background:#07090f;color:var(--text);font-family:var(--sans);min-heigh
 .btn-start{background:var(--accent-dim);color:var(--accent2);border:0.5px solid var(--border2);}
 .btn-stop{background:var(--red-dim);color:var(--red);border:0.5px solid #5c2a2a;}
 .btn-reset{background:var(--surface2);color:var(--text3);border:0.5px solid var(--border);}
-.btn-cek{width:100%;margin-top:8px;padding:10px;border-radius:12px;font-size:12px;font-weight:500;cursor:pointer;border:0.5px solid #2a5a2a;background:var(--green-dim);color:var(--green);font-family:var(--sans);transition:all .15s;display:none;}
-.btn-cek.show{display:block;}
-.btn-cek:active{transform:scale(0.97);}
+
 .timer-note{margin-top:8px;font-size:10px;color:var(--text3);text-align:center;}
 
 /* ALARM */
@@ -190,8 +188,7 @@ html,body{background:#07090f;color:var(--text);font-family:var(--sans);min-heigh
 .alarm-status.off{background:var(--surface2);color:var(--text3);border:0.5px solid var(--border);}
 .alarm-btn-row{display:flex;gap:8px;margin-top:10px;}
 .alarm-note{margin-top:8px;font-size:10px;color:var(--text3);text-align:center;}
-.alarm-no-bar{margin-top:10px;background:#090f1a;border:0.5px solid var(--accent-dim);border-radius:10px;padding:9px 12px;font-size:11px;color:#7ab0d8;text-align:center;line-height:1.6;}
-.alarm-no-bar b{color:#8ac0e8;}
+
 
 /* SOUND */
 .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px;}
@@ -409,11 +406,11 @@ html,body{background:#07090f;color:var(--text);font-family:var(--sans);min-heigh
     </div>
     <div class="timer-update-note" id="timerUpdateNote"></div>
     <div class="timer-edit" id="timerEdit">
-      <div class="te-wrap"><input class="te-input" type="number" id="teH" min="0" max="99" placeholder="00"><div class="te-lbl">Jam</div></div>
+      <div class="te-wrap"><input class="te-input" type="number" id="teH" min="0" max="99" placeholder="00" oninput="previewTimerEdit()"><div class="te-lbl">Jam</div></div>
       <div class="te-sep">:</div>
-      <div class="te-wrap"><input class="te-input" type="number" id="teM" min="0" max="59" placeholder="00"><div class="te-lbl">Menit</div></div>
+      <div class="te-wrap"><input class="te-input" type="number" id="teM" min="0" max="59" placeholder="00" oninput="previewTimerEdit()"><div class="te-lbl">Menit</div></div>
       <div class="te-sep">:</div>
-      <div class="te-wrap"><input class="te-input" type="number" id="teS" min="0" max="59" placeholder="00"><div class="te-lbl">Detik</div></div>
+      <div class="te-wrap"><input class="te-input" type="number" id="teS" min="0" max="59" placeholder="00" oninput="previewTimerEdit()"><div class="te-lbl">Detik</div></div>
     </div>
     <button class="te-done" id="teDone" onclick="applyTimerEdit()">✓ Terapkan</button>
     <div class="btn-row">
@@ -421,7 +418,6 @@ html,body{background:#07090f;color:var(--text);font-family:var(--sans);min-heigh
       <button class="btn btn-stop" onclick="stopTimer()">■ Stop</button>
       <button class="btn btn-reset" onclick="resetTimer()">↺ Reset</button>
     </div>
-    <button class="btn-cek" id="btnCek" onclick="cekBaterai()">🔋 Cek Estimasi Baterai dari Timer Ini</button>
     <div class="timer-note">Auto-terisi dari estimasi · tap angka untuk edit</div>
   </div>
 
@@ -429,7 +425,7 @@ html,body{background:#07090f;color:var(--text);font-family:var(--sans);min-heigh
   <div class="alarm-sec" id="alarmSec">
     <div class="alarm-lbl">Setel alarm berbunyi pada pukul:</div>
     <div class="alarm-time-wrap">
-      <input class="alarm-time-input" type="time" id="alarmTime">
+      <input class="alarm-time-input" type="time" id="alarmTime" oninput="cekBateraiDariAlarm()" onchange="cekBateraiDariAlarm()">
     </div>
     <div class="alarm-status" id="alarmStatus"></div>
     <div class="alarm-btn-row">
@@ -437,7 +433,6 @@ html,body{background:#07090f;color:var(--text);font-family:var(--sans);min-heigh
       <button class="btn btn-reset" onclick="cancelAlarm()">✕ Batalkan</button>
     </div>
     <div class="alarm-note" id="alarmNote"></div>
-    <div class="alarm-no-bar">Bar progres <b>tidak bergerak</b> pada mode alarm.<br>Aktifkan Timer untuk memantau progres pengisian.</div>
   </div>
 
   <!-- SOUND -->
@@ -519,6 +514,11 @@ let timerIsCustom=false;
 
 let alarmTimeout=null, selectedSound='beep', audioCtx=null;
 let alarmRingingInterval=null;
+let alarmProgressInterval=null;  // progress bar tick for alarm mode
+let alarmProgressStart=null;     // timestamp when alarm activated
+let alarmProgressTotal=0;        // total ms from activation to alarm time
+let alarmProgressStartBatt=0;    // batt% when alarm activated
+let alarmProgressTargetBatt=0;   // estimated target batt%
 let infoOpen=false, riwayatOpen=false, currentMode='timer';
 
 let predictionMins=null;
@@ -697,8 +697,15 @@ window.onload=function(){
 
 // Page visibility — resync when user comes back to tab
 document.addEventListener('visibilitychange',()=>{
-  if(document.visibilityState==='visible'&&timerRunning){
-    resyncTimerFromTimestamp();
+  if(document.visibilityState==='visible'){
+    if(timerRunning) resyncTimerFromTimestamp();
+    if(alarmProgressStart){
+      // resync alarm progress bar immediately
+      const elapsed=Date.now()-alarmProgressStart;
+      const ratio=Math.min(1,elapsed/alarmProgressTotal);
+      const currentBatt=alarmProgressStartBatt+(alarmProgressTargetBatt-alarmProgressStartBatt)*ratio;
+      setProgBar(currentBatt);
+    }
   }
 });
 
@@ -741,7 +748,6 @@ function resetInput(){
   updateTimerDisplay();
   setTimerBadge('none');
   hideTimerUpdateNote();
-  hideCekBtn();
   hideCekInfo();
 
   // reset progress bar
@@ -781,7 +787,7 @@ function rebuildTargetDropdown(){
 // Called when target dropdown changes
 function onTargetChange(){
   hideCekInfo();
-  calculate(); // calculate() handles all recalc now
+  calculate();
 }
 
 // Recalculate timer based on new target, using estimasi field rate
@@ -879,6 +885,26 @@ function applyPredictionToField(batt,target){
 // ═══════════════════════════════════════
 // CALCULATE
 // ═══════════════════════════════════════
+
+// Update result card only (durasi, selesai pukul, progress bar label)
+// Does NOT touch timer state at all
+function updateResCard(batt, target, totalMins){
+  if(batt>=target){setResErr('Baterai sudah ≥ target!');return false;}
+  if(totalMins<=0){setResEmpty();return false;}
+  const rangeFull=100-batt, rangeTarget=target-batt;
+  const mins=Math.round((rangeTarget/rangeFull)*totalMins);
+  document.getElementById('resDur').textContent=fmtMins(mins);
+  document.getElementById('resMins').textContent='≈ '+mins+' menit total';
+  const now=new Date(), fin=new Date(now.getTime()+mins*60000);
+  const fhh=pad(fin.getHours()), fmm=pad(fin.getMinutes());
+  document.getElementById('resFinish').textContent=fhh+':'+fmm;
+  document.getElementById('resNow').textContent='sekarang '+pad(now.getHours())+':'+pad(now.getMinutes());
+  document.getElementById('resFrom').textContent='dari '+batt+'% menuju '+target+'%';
+  document.getElementById('alarmNote').textContent='Estimasi selesai pukul '+fhh+':'+fmm;
+  document.getElementById('alarmTime').value=fhh+':'+fmm;
+  return true;
+}
+
 function calculate(){
   const battRaw=document.getElementById('battPct').value;
   const battEmpty=battRaw===''||battRaw===null;
@@ -889,7 +915,6 @@ function calculate(){
   const totalMins=fh*60+fm;
 
   if(battEmpty){
-    // clear battery UI, no warning
     document.getElementById('battBar').style.width='0%';
     document.getElementById('battBar').style.background='var(--surface2)';
     document.getElementById('battStatus').textContent='';
@@ -903,38 +928,23 @@ function calculate(){
   updateBatteryUI(batt);
   applyPredictionToField(batt,target);
 
-  if(batt>=target){setResErr('Baterai sudah ≥ target!');resetProgBar(batt);return;}
-  if(totalMins<=0){setResEmpty();resetProgBar(batt);return;}
-
-  const rangeFull=100-batt,rangeTarget=target-batt;
-  const mins=Math.round((rangeTarget/rangeFull)*totalMins);
-
-  document.getElementById('resDur').textContent=fmtMins(mins);
-  document.getElementById('resMins').textContent='≈ '+mins+' menit total';
-
-  const now=new Date(),fin=new Date(now.getTime()+mins*60000);
-  const fhh=pad(fin.getHours()),fmm=pad(fin.getMinutes());
-  document.getElementById('resFinish').textContent=fhh+':'+fmm;
-  document.getElementById('resNow').textContent='sekarang '+pad(now.getHours())+':'+pad(now.getMinutes());
-  document.getElementById('resFrom').textContent='dari '+batt+'% menuju '+target+'%';
+  const ok=updateResCard(batt,target,totalMins);
+  if(!ok){resetProgBar(batt);return;}
 
   if(!timerRunning){
     setProgBar(batt);
-    // Always recalculate timer when not running (batt% or target changed)
-    timerSecs=mins*60;
-    timerTotalSecs=mins*60;
-    timerStartBatt=batt;
-    timerTargetBatt=target;
-    updateTimerDisplay();
-    // clear custom state since we recalculated
-    timerIsCustom=false;
-    setTimerBadge('none');
-    hideCekBtn();
-    hideCekInfo();
+    if(!timerIsCustom){
+      const rangeFull=100-batt, rangeTarget=target-batt;
+      const mins=Math.round((rangeTarget/rangeFull)*totalMins);
+      timerSecs=mins*60;
+      timerTotalSecs=mins*60;
+      timerStartBatt=batt;
+      timerTargetBatt=target;
+      updateTimerDisplay();
+      setTimerBadge('none');
+      hideCekInfo();
+    }
   }
-
-  document.getElementById('alarmNote').textContent='Estimasi selesai pukul '+fhh+':'+fmm;
-  document.getElementById('alarmTime').value=fhh+':'+fmm;
 }
 
 function setResErr(m){
@@ -951,51 +961,69 @@ function setResEmpty(){
 // ═══════════════════════════════════════
 // CEK BATERAI dari Timer
 // ═══════════════════════════════════════
-function cekBaterai(){
-  const batt=Math.min(99,Math.max(0,parseInt(document.getElementById('battPct').value)||0));
+// Auto-update cek info from current timerSecs — shows info + refreshes result card
+// Does NOT change target dropdown, does NOT touch timer
+function updateCekFromTimer(){
+  const battRaw=document.getElementById('battPct').value;
+  if(battRaw==='') return;
+  const batt=Math.min(99,Math.max(0,parseInt(battRaw)||0));
   const fh=parseInt(document.getElementById('fullHour').value)||0;
   const fm=parseInt(document.getElementById('fullMin').value)||0;
   const totalMinsFull=fh*60+fm;
-  if(totalMinsFull<=0){alert('Isi estimasi waktu ke 100% terlebih dahulu.');return;}
+  if(totalMinsFull<=0||timerSecs<=0){hideCekInfo();return;}
 
-  // current timer value in minutes
   const timerH=Math.floor(timerSecs/3600);
   const timerM=Math.floor((timerSecs%3600)/60);
   const timerS=timerSecs%60;
   const timerMinutes=timerH*60+timerM+(timerS/60);
+  if(timerMinutes<=0){hideCekInfo();return;}
 
-  if(timerMinutes<=0){alert('Timer sudah 00:00:00, tidak bisa dihitung.');return;}
-
-  // rate = (100 - batt) / totalMinsFull
+  // calculate estimated batt from timer duration
   const rate=(100-batt)/totalMinsFull;
   const estimatedBatt=Math.min(100,Math.round(batt+rate*timerMinutes));
 
-  // update dropdown to closest available option
-  const sel=document.getElementById('targetPct');
-  let closest=estimatedBatt;
-  if(!sel.querySelector('option[value="'+closest+'"]')){
-    // find nearest
-    let minDiff=999,bestVal=parseInt(sel.options[sel.options.length-1].value);
-    for(const o of sel.options){
-      const diff=Math.abs(parseInt(o.value)-estimatedBatt);
-      if(diff<minDiff){minDiff=diff;bestVal=parseInt(o.value);}
-    }
-    closest=bestVal;
-  }
-  const opt=sel.querySelector('option[value="'+closest+'"]');
-  if(opt)opt.selected=true;
+  // refresh result card using estimated batt as target — does NOT change dropdown
+  updateResCard(batt, estimatedBatt, totalMinsFull);
 
   // show info
   const timerStr=pad(timerH)+':'+pad(timerM)+':'+pad(timerS);
   document.getElementById('cekInfoText').textContent=
-    'Timer '+timerStr+' → estimasi baterai ~'+estimatedBatt+'%, target diset ke '+closest+'%';
+    'Timer '+timerStr+' → estimasi baterai ~'+estimatedBatt+'%';
   document.getElementById('cekInfo').classList.add('show');
-
-  calculate();
 }
 
 function hideCekInfo(){
   document.getElementById('cekInfo').classList.remove('show');
+}
+
+// Cek estimasi baterai berdasarkan waktu alarm — refreshes result card, does NOT change dropdown
+function cekBateraiDariAlarm(){
+  const val=document.getElementById('alarmTime').value;
+  if(!val){hideCekInfo();return;}
+  const battRaw=document.getElementById('battPct').value;
+  if(battRaw===''){hideCekInfo();return;}
+  const batt=Math.min(99,Math.max(0,parseInt(battRaw)||0));
+  const fh=parseInt(document.getElementById('fullHour').value)||0;
+  const fm=parseInt(document.getElementById('fullMin').value)||0;
+  const totalMinsFull=fh*60+fm;
+  if(totalMinsFull<=0){hideCekInfo();return;}
+
+  const [ah,am]=val.split(':').map(Number);
+  const now=new Date(),alarmTarget=new Date();
+  alarmTarget.setHours(ah,am,0,0);
+  if(alarmTarget<=now) alarmTarget.setDate(alarmTarget.getDate()+1);
+  const alarmMinutes=Math.round((alarmTarget-now)/60000);
+  if(alarmMinutes<=0){hideCekInfo();return;}
+
+  const rate=(100-batt)/totalMinsFull;
+  const estimatedBatt=Math.min(100,Math.round(batt+rate*alarmMinutes));
+
+  // refresh result card using estimated batt — does NOT change dropdown
+  updateResCard(batt, estimatedBatt, totalMinsFull);
+
+  document.getElementById('cekInfoText').textContent=
+    'Alarm '+val+' ('+alarmMinutes+' mnt) → estimasi baterai ~'+estimatedBatt+'%';
+  document.getElementById('cekInfo').classList.add('show');
 }
 
 // ═══════════════════════════════════════
@@ -1070,7 +1098,16 @@ function switchMode(m){
   document.getElementById('tabAlarm').classList.toggle('on',m==='alarm');
   document.getElementById('timerSec').classList.toggle('show',m==='timer');
   document.getElementById('alarmSec').classList.toggle('show',m==='alarm');
-  if(m==='alarm'&&!timerRunning)resetProgBar();
+  hideCekInfo();
+  if(m==='timer'){
+    // resume timer progress if running, else reset bar to batt
+    if(!timerRunning) resetProgBar();
+  }
+  if(m==='alarm'){
+    // resume alarm progress if active
+    if(alarmProgressStart) startAlarmProgress();
+    else if(!timerRunning) resetProgBar();
+  }
 }
 
 // ═══════════════════════════════════════
@@ -1091,8 +1128,6 @@ function showTimerUpdateNote(msg){
 function hideTimerUpdateNote(){
   document.getElementById('timerUpdateNote').classList.remove('show');
 }
-function showCekBtn(){document.getElementById('btnCek').classList.add('show');}
-function hideCekBtn(){document.getElementById('btnCek').classList.remove('show');}
 
 // ═══════════════════════════════════════
 // TIMER
@@ -1124,7 +1159,6 @@ function startTimer(){
   timerRunning=true;
   timerHasBeenStopped=false;
   hideTimerUpdateNote();
-  hideCekBtn();
   hideCekInfo();
   saveTimerState();
   startTimerTick();
@@ -1137,7 +1171,6 @@ function stopTimer(){
   recordSession(false);
   timerStartTime=null;
   clearTimerState();
-  showCekBtn();
 }
 
 function resetTimer(){
@@ -1145,7 +1178,6 @@ function resetTimer(){
   timerHasBeenStopped=false;
   timerIsCustom=false;
   clearTimerState();
-  hideCekBtn();
   hideCekInfo();
   hideTimerUpdateNote();
   setTimerBadge('none');
@@ -1163,6 +1195,20 @@ function showTimerEdit(){
   document.getElementById('timerHint').style.display='none';
 }
 
+// Live preview while user types in timer edit fields
+function previewTimerEdit(){
+  const h=parseInt(document.getElementById('teH').value)||0;
+  const m=parseInt(document.getElementById('teM').value)||0;
+  const s=parseInt(document.getElementById('teS').value)||0;
+  const preview=h*3600+m*60+s;
+  if(preview<=0){hideCekInfo();return;}
+  // temporarily set timerSecs for calculation
+  const prev=timerSecs;
+  timerSecs=preview;
+  updateCekFromTimer();
+  timerSecs=prev; // restore — applyTimerEdit will commit it
+}
+
 function applyTimerEdit(){
   const h=parseInt(document.getElementById('teH').value)||0;
   const m=parseInt(document.getElementById('teM').value)||0;
@@ -1171,12 +1217,13 @@ function applyTimerEdit(){
   timerTotalSecs=timerSecs;
   timerIsCustom=true;
   setTimerBadge('custom');
-  showCekBtn();
   hideCekInfo();
   updateTimerDisplay();
   document.getElementById('timerEdit').classList.remove('show');
   document.getElementById('teDone').style.display='none';
   document.getElementById('timerDisp').style.display='';
+  // auto-update target % and cek info
+  updateCekFromTimer();
 }
 
 // ═══════════════════════════════════════
@@ -1190,17 +1237,54 @@ function setAlarm(){
   const now=new Date(),t=new Date();
   t.setHours(ah,am,0,0);
   if(t<=now)t.setDate(t.getDate()+1);
-  const diff=t-now,mins=Math.round(diff/60000);
+  const diff=t-now;
+  const mins=Math.round(diff/60000);
   const hrs=Math.floor(mins/60),rem=mins%60;
   const ds=(hrs>0?hrs+' jam ':'')+rem+' menit lagi';
-  alarmTimeout=setTimeout(()=>{playAlarm('Alarm pukul '+val+' berbunyi!');showAlarmFired(val);},diff);
+
+  alarmTimeout=setTimeout(()=>{
+    stopAlarmProgress();
+    playAlarm('Alarm pukul '+val+' berbunyi!');
+    showAlarmFired(val);
+  },diff);
+
   const s=document.getElementById('alarmStatus');
   s.className='alarm-status show active';
   s.textContent='🔔 Alarm aktif pukul '+val+' · '+ds;
+
+  // start progress bar
+  const batt=parseInt(document.getElementById('battPct').value)||0;
+  const targetSel=parseInt(document.getElementById('targetPct').value)||80;
+  alarmProgressStart=Date.now();
+  alarmProgressTotal=diff;
+  alarmProgressStartBatt=batt;
+  alarmProgressTargetBatt=targetSel;
+  startAlarmProgress();
+}
+
+function startAlarmProgress(){
+  clearInterval(alarmProgressInterval);
+  alarmProgressInterval=setInterval(()=>{
+    if(!alarmProgressStart||!alarmProgressTotal) return;
+    const elapsed=Date.now()-alarmProgressStart;
+    const ratio=Math.min(1,elapsed/alarmProgressTotal);
+    const currentBatt=alarmProgressStartBatt+(alarmProgressTargetBatt-alarmProgressStartBatt)*ratio;
+    setProgBar(currentBatt);
+  },1000);
+}
+
+function stopAlarmProgress(){
+  clearInterval(alarmProgressInterval);
+  alarmProgressInterval=null;
+  alarmProgressStart=null;
 }
 
 function cancelAlarm(){
   if(alarmTimeout){clearTimeout(alarmTimeout);alarmTimeout=null;}
+  stopAlarmProgress();
+  // reset progress bar to starting batt
+  const batt=parseInt(document.getElementById('battPct').value)||0;
+  setProgBar(batt);
   const s=document.getElementById('alarmStatus');
   if(s){s.className='alarm-status show off';s.textContent='Tidak ada alarm aktif';}
 }
